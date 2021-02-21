@@ -18,12 +18,12 @@ class Bezier
         ~Bezier();
 
         void Add(unsigned int x, unsigned int y);
-        Point* getOrAddPoint(unsigned int x, unsigned int y, int squerDist = 1600);
-        Point* getPoint(unsigned int x, unsigned int y, int squerDis = 1600);
+        Point* getOrAddPoint(unsigned int x, unsigned int y, unsigned int squerDist = 1600);
+        Point* getPoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
         void save(const char* file);
         void load(const char* file);
         void clear();
-        void deletePoint(unsigned int x, unsigned int y, int squerDis = 1600);
+        void deletePoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
 
         //friend class BezierVisitor;
 

@@ -18,11 +18,11 @@ void Bezier::Add(unsigned int x, unsigned int y)
     curves.push_back(p);
 }
 
-void Bezier::deletePoint(unsigned int x, unsigned int y, int squerDis)
+void Bezier::deletePoint(unsigned int x, unsigned int y, unsigned int squerDis)
 {
     for(auto iter = curves.begin(); iter != curves.end(); iter++)
     {
-        int dist = (iter->x - x) * (iter->x - x) + (iter->y - y) * (iter->y - y);
+        unsigned int dist = (iter->x - x) * (iter->x - x) + (iter->y - y) * (iter->y - y);
         if(dist < squerDis)
         {
             curves.erase(iter);
@@ -31,22 +31,22 @@ void Bezier::deletePoint(unsigned int x, unsigned int y, int squerDis)
     }
 }
 
-Point* Bezier::getPoint(unsigned int x, unsigned int y, int squerDis)
+Point* Bezier::getPoint(unsigned int x, unsigned int y, unsigned int squerDis)
 {
     for(Point& p : curves)
     {
-        int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+        unsigned int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
         if(dist < squerDis)
             return &p;
     }
     return nullptr;
 }
 
-Point* Bezier::getOrAddPoint(unsigned int x, unsigned int y, int squerDis)
+Point* Bezier::getOrAddPoint(unsigned int x, unsigned int y, unsigned int squerDis)
 {
     for(Point& p : curves)
     {
-        int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+        unsigned int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
         if(dist < squerDis)
             return &p;
     }
@@ -66,7 +66,7 @@ void Bezier::load(const char* file)
     }
     while(myfile.good())
     {
-        int x, y;
+        unsigned int x, y;
         myfile >> x;
         myfile >> y;
         Add(x, y);

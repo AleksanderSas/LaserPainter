@@ -6,10 +6,10 @@ BezierVisitor::BezierVisitor(Bezier& bezier, int steps) : bezier(bezier)
     if(bezier.curves.size() >= DEGREE)
     {
         int components = (bezier.curves.size() - 1) / (DEGREE - 1);
-        deltaT = 1.0 / steps * components;
+        deltaT = 1.0f / steps * components;
     }
     else {
-          deltaT = 1.0 / steps;
+          deltaT = 1.0f / steps;
     }
     tmp1 = tmp[0];
     tmp2 = tmp[1];
@@ -19,7 +19,7 @@ BezierVisitor::BezierVisitor(Bezier& bezier, int steps) : bezier(bezier)
 
 const Point* BezierVisitor::next()
 {
-    if(tInComponent + deltaT > 1.0)
+    if(tInComponent + deltaT > 1.0f)
     {
         tInComponent = 0.0;
         currentPoint += DEGREE - 1;
@@ -44,9 +44,9 @@ static Point line(Point& p1, Point& p2, float t)
 
 void BezierVisitor::compute()
 {
-    for(int i = DEGREE - 1; i > 0; i--)
+    for(unsigned int i = DEGREE - 1; i > 0; i--)
     {
-        for(int k = 0; k < i; k++)
+        for(unsigned int k = 0; k < i; k++)
        {
            tmp1[k] = line(bezier.curves[currentPoint + k], bezier.curves[currentPoint + k+1], tInComponent);
        }
