@@ -1,11 +1,11 @@
 #include "beziervisitor.h"
 #include <iostream>
 
-BezierVisitor::BezierVisitor(Bezier& bezier, int steps) : bezier(bezier)
+BezierVisitor::BezierVisitor(Bezier* bezier, unsigned int steps) : bezier(bezier)
 {
-    if(bezier.curves.size() >= DEGREE)
+    if(bezier->pointNumber >= DEGREE)
     {
-        int components = (bezier.curves.size() - 1) / (DEGREE - 1);
+        int components = (bezier->pointNumber - 1) / (DEGREE - 1);
         deltaT = 1.0f / steps * components;
     }
     else {
@@ -13,24 +13,26 @@ BezierVisitor::BezierVisitor(Bezier& bezier, int steps) : bezier(bezier)
     }
     tmp1 = tmp[0];
     tmp2 = tmp[1];
-    currentPoint = 0;
+    currentPoint = bezier->offset;
     tInComponent = 0.0;
 }
 
-const Point* BezierVisitor::next()
+const Point* BezierVisitor::next(std::vector<Point>& points)
 {
+    if(currentPoint + DEGREE > bezier->offset + bezier->pointNumber)
+    {
+        return nullptr;
+    }
+
+    compute(points);
+    tInComponent += deltaT;
+
     if(tInComponent + deltaT > 1.0f)
     {
         tInComponent = 0.0;
         currentPoint += DEGREE - 1;
-        if(currentPoint + DEGREE > bezier.curves.size())
-        {
-            return nullptr;
-        }
     }
 
-    compute();
-    tInComponent += deltaT;
     return tmp1;
 }
 
@@ -42,13 +44,13 @@ static Point line(Point& p1, Point& p2, float t)
     return p;
 }
 
-void BezierVisitor::compute()
+void BezierVisitor::compute(std::vector<Point> &points)
 {
     for(unsigned int i = DEGREE - 1; i > 0; i--)
     {
         for(unsigned int k = 0; k < i; k++)
        {
-           tmp1[k] = line(bezier.curves[currentPoint + k], bezier.curves[currentPoint + k+1], tInComponent);
+           tmp1[k] = line(points[currentPoint + k], points[currentPoint + k+1], tInComponent);
        }
     }
 

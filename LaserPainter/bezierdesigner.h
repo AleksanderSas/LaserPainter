@@ -3,14 +3,15 @@
 
 #include <QFrame>
 #include <vector>
-#include "bezier.h"
+#include "shapecollection.h"
 #include <QMenu>
+#include <QComboBox>
 
 class BezierDesigner : public QFrame
 {
     Q_OBJECT
 public:
-    explicit BezierDesigner(Bezier &bezier, QWidget *parent = nullptr);
+    explicit BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QWidget *parent = nullptr);
 
 protected:
     void keyPressEvent(QKeyEvent * e);
@@ -25,7 +26,8 @@ signals:
 public slots:
     void deletePoint();
 private:
-    Bezier &bezier;
+    ShapeCollection &shapeCollection;
+    QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
     QMenu * menu;
     QAction *delteAction;

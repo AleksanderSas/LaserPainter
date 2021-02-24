@@ -2,7 +2,7 @@
 #define HARDWARECONNECTOR_H
 
 #include "stdio.h"
-#include "bezier.h"
+#include "shapecollection.h"
 
 #define RAW_IO_WRITE 1
 
@@ -11,7 +11,7 @@ class HardwareConnector
 public:
     HardwareConnector();
     ~HardwareConnector();
-    void drawBezier(Bezier &b, unsigned int resolution, unsigned int repeats);
+    void drawBezier(ShapeCollection &sc, unsigned int resolution, unsigned int repeats);
     bool run = false;
 
 private:

@@ -4,31 +4,17 @@
 #define DEGREE 5
 
 #include <vector>
+#include "abstractshape.h"
+#include "structs.h"
 
-typedef struct point
-{
-    int x;
-    int y;
-} Point;
-
-class Bezier
+class Bezier : public AbstractShape
 {
     public:
         Bezier();
-        ~Bezier();
 
-        void Add(unsigned int x, unsigned int y);
-        Point* getOrAddPoint(unsigned int x, unsigned int y, unsigned int squerDist = 1600);
-        Point* getPoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
-        void save(const char* file);
-        void load(const char* file);
-        void clear();
-        void deletePoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
-
-        //friend class BezierVisitor;
-
-        std::vector<Point> curves;
-    private:
+        unsigned int getWeigth() override;
+        AbstractVisitor* getVisitor(unsigned int steps) override;
+        ShapeType getType() override;
 };
 
 #endif // BEZIER_H

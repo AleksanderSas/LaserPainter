@@ -10,7 +10,6 @@
 #include <cstring>
 #include "math.h"
 #include "time.h"
-#include "bezier.h"
 #include "beziervisitor.h"
 
 HardwareConnector::HardwareConnector()
@@ -223,14 +222,13 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
 #endif
 }
 
-void HardwareConnector::drawBezier(Bezier &b, unsigned int resolution, unsigned int repeats)
+void HardwareConnector::drawBezier(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
 {
     run = true;
     for(unsigned int i = 0; i < repeats && run; i++)
     {
-        BezierVisitor bv(b, resolution);
-        const Point* p = bv.next();
-        while((p = bv.next()) != nullptr)
+        const Point* p;
+        while((p = sc.next(resolution)) != nullptr)
         {
             sent(p->x, p->y);
         }

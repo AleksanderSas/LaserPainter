@@ -4,14 +4,14 @@
 #include <vector>
 #include "bezier.h"
 
-class BezierVisitor
+class BezierVisitor : public AbstractVisitor
 {
     public:
-        BezierVisitor(Bezier& bezier, int steps);
-        const Point* next();
+        BezierVisitor(Bezier* bezier, unsigned int steps);
+        const Point* next(std::vector<Point>& points) override;
 
     private:
-        Bezier& bezier;
+        Bezier* bezier;
 
         float tInComponent;
         float deltaT;
@@ -21,6 +21,6 @@ class BezierVisitor
         Point* tmp2;
         int _dummy_;
 
-        void compute();
+        void compute(std::vector<Point>& points);
 };
 #endif // BEZIERVISITOR_H

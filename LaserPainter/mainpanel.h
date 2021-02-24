@@ -3,11 +3,13 @@
 
 #include <QWidget>
 #include "bezier.h"
+#include "shapecollection.h"
 #include "bezierdesigner.h"
 #include "hardwareconnector.h"
 #include <thread>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QComboBox>
 
 class MainPanel : public QWidget
 {
@@ -16,7 +18,8 @@ public:
     explicit MainPanel(QWidget *parent = nullptr);
 
 private:
-    Bezier bezier;
+    //Bezier bezier;
+    ShapeCollection shapeCollection;
     BezierDesigner *bezierDesigner;
     HardwareConnector *connector = nullptr;
     void test();
@@ -24,6 +27,7 @@ private:
     QPushButton *startButton;
     QSpinBox *pointsInput;
     QSpinBox *repeatsInput;
+    QComboBox* shapeSelector;
 
 signals:
 
