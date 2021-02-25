@@ -2,7 +2,6 @@
 #define MAINPANEL_H
 
 #include <QWidget>
-#include "bezier.h"
 #include "shapecollection.h"
 #include "bezierdesigner.h"
 #include "hardwareconnector.h"
@@ -18,7 +17,6 @@ public:
     explicit MainPanel(QWidget *parent = nullptr);
 
 private:
-    //Bezier bezier;
     ShapeCollection shapeCollection;
     BezierDesigner *bezierDesigner;
     HardwareConnector *connector = nullptr;

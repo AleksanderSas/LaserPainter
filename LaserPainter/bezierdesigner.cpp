@@ -1,6 +1,5 @@
 #include "bezierdesigner.h"
 #include "beziervisitor.h"
-#include "bezier.h"
 #include <QApplication>
 #include <QPainter>
 #include <QMouseEvent>

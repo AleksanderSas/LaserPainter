@@ -2,17 +2,17 @@
 #define BEZIERVISITOR_H
 
 #include <vector>
-#include "bezier.h"
+#include "abstractvisitor.h"
+
+#define DEGREE 5
 
 class BezierVisitor : public AbstractVisitor
 {
     public:
-        BezierVisitor(Bezier* bezier, unsigned int steps);
+        BezierVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps);
         const Point* next(std::vector<Point>& points) override;
 
     private:
-        Bezier* bezier;
-
         float tInComponent;
         float deltaT;
         unsigned int currentPoint;

@@ -1,9 +1,9 @@
 #include "shapecollection.h"
 #include <iostream>
 #include <fstream>
-#include "bezier.h"
-#include "circle.h"
-#include "line.h"
+#include "beziervisitor.h"
+#include "circlevisitor.h"
+#include "linevisitor.h"
 
 ShapeCollection::ShapeCollection()
 {
@@ -15,40 +15,13 @@ ShapeCollection::~ShapeCollection()
     clear();
 }
 
-AbstractShape* createShape(ShapeType type)
-{
-    switch (type) {
-    case ShapeType::BEZIER: return new Bezier();
-    case ShapeType::LINE: return new Line();
-    case ShapeType::CIRCLE: return new Circle();
-    }
-}
-
 void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type)
 {
     Point p;
     p.x = x;
     p.y = y;
+    p.type = type;
     points.push_back(p);
-
-    if(shapes.size() == 0) //first point
-    {
-        AbstractShape *shape = createShape(type);
-        shape->offset = 0;
-        shape->pointNumber = 1;
-        shapes.push_back(shape);
-    }
-    else if(shapes[shapes.size() - 1]->getType() != type) //change shape type
-    {
-        AbstractShape *shape = createShape(type);
-        shape->offset = points.size() - 2;
-        shape->pointNumber = 2;
-        shapes.push_back(shape);
-    }
-    else // continue current shape
-    {
-        shapes[shapes.size() - 1]->pointNumber++;
-    }
 }
 
 void ShapeCollection::deletePoint(unsigned int x, unsigned int y, unsigned int squerDis)
@@ -63,25 +36,6 @@ void ShapeCollection::deletePoint(unsigned int x, unsigned int y, unsigned int s
             idx = iter - points.begin() + 1;
             break;
         }
-    }
-
-    auto iter = shapes.begin();
-    for(; iter != shapes.end(); iter++)
-    {
-        if(idx <= (*iter)->offset + (*iter)->pointNumber)
-        {
-            (*iter)->pointNumber--;
-            if((*iter)->pointNumber < 2)
-            {
-                //TODO: remove
-            }
-            break;
-        }
-    }
-    iter++;
-    for(; iter != shapes.end(); iter++)
-    {
-        (*iter)->offset--;
     }
 }
 
@@ -153,16 +107,9 @@ void ShapeCollection::save(const char* file)
     std::ofstream myfile;
     myfile.open (file);
     myfile << "V2" << std::endl;
-    for(AbstractShape *s : shapes)
+    for(Point &p : points)
     {
-        if(s->offset == 0)
-        {
-            myfile << s->getType() << " " << points[0].x << " " << points[0].y << std::endl;
-        }
-        for(unsigned int i = s->offset + 1; i < s->offset + s->pointNumber; i++)
-        {
-            myfile << s->getType() << " " << points[i].x << " " << points[i].y << std::endl;
-        }
+        myfile << p.type << " " << p.x << " " << p.y << std::endl;
     }
     myfile.close();
 }
@@ -170,45 +117,58 @@ void ShapeCollection::save(const char* file)
 void ShapeCollection::clear()
 {
     points.clear();
-    for(AbstractShape *shape : shapes)
-    {
-        delete shape;
-    }
-    shapes.clear();
 }
 
-unsigned int ShapeCollection::getTotalWeigth()
+AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsigned int offset, unsigned int steps)
 {
-    unsigned int totalWeight = 0;
-    for(AbstractShape *shape : shapes)
+    switch(type)
     {
-        totalWeight += shape->getWeigth();
+        case ShapeType::LINE:
+            return  new LineVisitor(pointNumber, offset, steps);
+        case ShapeType::BEZIER:
+            return  new BezierVisitor(pointNumber, offset, steps);
+        case ShapeType::CIRCLE:
+            return  new CircleVisitor(pointNumber, offset, steps);
     }
-    return totalWeight;
+}
+
+bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)
+{
+    if(iter == points.end())
+        return false;
+
+    unsigned int pointNumber = firstVisitor? 1 : 2;
+    ShapeType type = ShapeType::BEZIER;
+    type = (*iter).type;
+    while(++iter != points.end() && (*iter).type == type)
+    {
+        pointNumber++;
+        type = (*iter).type;
+    }
+
+    unsigned int offset = iter - points.begin() - pointNumber;
+    unsigned int visitorSteps = steps * (pointNumber - 1) / points.size();
+    currectVisitor = GetNextVisitor(type, pointNumber, offset, visitorSteps);
+    return true;
 }
 
 const Point* ShapeCollection::next(unsigned int steps)
 {
     if(currectVisitor == nullptr)
     {
-        currentShape = 0;
-        unsigned int visitorSteps = steps * shapes[currentShape]->getWeigth() / getTotalWeigth();
-        currectVisitor = shapes[currentShape]->getVisitor(visitorSteps);
+        iter = points.begin();
+        if(!SetNextVisitor(true, steps))
+            return  nullptr;
     }
 
     const Point* p = currectVisitor->next(points);
-    if(p == nullptr)
+    while(p == nullptr)
     {
         delete  currectVisitor;
-        if(++currentShape < shapes.size())
-        {
-            unsigned int visitorSteps = steps * shapes[currentShape]->getWeigth() / getTotalWeigth();
-            currectVisitor = shapes[currentShape]->getVisitor(visitorSteps);
-            //assume 'next' will return none-null value
-            return currectVisitor->next(points);
-        }
         currectVisitor = nullptr;
-        return nullptr;
+        if(!SetNextVisitor(false, steps))
+            return  nullptr;
+        p = currectVisitor->next(points);
     }
     return p;
 }

@@ -2,16 +2,14 @@
 #define LINEVISITOR_H
 
 #include "abstractvisitor.h"
-#include "line.h"
 
 class LineVisitor : public AbstractVisitor
 {
 public:
-    LineVisitor(Line* bezier, int steps);
+    LineVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps);
     const Point* next(std::vector<Point>& points) override;
 
 private:
-    Line *line;
     unsigned int currentPoint;
     float deltaT;
     float tInComponent;

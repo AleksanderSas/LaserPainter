@@ -1,11 +1,11 @@
 #include "beziervisitor.h"
 #include <iostream>
 
-BezierVisitor::BezierVisitor(Bezier* bezier, unsigned int steps) : bezier(bezier)
+BezierVisitor::BezierVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor (pointNumber, offset)
 {
-    if(bezier->pointNumber >= DEGREE)
+    if(pointNumber >= DEGREE)
     {
-        int components = (bezier->pointNumber - 1) / (DEGREE - 1);
+        int components = (pointNumber - 1) / (DEGREE - 1);
         deltaT = 1.0f / steps * components;
     }
     else {
@@ -13,13 +13,13 @@ BezierVisitor::BezierVisitor(Bezier* bezier, unsigned int steps) : bezier(bezier
     }
     tmp1 = tmp[0];
     tmp2 = tmp[1];
-    currentPoint = bezier->offset;
+    currentPoint = offset;
     tInComponent = 0.0;
 }
 
 const Point* BezierVisitor::next(std::vector<Point>& points)
 {
-    if(currentPoint + DEGREE > bezier->offset + bezier->pointNumber)
+    if(currentPoint + DEGREE > offset + pointNumber)
     {
         return nullptr;
     }

@@ -27,21 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
     bezierdesigner.cpp \
-    bezier.cpp \
     beziervisitor.cpp \
     mainpanel.cpp \
     hardwareconnector.cpp \
     shapecollection.cpp \
     abstractshape.cpp \
     abstractvisitor.cpp \
-    line.cpp \
     linevisitor.cpp \
-    circle.cpp \
     circlevisitor.cpp
 
 HEADERS += \
     bezierdesigner.h \
-    bezier.h \
     beziervisitor.h \
     mainpanel.h \
     hardwareconnector.h \
@@ -49,9 +45,7 @@ HEADERS += \
     abstractshape.h \
     abstractvisitor.h \
     structs.h \
-    line.h \
     linevisitor.h \
-    circle.h \
     circlevisitor.h
 
 FORMS +=

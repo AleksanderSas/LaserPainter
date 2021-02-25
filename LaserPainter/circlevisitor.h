@@ -2,16 +2,14 @@
 #define CIRCLEVISITOR_H
 
 #include "abstractvisitor.h"
-#include "circle.h"
 
 class CircleVisitor : public AbstractVisitor
 {
 public:
-    CircleVisitor(Circle* circle, unsigned int steps);
+    CircleVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps);
     const Point* next(std::vector<Point>& points) override;
 
 private:
-    Circle* circle;
     unsigned int currentPoint;
     float deltaT;
     float tInComponent;

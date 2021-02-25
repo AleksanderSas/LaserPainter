@@ -11,7 +11,6 @@
 #include <QMessageBox>
 
 #include "math.h"
-void drawHeard(Bezier &b);
 
 MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 {

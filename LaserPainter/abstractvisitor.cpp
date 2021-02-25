@@ -1,7 +1,9 @@
 #include "abstractvisitor.h"
 #include "shapecollection.h"
 
-AbstractVisitor::AbstractVisitor()
+AbstractVisitor::AbstractVisitor(unsigned int pointNumber, unsigned int offset) :
+    pointNumber(pointNumber),
+    offset(offset)
 {
 }
 

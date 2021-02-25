@@ -1,18 +1,18 @@
 #include "circlevisitor.h"
 #include "math.h"
 
-CircleVisitor::CircleVisitor(Circle* circle, unsigned int steps) : circle(circle)
+CircleVisitor::CircleVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor(pointNumber, offset)
 {
-    if(circle->pointNumber >= 2)
+    if(pointNumber >= 2)
     {
-        unsigned int components = circle->pointNumber - 1;
+        unsigned int components = pointNumber - 1;
         deltaT = 1.0f / steps * components;
     }
     else {
           deltaT = 1.0f / steps;
     }
 
-    currentPoint = circle->offset;
+    currentPoint = offset;
     tInComponent = 0.0;
 }
 
@@ -26,7 +26,7 @@ static Point linearCombination(Point& p1, Point& p2, float t)
 
 const Point* CircleVisitor::next(std::vector<Point>& points)
 {
-    if(currentPoint + 1 >= circle->offset + circle->pointNumber)
+    if(currentPoint + 1 >= offset + pointNumber)
     {
         return nullptr;
     }
@@ -38,8 +38,9 @@ const Point* CircleVisitor::next(std::vector<Point>& points)
     float r = hypotf(centre.x - p2.x, centre.y - p2.y);
     float offset = atan2f(p1.y - p2.y, p1.x - p2.x);
 
-    p.x = centre.x + r * sinf(offset + tInComponent * 1.5 * 2 * 3.1415);
-    p.y = centre.y + r * cosf(offset + tInComponent * 1.5 * 2 * 3.1415);
+    float angel = offset + tInComponent * 1.5 * 2 * 3.1415;
+    p.x = centre.x + r * sinf(angel);
+    p.y = centre.y + r * cosf(angel);
 
     tInComponent += deltaT;
 

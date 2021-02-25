@@ -1,17 +1,17 @@
 #include "linevisitor.h"
 
-LineVisitor::LineVisitor(Line* line, int steps) : line(line)
+LineVisitor::LineVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor (pointNumber, offset)
 {
-    if(line->pointNumber >= 2)
+    if(pointNumber >= 2)
     {
-        unsigned int components = line->pointNumber - 1;
+        unsigned int components = pointNumber - 1;
         deltaT = 1.0f / steps * components;
     }
     else {
           deltaT = 1.0f / steps;
     }
 
-    currentPoint = line->offset;
+    currentPoint = offset;
     tInComponent = 0.0;
 }
 
@@ -25,7 +25,7 @@ static Point linearCombination(Point& p1, Point& p2, float t)
 
 const Point* LineVisitor::next(std::vector<Point>& points)
 {
-    if(currentPoint + 1 >= line->offset + line->pointNumber)
+    if(currentPoint + 1 >= offset + pointNumber)
     {
         return nullptr;
     }

@@ -1,18 +1,19 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-typedef struct point
-{
-    int x;
-    int y;
-} Point;
-
 enum ShapeType
 {
     BEZIER,
     LINE,
     CIRCLE
 };
+
+typedef struct point
+{
+    int x;
+    int y;
+    ShapeType type;
+} Point;
 
 #define BEZIER_ "Bezier"
 #define LINE_ "Line"

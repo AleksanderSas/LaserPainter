@@ -21,12 +21,12 @@ public:
     void load(const char* file);
     void clear();
     void deletePoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
-    unsigned int getTotalWeigth();
 
     std::vector<Point> points;
+    std::vector<Point>::iterator iter;
 
 private :
-    std::vector<AbstractShape*> shapes;
+    bool SetNextVisitor(bool firstVisitor,  unsigned int steps);
     AbstractVisitor *currectVisitor = nullptr;
     unsigned int currentShape = 0;
     void loadV1(std::ifstream &myfile);
