@@ -1,7 +1,6 @@
 #ifndef SHAPECOLLECTION_H
 #define SHAPECOLLECTION_H
 
-#include "abstractshape.h"
 #include <vector>
 #include "abstractvisitor.h"
 #include "shadow.h"

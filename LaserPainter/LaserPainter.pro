@@ -31,7 +31,6 @@ SOURCES += \
     mainpanel.cpp \
     hardwareconnector.cpp \
     shapecollection.cpp \
-    abstractshape.cpp \
     abstractvisitor.cpp \
     linevisitor.cpp \
     circlevisitor.cpp
@@ -42,7 +41,6 @@ HEADERS += \
     mainpanel.h \
     hardwareconnector.h \
     shapecollection.h \
-    abstractshape.h \
     abstractvisitor.h \
     structs.h \
     linevisitor.h \
