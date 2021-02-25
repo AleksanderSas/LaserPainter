@@ -106,7 +106,7 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
     if(selectedPoint != nullptr)
     {
         const Point *pt;
-        while((pt = shapeCollection.next(300)) != nullptr)
+        while((pt = shapeCollection.next(700)) != nullptr)
         {
             painter.drawPoint(pt->x / 4, pt->y / 4);
         }

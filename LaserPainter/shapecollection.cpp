@@ -132,6 +132,19 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
     }
 }
 
+unsigned int GetShapeFactor(ShapeType type)
+{
+    switch(type)
+    {
+        case ShapeType::LINE:
+            return 2;
+        case ShapeType::BEZIER:
+            return 1;
+        case ShapeType::CIRCLE:
+            return 4;
+    }
+}
+
 bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)
 {
     if(iter == points.end())
@@ -147,7 +160,7 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)
     }
 
     unsigned int offset = iter - points.begin() - pointNumber;
-    unsigned int visitorSteps = steps * (pointNumber - 1) / points.size();
+    unsigned int visitorSteps = steps * pointNumber * GetShapeFactor(type) / points.size();
     currectVisitor = GetNextVisitor(type, pointNumber, offset, visitorSteps);
     return true;
 }
