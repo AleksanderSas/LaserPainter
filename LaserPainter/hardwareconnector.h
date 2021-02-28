@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "shapecollection.h"
 
-#define RAW_IO_WRITE 1
+#define RESET_PIN 4
 
 class HardwareConnector
 {
@@ -19,13 +19,7 @@ private:
     int SpiClosePort (int spi_device);
     int SpiWriteAndRead (int SpiDevice, unsigned char *TxData, unsigned char *RxData, int Length, int LeaveCsLow);
 
-    void myopen();
-    void MyClose();
-    void spi_write(int SpiDevice, unsigned char *TxData, int len);
     void sent(unsigned int x, unsigned int y);
-
-    FILE* fp1;
-    FILE* fp2;
 
     int spi_cs0_fd;				//file descriptor for the SPI device
     int spi_cs1_fd;				//file descriptor for the SPI device

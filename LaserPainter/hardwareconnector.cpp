@@ -11,17 +11,17 @@
 #include "math.h"
 #include "time.h"
 #include "beziervisitor.h"
+#include <wiringPi.h>
 
 HardwareConnector::HardwareConnector()
 {
-    myopen();
+    wiringPiSetup();
     SpiOpenPort(0);
     SpiOpenPort(1);
 }
 
 HardwareConnector::~HardwareConnector()
 {
-    MyClose();
     SpiClosePort(0);
     SpiClosePort(1);
 }
@@ -141,25 +141,6 @@ int HardwareConnector::SpiClosePort (int spi_device)
     return(status_value);
 }
 
-void HardwareConnector::myopen()
-{
-     fp1 = fopen( "/dev/spidev0.0" , "wb" );
-     fp2 = fopen( "/dev/spidev0.1" , "wb" );
-}
-
-void HardwareConnector::MyClose()
-{
-    fclose(fp1);
-    fclose(fp2);
-}
-
-void HardwareConnector::spi_write(int SpiDevice, unsigned char *TxData, int len)
-{
-    FILE * f = SpiDevice? fp1 : fp2;
-    fwrite(TxData , 1 , len , f);
-    fflush(f);
-}
-
 
 //*******************************************
 //*******************************************
@@ -201,29 +182,36 @@ int HardwareConnector::SpiWriteAndRead (int SpiDevice, unsigned char *TxData, un
     return retVal;
 }
 
-unsigned char buffer[2];
+unsigned char buffer[4];
 void HardwareConnector::sent(unsigned int x, unsigned int y)
 {
+
+#if 1
+    buffer[0] = 0x30 | (x >> 8);
+    buffer[1] = x & 255;
+    buffer[2] = 0x30 | (y >> 8);
+    buffer[3] = y & 255;
+
+    SpiWriteAndRead(1, buffer, buffer, 4, 0);
+#else
     buffer[0] = 0x30 | (x >> 8);
     buffer[1] = x & 255;
     spi_write(0, buffer, 2);
-#if RAW_IO_WRITE
-    spi_write(0, buffer, 2);
-#else
     SpiWriteAndRead(0, buffer, buffer, 2, 0);
-#endif
 
     buffer[0] = 0x30 | (y >> 8);
     buffer[1] = y & 255;
-#if RAW_IO_WRITE
-    spi_write(1, buffer, 2);
-#else
     SpiWriteAndRead(1, buffer, buffer, 2, 0);
 #endif
 }
 
 void HardwareConnector::drawBezier(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
 {
+    pinMode(RESET_PIN, OUTPUT);
+    digitalWrite(RESET_PIN, 1);
+    delay(5);
+    digitalWrite(RESET_PIN, 0);
+
     run = true;
     for(unsigned int i = 0; i < repeats && run; i++)
     {

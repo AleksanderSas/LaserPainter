@@ -2,7 +2,6 @@
 #define BEZIERDESIGNER_H
 
 #include <QFrame>
-#include <vector>
 #include "shapecollection.h"
 #include <QMenu>
 #include <QComboBox>

@@ -1,7 +1,6 @@
 #ifndef BEZIERVISITOR_H
 #define BEZIERVISITOR_H
 
-#include <vector>
 #include "abstractvisitor.h"
 
 #define DEGREE 5
