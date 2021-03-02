@@ -14,16 +14,41 @@ BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QW
     menu = new QMenu(this);
     delteAction = new QAction("Delete", this);
     switchLaserAction = new QAction("Disable Laser", this);
-    insertAction = new QAction("Insert", this);
+    insertBezierAction = new QAction("Insert Bezier", this);
+    insertLineAction = new QAction("Insert Line", this);
+    insertCircleAction = new QAction("Insert Circle", this);
     menu->addAction(delteAction);
     menu->addAction(switchLaserAction);
-    menu->addAction(insertAction);
+    menu->addAction(insertBezierAction);
+    menu->addAction(insertLineAction);
+    menu->addAction(insertCircleAction);
+
     connect(delteAction, SIGNAL(triggered()), this, SLOT(deletePoint()));
     connect(switchLaserAction, SIGNAL(triggered()), this, SLOT(switchLaser()));
-
+    connect(insertBezierAction, SIGNAL(triggered()), this, SLOT(insertBezier()));
+    connect(insertCircleAction, SIGNAL(triggered()), this, SLOT(insertCircle()));
+    connect(insertLineAction, SIGNAL(triggered()), this, SLOT(insertLine()));
 
     setStyleSheet("border: 1px solid red");
     this->setFixedSize(1024, 780);
+}
+
+void BezierDesigner::insertBezier()
+{
+    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::BEZIER);
+    this->repaint();
+}
+
+void BezierDesigner::insertCircle()
+{
+    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::CIRCLE);
+    this->repaint();
+}
+
+void BezierDesigner::insertLine()
+{
+    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::LINE);
+    this->repaint();
 }
 
 void BezierDesigner::deletePoint()

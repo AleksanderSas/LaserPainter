@@ -22,7 +22,7 @@ static const uint qt_meta_data_BezierDesigner[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,13 +32,17 @@ static const uint qt_meta_data_BezierDesigner[] = {
  // slots: signature, parameters, type, tag, flags
       15,   29,   29,   29, 0x0a,
       30,   29,   29,   29, 0x0a,
+      44,   29,   29,   29, 0x0a,
+      59,   29,   29,   29, 0x0a,
+      74,   29,   29,   29, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_BezierDesigner[] = {
     "BezierDesigner\0deletePoint()\0\0"
-    "switchLaser()\0"
+    "switchLaser()\0insertBezier()\0"
+    "insertCircle()\0insertLine()\0"
 };
 
 void BezierDesigner::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -49,6 +53,9 @@ void BezierDesigner::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         switch (_id) {
         case 0: _t->deletePoint(); break;
         case 1: _t->switchLaser(); break;
+        case 2: _t->insertBezier(); break;
+        case 3: _t->insertCircle(); break;
+        case 4: _t->insertLine(); break;
         default: ;
         }
     }
@@ -87,9 +94,9 @@ int BezierDesigner::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 5;
     }
     return _id;
 }

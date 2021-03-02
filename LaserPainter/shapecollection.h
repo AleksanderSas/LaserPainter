@@ -14,17 +14,19 @@ public:
     const Point* next(unsigned int steps);
 
     void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser);
-    Point* getOrAddPoint(unsigned int x, unsigned int y, ShapeType type, unsigned int squerDist = 1600);
-    Point* getPoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
+    Point* getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
+    Point* getPoint(unsigned int x, unsigned int y);
     void save(const char* file);
     void load(const char* file);
     void clear();
-    void deletePoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
+    void deletePoint(unsigned int x, unsigned int y);
+    void insertPointBefore(unsigned int x, unsigned int y, ShapeType type);
 
     std::vector<Point> points;
     std::vector<Point>::iterator iter;
 
 private :
+    std::vector<Point>::iterator getPointIterator(int x, int y);
     bool SetNextVisitor(bool firstVisitor,  unsigned int steps);
     AbstractVisitor *currectVisitor = nullptr;
     unsigned int currentShape = 0;

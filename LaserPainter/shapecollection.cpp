@@ -25,42 +25,57 @@ void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool e
     points.push_back(p);
 }
 
-void ShapeCollection::deletePoint(unsigned int x, unsigned int y, unsigned int squerDis)
+std::vector<Point>::iterator ShapeCollection::getPointIterator(int x, int y)
 {
-    unsigned int idx = 0;
+    unsigned int currentDist = 9999;
+    std::vector<Point>::iterator itr = points.end();
     for(auto iter = points.begin(); iter != points.end(); iter++)
     {
         unsigned int dist = (iter->x - x) * (iter->x - x) + (iter->y - y) * (iter->y - y);
-        if(dist < squerDis)
+        if(dist < 1600 && dist < currentDist)
         {
-            points.erase(iter);
-            idx = iter - points.begin() + 1;
-            break;
+            itr = iter;
+            currentDist = dist;
         }
     }
+    return itr;
 }
 
-Point* ShapeCollection::getPoint(unsigned int x, unsigned int y, unsigned int squerDis)
+void ShapeCollection::deletePoint(unsigned int x, unsigned int y)
 {
-    for(Point& p : points)
+    auto iter = getPointIterator(x, y);
+    if(iter != points.end())
     {
-        unsigned int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
-        if(dist < squerDis)
-            return &p;
+        points.erase(iter);
     }
-    return nullptr;
 }
 
-Point* ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType type, unsigned int squerDis)
+Point* ShapeCollection::getPoint(unsigned int x, unsigned int y)
 {
-    for(Point& p : points)
+    auto iter = getPointIterator(x, y);
+    return iter != points.end()? &(*iter) : nullptr;
+}
+
+Point* ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType type)
+{
+    auto iter = getPointIterator(x, y);
+    if(iter != points.end())
     {
-        unsigned int dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
-        if(dist < squerDis)
-            return &p;
+        return &(*iter);
     }
     Add(x, y, type, true);
     return &points[points.size() - 1];
+}
+
+void ShapeCollection::insertPointBefore(unsigned int x, unsigned int y, ShapeType type)
+{
+    Point p;
+    p.x = x;
+    p.y = y + 100;
+    p.enableLaser = true;
+    p.type = type;
+    auto iter = getPointIterator(x, y);
+    points.insert(iter, p);
 }
 
 void ShapeCollection::loadV1(std::ifstream &myfile)

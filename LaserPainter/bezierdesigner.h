@@ -25,6 +25,9 @@ signals:
 public slots:
     void deletePoint();
     void switchLaser();
+    void insertBezier();
+    void insertCircle();
+    void insertLine();
 private:
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
@@ -32,7 +35,9 @@ private:
     QMenu * menu;
     QAction *delteAction;
     QAction *switchLaserAction;
-    QAction *insertAction;
+    QAction *insertBezierAction;
+    QAction *insertLineAction;
+    QAction *insertCircleAction;
     unsigned int clickPointX, clickPointY;
 };
 
