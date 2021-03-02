@@ -24,12 +24,14 @@ signals:
 
 public slots:
     void deletePoint();
+    void switchLaser();
 private:
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
     QMenu * menu;
     QAction *delteAction;
+    QAction *switchLaserAction;
     QAction *insertAction;
     unsigned int clickPointX, clickPointY;
 };

@@ -13,7 +13,7 @@ public:
     ~ShapeCollection();
     const Point* next(unsigned int steps);
 
-    void Add(unsigned int x, unsigned int y, ShapeType type);
+    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser);
     Point* getOrAddPoint(unsigned int x, unsigned int y, ShapeType type, unsigned int squerDist = 1600);
     Point* getPoint(unsigned int x, unsigned int y, unsigned int squerDis = 1600);
     void save(const char* file);
@@ -30,6 +30,7 @@ private :
     unsigned int currentShape = 0;
     void loadV1(std::ifstream &myfile);
     void loadV2(std::ifstream &myfile);
+    void loadV3(std::ifstream &myfile);
 };
 
 #endif // SHAPECOLLECTION_H

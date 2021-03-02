@@ -16,6 +16,8 @@
 HardwareConnector::HardwareConnector()
 {
     wiringPiSetup();
+    pinMode(LASER_PIN, OUTPUT);
+
     SpiOpenPort(0);
     SpiOpenPort(1);
 }
@@ -205,12 +207,15 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
 #endif
 }
 
-void HardwareConnector::drawBezier(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
+void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
 {
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
     delay(5);
     digitalWrite(RESET_PIN, 0);
+
+    bool enableLaser = false;
+    digitalWrite(LASER_PIN, enableLaser);
 
     run = true;
     for(unsigned int i = 0; i < repeats && run; i++)
@@ -218,6 +223,13 @@ void HardwareConnector::drawBezier(ShapeCollection &sc, unsigned int resolution,
         const Point* p;
         while((p = sc.next(resolution)) != nullptr)
         {
+            if(enableLaser != p->enableLaser)
+            {
+                usleep(250);
+                enableLaser = p->enableLaser;
+                digitalWrite(LASER_PIN, enableLaser);
+                usleep(250);
+            }
             sent(p->x, p->y);
         }
     }

@@ -27,7 +27,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* pointsLabel = new QLabel("Points" ,this);
     pointsInput = new QSpinBox(this);
     pointsInput->setRange(10, 5000);
-    pointsInput->setValue(300);
+    pointsInput->setValue(200);
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);
     repeatsInput->setRange(10, 5000);
@@ -92,7 +92,7 @@ void MainPanel::hardwareDraw()
 
 void MainPanel::test()
 {
-    connector->drawBezier(shapeCollection, pointsInput->value(), repeatsInput->value());
+    connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value());
     startButton -> setText("Start");
 }
 

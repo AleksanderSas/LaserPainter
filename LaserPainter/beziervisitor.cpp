@@ -25,6 +25,7 @@ const Point* BezierVisitor::next(std::vector<Point>& points)
     }
 
     compute(points);
+    tmp1->enableLaser = points[currentPoint].enableLaser;
     tInComponent += deltaT;
 
     if(tInComponent + deltaT > 1.0f)

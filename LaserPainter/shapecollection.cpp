@@ -15,12 +15,13 @@ ShapeCollection::~ShapeCollection()
     clear();
 }
 
-void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type)
+void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser)
 {
     Point p;
     p.x = x;
     p.y = y;
     p.type = type;
+    p.enableLaser = enableLaser;
     points.push_back(p);
 }
 
@@ -58,7 +59,7 @@ Point* ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType 
         if(dist < squerDis)
             return &p;
     }
-    Add(x, y, type);
+    Add(x, y, type, true);
     return &points[points.size() - 1];
 }
 
@@ -69,7 +70,7 @@ void ShapeCollection::loadV1(std::ifstream &myfile)
         unsigned int x, y;
         myfile >> x;
         myfile >> y;
-        Add(x, y, ShapeType::BEZIER);
+        Add(x, y, ShapeType::BEZIER, true);
     }
 }
 
@@ -81,7 +82,21 @@ void ShapeCollection::loadV2(std::ifstream &myfile)
         myfile >> lineType;
         myfile >> x;
         myfile >> y;
-        Add(x, y, (ShapeType)lineType);
+        Add(x, y, (ShapeType)lineType, true);
+    }
+}
+
+void ShapeCollection::loadV3(std::ifstream &myfile)
+{
+    while(myfile.good())
+    {
+        unsigned int x, y, lineType;
+        bool enableLaser;
+        myfile >> lineType;
+        myfile >> x;
+        myfile >> y;
+        myfile >> enableLaser;
+        Add(x, y, (ShapeType)lineType, enableLaser);
     }
 }
 
@@ -91,14 +106,16 @@ void ShapeCollection::load(const char* file)
     myfile.open (file);
     std::string version;
     myfile >> version;
-    if(version != "V1" && version != "V2")
+    if(version != "V1" && version != "V2" && version != "V3")
     {
-        throw "only V1 and V2 standards are supported";
+        throw "only V1, V2 and V3 standards are supported";
     }
     if(version == "V1")
         loadV1(myfile);
     if(version == "V2")
         loadV2(myfile);
+    if(version == "V3")
+        loadV3(myfile);
     myfile.close();
 }
 
@@ -106,10 +123,10 @@ void ShapeCollection::save(const char* file)
 {
     std::ofstream myfile;
     myfile.open (file);
-    myfile << "V2" << std::endl;
+    myfile << "V3" << std::endl;
     for(Point &p : points)
     {
-        myfile << p.type << " " << p.x << " " << p.y << std::endl;
+        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << std::endl;
     }
     myfile.close();
 }

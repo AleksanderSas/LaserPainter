@@ -31,6 +31,8 @@ const Point* LineVisitor::next(std::vector<Point>& points)
     }
 
     p = linearCombination(points[currentPoint], points[currentPoint + 1], tInComponent);
+    p.enableLaser = points[currentPoint].enableLaser;
+
     tInComponent += deltaT;
 
     if(tInComponent > 1.0f)

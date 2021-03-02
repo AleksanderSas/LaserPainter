@@ -13,6 +13,7 @@ typedef struct point
     int x;
     int y;
     ShapeType type;
+    bool enableLaser;
 } Point;
 
 #define BEZIER_ "Bezier"

@@ -5,13 +5,14 @@
 #include "shapecollection.h"
 
 #define RESET_PIN 4
+#define LASER_PIN 5
 
 class HardwareConnector
 {
 public:
     HardwareConnector();
     ~HardwareConnector();
-    void drawBezier(ShapeCollection &sc, unsigned int resolution, unsigned int repeats);
+    void draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats);
     bool run = false;
 
 private:
