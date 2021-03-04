@@ -36,7 +36,7 @@ const Point* CircleVisitor::next(std::vector<Point>& points)
     Point &p2 = points[currentPoint + 1];
     Point centre = linearCombination(p1, p2, 0.5);
     float r = hypotf(centre.x - p2.x, centre.y - p2.y);
-    float offset = atan2f(p1.y - p2.y, p1.x - p2.x);
+    float offset = atan2f(p1.x - p2.x, p1.y - p2.y);
 
     float angel = offset + tInComponent * 1.5 * 2 * 3.1415;
     p.x = centre.x + r * sinf(angel);

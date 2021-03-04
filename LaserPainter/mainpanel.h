@@ -20,7 +20,7 @@ private:
     ShapeCollection shapeCollection;
     BezierDesigner *bezierDesigner;
     HardwareConnector *connector = nullptr;
-    void test();
+    void draw();
     std::thread *displayThread = nullptr;
     QPushButton *startButton;
     QSpinBox *pointsInput;

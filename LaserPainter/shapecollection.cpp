@@ -162,6 +162,7 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
         case ShapeType::CIRCLE:
             return  new CircleVisitor(pointNumber, offset, steps);
     }
+    return nullptr;
 }
 
 unsigned int GetShapeFactor(ShapeType type)
@@ -173,8 +174,9 @@ unsigned int GetShapeFactor(ShapeType type)
         case ShapeType::BEZIER:
             return 1;
         case ShapeType::CIRCLE:
-            return 4;
+            return 4;        
     }
+    return 0;
 }
 
 bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)

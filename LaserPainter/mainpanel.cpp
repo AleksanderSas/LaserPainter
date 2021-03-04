@@ -59,17 +59,6 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connector = new HardwareConnector();
 }
 
-/*#define PI 3.1415
-void kolo(Bezier& b, int x, int y, int r)
-{
-    const int n = 11;
-    for(int i  = 0; i < n; i++)
-    {
-        b.Add(x + sin(PI * 2 * i / n) * r, y + cos(PI * 2 * i / n) * r);
-    }
-    b.Add(x, y + r);
-}*/
-
 void MainPanel::hardwareDraw()
 {
     if(connector->run)
@@ -86,11 +75,11 @@ void MainPanel::hardwareDraw()
         displayThread ->join();
         delete displayThread;
     }
-    displayThread = new std::thread(&MainPanel::test, this);
+    displayThread = new std::thread(&MainPanel::draw, this);
     startButton -> setText("Stop");
 }
 
-void MainPanel::test()
+void MainPanel::draw()
 {
     connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value());
     startButton -> setText("Start");
