@@ -170,11 +170,11 @@ unsigned int GetShapeFactor(ShapeType type)
     switch(type)
     {
         case ShapeType::LINE:
-            return 2;
+            return 1;
         case ShapeType::BEZIER:
             return 1;
         case ShapeType::CIRCLE:
-            return 4;        
+            return 4;
     }
     return 0;
 }

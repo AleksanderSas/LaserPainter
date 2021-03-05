@@ -6,6 +6,9 @@
 #include "math.h"
 #include "structs.h"
 
+#define MAX_W 1024
+#define MAX_H 780
+
 BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QWidget *parent) :
     QFrame(parent),
     shapeCollection(sc),
@@ -64,11 +67,6 @@ void BezierDesigner::switchLaser()
     this->repaint();
 }
 
-void BezierDesigner::keyPressEvent(QKeyEvent * e)
-{
-    QWidget::keyPressEvent(e);
-}
-
 ShapeType getShapeType(QString str)
 {
     if(str == BEZIER_)
@@ -79,25 +77,34 @@ ShapeType getShapeType(QString str)
         return ShapeType::CIRCLE;
 }
 
+int inline limit(int x, const int max)
+{
+    x = x > 0? x : 0;
+    return x > max? max : x;
+}
+
 void BezierDesigner::mousePressEvent(QMouseEvent* e)
 {
+    int x = limit(e->x(), MAX_W - 5);
+    int y = limit(e->y(), MAX_H - 5);
+
     if(e->button() == Qt::MouseButton::RightButton)
     {
-        auto* bezierPoint = shapeCollection.getPoint(e->x() * 4, e->y() * 4);
+        auto* bezierPoint = shapeCollection.getPoint(x * 4, y * 4);
         delteAction->setEnabled(bezierPoint != nullptr);
         if(bezierPoint != nullptr)
         {
             switchLaserAction->setText(bezierPoint->enableLaser? "Disable Laser" : "Enable Laser");
         }
-        clickPointX = e->x();
-        clickPointY = e->y();
-        menu->popup(this->mapToGlobal(QPoint(e->x(), e->y())));
+        clickPointX = x;
+        clickPointY = y;
+        menu->popup(this->mapToGlobal(QPoint(x, y)));
         return;
     }
 
     ShapeType type = getShapeType(shapeSelector->currentText());
     QWidget::mousePressEvent(e);
-    selectedPoint = shapeCollection.getOrAddPoint(e->x() * 4, e->y() * 4, type);
+    selectedPoint = shapeCollection.getOrAddPoint(x * 4, y * 4, type);
     this->repaint();
 }
 
@@ -110,8 +117,10 @@ void BezierDesigner::mouseMoveEvent(QMouseEvent *e)
 {
     if(selectedPoint != nullptr)
     {
-        selectedPoint->x = e->x() * 4;
-        selectedPoint->y = e->y() * 4;
+        int x = limit(e->x(), MAX_W - 5);
+        int y = limit(e->y(), MAX_H - 5);
+        selectedPoint->x = x * 4;
+        selectedPoint->y = y * 4;
         this->repaint();
     }
 }

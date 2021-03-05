@@ -34,6 +34,10 @@ const Point* LineVisitor::next(std::vector<Point>& points)
     p.enableLaser = points[currentPoint].enableLaser;
 
     tInComponent += deltaT;
+    if(!p.enableLaser)
+    {
+        tInComponent += deltaT;
+    }
 
     if(tInComponent > 1.0f)
     {

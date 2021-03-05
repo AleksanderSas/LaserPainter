@@ -198,7 +198,6 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
 #else
     buffer[0] = 0x30 | (x >> 8);
     buffer[1] = x & 255;
-    spi_write(0, buffer, 2);
     SpiWriteAndRead(0, buffer, buffer, 2, 0);
 
     buffer[0] = 0x30 | (y >> 8);
@@ -209,6 +208,11 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
 
 void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
 {
+    long long int tmpDelay = 0L;
+    long long int laserSwitchDelay = 0L;
+    long long int positionComputeDelay = 0L;
+    long long int ioDelay = 0L;
+    
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
     delay(5);
@@ -221,17 +225,28 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     for(unsigned int i = 0; i < repeats && run; i++)
     {
         const Point* p;
+        tmpDelay = clock();
         while((p = sc.next(resolution)) != nullptr)
         {
+            positionComputeDelay += clock() - tmpDelay;
             if(enableLaser != p->enableLaser)
             {
+                tmpDelay = clock();
                 usleep(250);
                 enableLaser = p->enableLaser;
                 digitalWrite(LASER_PIN, enableLaser);
                 usleep(250);
+                laserSwitchDelay += clock() - tmpDelay;
             }
+            
+            tmpDelay = clock();
             sent(p->x, p->y);
+            ioDelay += clock() - tmpDelay;
+            tmpDelay = clock();
         }
     }
     run = false;
+    printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
+    printf("Position compute delay: %lld ms\n", positionComputeDelay * 1000 / CLOCKS_PER_SEC);
+    printf("IO delay:               %lld ms\n", ioDelay * 1000 / CLOCKS_PER_SEC);
 }
