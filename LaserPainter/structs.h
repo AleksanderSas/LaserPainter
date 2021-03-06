@@ -14,6 +14,9 @@ typedef struct point
     int y;
     ShapeType type;
     bool enableLaser;
+    point(){};
+    point(int x, int y): x(x), y(y) {};
+    point(int x, int y, ShapeType t, bool enableLaser): x(x), y(y), type(t), enableLaser(enableLaser) {};
 } Point;
 
 #define BEZIER_ "Bezier"

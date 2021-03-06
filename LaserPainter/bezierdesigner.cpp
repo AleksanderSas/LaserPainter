@@ -5,6 +5,9 @@
 #include <QMouseEvent>
 #include "math.h"
 #include "structs.h"
+#include "adddeleteoperation.h"
+#include "moveoperation.h"
+#include <QShortcut>
 
 #define MAX_W 1024
 #define MAX_H 780
@@ -33,30 +36,77 @@ BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QW
     connect(insertLineAction, SIGNAL(triggered()), this, SLOT(insertLine()));
 
     setStyleSheet("border: 1px solid red");
-    this->setFixedSize(1024, 780);
+    this->setFixedSize(MAX_W, MAX_H);
+
+    QShortcut* undoShortcut = new QShortcut(this);
+    undoShortcut->setKey(Qt::CTRL + Qt::Key_Z);
+    connect(undoShortcut, SIGNAL(activated()), this, SLOT(executeUnDo()));
+
+    QShortcut* redoShortcut = new QShortcut(this);
+    redoShortcut->setKey(Qt::CTRL + Qt::Key_Y);
+    connect(redoShortcut, SIGNAL(activated()), this, SLOT(executeReDo()));
+}
+
+void BezierDesigner::addDo(AbstractOperation* operation)
+{
+    undo.push(operation);
+    while (!redo.empty())
+    {
+        redo.pop();
+    }
+}
+
+void BezierDesigner::executeReDo()
+{
+    if(redo.size() > 0)
+    {
+        AbstractOperation* operation = redo.top();
+        redo.pop();
+        operation->reDo(shapeCollection);
+        undo.push(operation);
+    }
+    this->repaint();
+}
+
+void BezierDesigner::executeUnDo()
+{
+    if(undo.size() > 0)
+    {
+        AbstractOperation* operation = undo.top();
+        undo.pop();
+        operation->unDo(shapeCollection);
+        redo.push(operation);
+    }
+    this->repaint();
+}
+
+void BezierDesigner::insert(ShapeType type)
+{
+    Point p(clickPointX * 4, clickPointY * 4 + 100, type, true);
+    shapeCollection.insertPointBefore(p);
+    addDo(new AddDeleteOperation(p));
+    this->repaint();
 }
 
 void BezierDesigner::insertBezier()
 {
-    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::BEZIER);
-    this->repaint();
+    insert(ShapeType::BEZIER);
 }
 
 void BezierDesigner::insertCircle()
 {
-    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::CIRCLE);
-    this->repaint();
+    insert(ShapeType::CIRCLE);
 }
 
 void BezierDesigner::insertLine()
 {
-    shapeCollection.insertPointBefore(clickPointX * 4, clickPointY * 4, ShapeType::LINE);
-    this->repaint();
+    insert(ShapeType::LINE);
 }
 
 void BezierDesigner::deletePoint()
 {
-    shapeCollection.deletePoint(clickPointX * 4, clickPointY * 4);
+    auto deleted = shapeCollection.deletePoint(clickPointX * 4, clickPointY * 4);
+    addDo(new AddDeleteOperation(deleted.second, deleted.first));
     this->repaint();
 }
 
@@ -85,31 +135,38 @@ int inline limit(int x, const int max)
 
 void BezierDesigner::mousePressEvent(QMouseEvent* e)
 {
-    int x = limit(e->x(), MAX_W - 5);
-    int y = limit(e->y(), MAX_H - 5);
+    clickPointX = limit(e->x(), MAX_W - 5);
+    clickPointY = limit(e->y(), MAX_H - 5);
 
     if(e->button() == Qt::MouseButton::RightButton)
     {
-        auto* bezierPoint = shapeCollection.getPoint(x * 4, y * 4);
+        auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
         delteAction->setEnabled(bezierPoint != nullptr);
         if(bezierPoint != nullptr)
         {
             switchLaserAction->setText(bezierPoint->enableLaser? "Disable Laser" : "Enable Laser");
         }
-        clickPointX = x;
-        clickPointY = y;
-        menu->popup(this->mapToGlobal(QPoint(x, y)));
+        menu->popup(this->mapToGlobal(QPoint(clickPointX, clickPointY)));
         return;
     }
 
     ShapeType type = getShapeType(shapeSelector->currentText());
     QWidget::mousePressEvent(e);
-    selectedPoint = shapeCollection.getOrAddPoint(x * 4, y * 4, type);
+    auto operationResult = shapeCollection.getOrAddPoint(clickPointX * 4, clickPointY * 4, type);
+    selectedPoint = operationResult.second;
+    isPointAdded = operationResult.first;
     this->repaint();
 }
 
 void BezierDesigner::mouseReleaseEvent(QMouseEvent *e)
 {
+    if(selectedPoint != nullptr && e->button() == Qt::MouseButton::LeftButton)
+    {
+        AbstractOperation* operation = isPointAdded
+                ? (AbstractOperation*) new AddDeleteOperation(*selectedPoint)
+                : new MoveOperation(*selectedPoint, clickPointX * 4, clickPointY * 4);
+        addDo(operation);
+    }
     selectedPoint = nullptr;
 }
 

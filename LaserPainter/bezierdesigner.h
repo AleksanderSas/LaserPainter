@@ -5,6 +5,8 @@
 #include "shapecollection.h"
 #include <QMenu>
 #include <QComboBox>
+#include <stack>
+#include "abstractoperation.h"
 
 class BezierDesigner : public QFrame
 {
@@ -27,10 +29,17 @@ public slots:
     void insertBezier();
     void insertCircle();
     void insertLine();
+    void executeReDo();
+    void executeUnDo();
+
 private:
+    void addDo(AbstractOperation* op);
+    void insert(ShapeType type);
+    std::stack<AbstractOperation*> undo, redo;
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
+    bool isPointAdded;
     QMenu * menu;
     QAction *delteAction;
     QAction *switchLaserAction;

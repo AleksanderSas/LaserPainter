@@ -33,7 +33,10 @@ SOURCES += \
     shapecollection.cpp \
     abstractvisitor.cpp \
     linevisitor.cpp \
-    circlevisitor.cpp
+    circlevisitor.cpp \
+    abstractoperation.cpp \
+    moveoperation.cpp \
+    adddeleteoperation.cpp
 
 HEADERS += \
     bezierdesigner.h \
@@ -44,7 +47,10 @@ HEADERS += \
     abstractvisitor.h \
     structs.h \
     linevisitor.h \
-    circlevisitor.h
+    circlevisitor.h \
+    abstractoperation.h \
+    moveoperation.h \
+    adddeleteoperation.h
 
 FORMS +=
 

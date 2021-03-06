@@ -51,7 +51,7 @@ int HardwareConnector::SpiOpenPort (int spi_device)
     spi_bitsPerWord = 8;
 
     //----- SET SPI BUS SPEED -----
-    spi_speed = 1000000;		//1000000 = 1MHz (1uS per bit)
+    spi_speed = 10000000;		//10000000 = 10MHz (0.1uS per bit)
 
 
     if (spi_device)
@@ -184,7 +184,7 @@ int HardwareConnector::SpiWriteAndRead (int SpiDevice, unsigned char *TxData, un
     return retVal;
 }
 
-unsigned char buffer[4];
+static unsigned char buffer[4];
 void HardwareConnector::sent(unsigned int x, unsigned int y)
 {
 
@@ -212,6 +212,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     long long int laserSwitchDelay = 0L;
     long long int positionComputeDelay = 0L;
     long long int ioDelay = 0L;
+    unsigned long long int counter = 0;
     
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
@@ -222,6 +223,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     digitalWrite(LASER_PIN, enableLaser);
 
     run = true;
+    long long int totalTime = clock();
     for(unsigned int i = 0; i < repeats && run; i++)
     {
         const Point* p;
@@ -239,6 +241,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
                 laserSwitchDelay += clock() - tmpDelay;
             }
             
+            counter++;
             tmpDelay = clock();
             sent(p->x, p->y);
             ioDelay += clock() - tmpDelay;
@@ -249,4 +252,11 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
     printf("Position compute delay: %lld ms\n", positionComputeDelay * 1000 / CLOCKS_PER_SEC);
     printf("IO delay:               %lld ms\n", ioDelay * 1000 / CLOCKS_PER_SEC);
+
+    totalTime = clock() - totalTime;
+    long long int ioOperationsPerSec = counter * CLOCKS_PER_SEC / totalTime;
+    printf("total time              %lld ms\n", totalTime * 1000 / CLOCKS_PER_SEC);
+    printf("total IO operations     %llu\n", counter);
+    printf("IO operations per sec:  %llu\n", ioOperationsPerSec);
+    printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);
 }

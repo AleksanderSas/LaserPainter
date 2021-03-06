@@ -5,6 +5,7 @@
 #include "abstractvisitor.h"
 #include "shadow.h"
 #include <fstream>
+#include <utility>
 
 class ShapeCollection
 {
@@ -13,14 +14,15 @@ public:
     ~ShapeCollection();
     const Point* next(unsigned int steps);
 
-    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser);
-    Point* getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
+    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position = -1);
+    std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
     Point* getPoint(unsigned int x, unsigned int y);
     void save(const char* file);
     void load(const char* file);
     void clear();
-    void deletePoint(unsigned int x, unsigned int y);
+    std::pair<int, Point> deletePoint(unsigned int x, unsigned int y);
     void insertPointBefore(unsigned int x, unsigned int y, ShapeType type);
+    void insertPointBefore(Point &p);
 
     std::vector<Point> points;
     std::vector<Point>::iterator iter;

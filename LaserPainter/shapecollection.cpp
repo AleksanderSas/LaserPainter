@@ -15,14 +15,16 @@ ShapeCollection::~ShapeCollection()
     clear();
 }
 
-void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser)
+void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position)
 {
-    Point p;
-    p.x = x;
-    p.y = y;
-    p.type = type;
-    p.enableLaser = enableLaser;
-    points.push_back(p);
+    Point p(x, y, type, enableLaser);
+    if(position < 0)
+    {
+        points.push_back(p);
+    }else
+    {
+        points.insert(points.begin() + position, p);
+    }
 }
 
 std::vector<Point>::iterator ShapeCollection::getPointIterator(int x, int y)
@@ -41,13 +43,16 @@ std::vector<Point>::iterator ShapeCollection::getPointIterator(int x, int y)
     return itr;
 }
 
-void ShapeCollection::deletePoint(unsigned int x, unsigned int y)
+std::pair<int, Point> ShapeCollection::deletePoint(unsigned int x, unsigned int y)
 {
+    Point p;
     auto iter = getPointIterator(x, y);
     if(iter != points.end())
     {
+        p = *iter;
         points.erase(iter);
     }
+    return std::pair<int, Point>(iter - points.begin(), p);
 }
 
 Point* ShapeCollection::getPoint(unsigned int x, unsigned int y)
@@ -56,24 +61,26 @@ Point* ShapeCollection::getPoint(unsigned int x, unsigned int y)
     return iter != points.end()? &(*iter) : nullptr;
 }
 
-Point* ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType type)
+std::pair<bool, Point*> ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType type)
 {
     auto iter = getPointIterator(x, y);
     if(iter != points.end())
     {
-        return &(*iter);
+        return std::pair<bool, Point*>(false, &(*iter));
     }
     Add(x, y, type, true);
-    return &points[points.size() - 1];
+    return std::pair<bool, Point*>(true, &points[points.size() - 1]);
+}
+
+void ShapeCollection::insertPointBefore(Point &p)
+{
+    auto iter = getPointIterator(p.x, p.y);
+    points.insert(iter, p);
 }
 
 void ShapeCollection::insertPointBefore(unsigned int x, unsigned int y, ShapeType type)
 {
-    Point p;
-    p.x = x;
-    p.y = y + 100;
-    p.enableLaser = true;
-    p.type = type;
+    Point p(x, y + 100, type, true);
     auto iter = getPointIterator(x, y);
     points.insert(iter, p);
 }
