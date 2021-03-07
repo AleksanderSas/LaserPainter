@@ -36,7 +36,8 @@ SOURCES += \
     circlevisitor.cpp \
     abstractoperation.cpp \
     moveoperation.cpp \
-    adddeleteoperation.cpp
+    adddeleteoperation.cpp \
+    configuration.cpp
 
 HEADERS += \
     bezierdesigner.h \
@@ -50,7 +51,8 @@ HEADERS += \
     circlevisitor.h \
     abstractoperation.h \
     moveoperation.h \
-    adddeleteoperation.h
+    adddeleteoperation.h \
+    configuration.h
 
 FORMS +=
 

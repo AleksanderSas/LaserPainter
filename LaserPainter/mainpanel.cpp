@@ -12,6 +12,12 @@
 
 #include "math.h"
 
+bool ifFileExists(std::string fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 {
     auto *hbox = new QHBoxLayout(this);
@@ -27,11 +33,11 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* pointsLabel = new QLabel("Points" ,this);
     pointsInput = new QSpinBox(this);
     pointsInput->setRange(10, 5000);
-    pointsInput->setValue(200);
+    pointsInput->setValue(configuration.resolution);
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);
     repeatsInput->setRange(10, 5000);
-    repeatsInput->setValue(100);
+    repeatsInput->setValue(configuration.repeats);
 
     vbox->setSpacing(5);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
@@ -57,6 +63,18 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
 
     connector = new HardwareConnector();
+
+    if(ifFileExists(configuration.file))
+    {
+        shapeCollection.load(configuration.file.c_str());
+    }
+
+    if(!configuration.GetErrors().empty())
+    {
+        QMessageBox msgBox(this);
+        msgBox.setText(QString(configuration.GetErrors().c_str()));
+        msgBox.exec();
+    }
 }
 
 void MainPanel::hardwareDraw()
@@ -87,7 +105,7 @@ void MainPanel::draw()
 
 void MainPanel::SaveFiel()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), "/home");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), configuration.dir.c_str());
     shapeCollection.save(fileName.toStdString().c_str());
 }
 
@@ -101,9 +119,15 @@ void MainPanel::OpenFile()
 {
     try {
         shapeCollection.clear();
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), "/home");
-        shapeCollection.load(fileName.toStdString().c_str());
-        bezierDesigner->update();
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), QString(configuration.dir.c_str()));
+        if(fileName.size() > 0)
+        {
+            std::string selectedFile = fileName.toStdString();
+            shapeCollection.load(selectedFile.c_str());
+            configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
+            configuration.file = selectedFile;
+            bezierDesigner->update();
+        }
     } catch (const char* error) {
         QMessageBox msgBox(this);
         msgBox.setText(error);

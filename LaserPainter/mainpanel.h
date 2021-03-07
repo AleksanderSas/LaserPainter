@@ -5,6 +5,7 @@
 #include "shapecollection.h"
 #include "bezierdesigner.h"
 #include "hardwareconnector.h"
+#include "configuration.h"
 #include <thread>
 #include <QPushButton>
 #include <QSpinBox>
@@ -17,6 +18,7 @@ public:
     explicit MainPanel(QWidget *parent = nullptr);
 
 private:
+    Configuration configuration;
     ShapeCollection shapeCollection;
     BezierDesigner *bezierDesigner;
     HardwareConnector *connector = nullptr;

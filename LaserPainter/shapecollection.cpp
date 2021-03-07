@@ -75,6 +75,7 @@ std::pair<bool, Point*> ShapeCollection::getOrAddPoint(unsigned int x, unsigned 
 void ShapeCollection::insertPointBefore(Point &p)
 {
     auto iter = getPointIterator(p.x, p.y);
+    p.y += 100;
     points.insert(iter, p);
 }
 
