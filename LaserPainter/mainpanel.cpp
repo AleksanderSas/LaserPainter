@@ -111,8 +111,19 @@ void MainPanel::SaveFiel()
 
 void MainPanel::Clear()
 {
-    shapeCollection.clear();
-    bezierDesigner->update();
+    if(shapeCollection.points.size() > 0)
+    {
+        QMessageBox msgBox(this);
+        msgBox.setInformativeText("Do you want to clear all points?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox.exec();
+        if(ret == QMessageBox::Yes)
+        {
+            shapeCollection.clear();
+            bezierDesigner->update();
+        }
+    }
 }
 
 void MainPanel::OpenFile()
