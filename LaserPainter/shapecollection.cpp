@@ -7,7 +7,7 @@
 
 ShapeCollection::ShapeCollection()
 {
-
+    insertPosition = points.begin();
 }
 
 ShapeCollection::~ShapeCollection()
@@ -20,10 +20,12 @@ void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool e
     Point p(x, y, type, enableLaser);
     if(position < 0)
     {
-        points.push_back(p);
+        insertPosition = points.insert(insertPosition, p);
+        insertPosition++;
     }else
     {
-        points.insert(points.begin() + position, p);
+        insertPosition = points.insert(points.begin() + position, p);
+        insertPosition++;
     }
 }
 
@@ -50,7 +52,7 @@ std::pair<int, Point> ShapeCollection::deletePoint(unsigned int x, unsigned int 
     if(iter != points.end())
     {
         p = *iter;
-        points.erase(iter);
+        insertPosition = points.erase(iter);
     }
     return std::pair<int, Point>(iter - points.begin(), p);
 }
@@ -69,21 +71,19 @@ std::pair<bool, Point*> ShapeCollection::getOrAddPoint(unsigned int x, unsigned 
         return std::pair<bool, Point*>(false, &(*iter));
     }
     Add(x, y, type, true);
-    return std::pair<bool, Point*>(true, &points[points.size() - 1]);
+    return std::pair<bool, Point*>(true, &(*(insertPosition - 1)));
 }
 
-void ShapeCollection::insertPointBefore(Point &p)
+void ShapeCollection::insertPointAfter(Point &p)
 {
     auto iter = getPointIterator(p.x, p.y);
+    if(iter != points.end())
+    {
+        iter++;
+    }
     p.y += 100;
-    points.insert(iter, p);
-}
-
-void ShapeCollection::insertPointBefore(unsigned int x, unsigned int y, ShapeType type)
-{
-    Point p(x, y + 100, type, true);
-    auto iter = getPointIterator(x, y);
-    points.insert(iter, p);
+    insertPosition = points.insert(iter, p);
+    insertPosition++;
 }
 
 void ShapeCollection::loadV1(std::ifstream &myfile)
@@ -157,6 +157,7 @@ void ShapeCollection::save(const char* file)
 void ShapeCollection::clear()
 {
     points.clear();
+    insertPosition = points.begin();
 }
 
 AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsigned int offset, unsigned int steps)

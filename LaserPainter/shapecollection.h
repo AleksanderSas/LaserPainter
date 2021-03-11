@@ -21,8 +21,7 @@ public:
     void load(const char* file);
     void clear();
     std::pair<int, Point> deletePoint(unsigned int x, unsigned int y);
-    void insertPointBefore(unsigned int x, unsigned int y, ShapeType type);
-    void insertPointBefore(Point &p);
+    void insertPointAfter(Point &p);
 
     std::vector<Point> points;
     std::vector<Point>::iterator iter;
@@ -35,6 +34,7 @@ private :
     void loadV1(std::ifstream &myfile);
     void loadV2(std::ifstream &myfile);
     void loadV3(std::ifstream &myfile);
+    std::vector<Point>::iterator insertPosition;
 };
 
 #endif // SHAPECOLLECTION_H

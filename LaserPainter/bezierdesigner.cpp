@@ -83,7 +83,7 @@ void BezierDesigner::executeUnDo()
 void BezierDesigner::insert(ShapeType type)
 {
     Point p(clickPointX * 4, clickPointY * 4, type, true);
-    shapeCollection.insertPointBefore(p);
+    shapeCollection.insertPointAfter(p);
     addDo(new AddDeleteOperation(p));
     this->repaint();
 }
