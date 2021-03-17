@@ -11,6 +11,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = LaserPainter
 TEMPLATE = app
 
+#comment the line below to compile on desktop
+CONFIG += r_pi
+
+r_pi {
+DEFINES += R_PI
+}
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -61,4 +68,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+r_pi {
 unix|win32: LIBS += -lwiringPi
+}

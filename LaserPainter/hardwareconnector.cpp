@@ -11,21 +11,28 @@
 #include "math.h"
 #include "time.h"
 #include "beziervisitor.h"
+
+#ifdef R_PI
 #include <wiringPi.h>
+#endif
 
 HardwareConnector::HardwareConnector()
 {
+#ifdef R_PI
     wiringPiSetup();
     pinMode(LASER_PIN, OUTPUT);
 
     SpiOpenPort(0);
     SpiOpenPort(1);
+#endif
 }
 
 HardwareConnector::~HardwareConnector()
 {
+#ifdef R_PI
     SpiClosePort(0);
     SpiClosePort(1);
+#endif
 }
 
 //***********************************
@@ -208,6 +215,7 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
 
 void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
 {
+#ifdef R_PI
     long long int tmpDelay = 0L;
     long long int laserSwitchDelay = 0L;
     long long int positionComputeDelay = 0L;
@@ -259,4 +267,5 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     printf("total IO operations     %llu\n", counter);
     printf("IO operations per sec:  %llu\n", ioOperationsPerSec);
     printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);
+#endif
 }
