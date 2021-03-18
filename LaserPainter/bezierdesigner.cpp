@@ -201,7 +201,10 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
             Point &p2 = shapeCollection.points[i+1];
             painter.setBrush(p1.enableLaser? QBrush(Qt::red) : QBrush(Qt::green));
             painter.drawEllipse((p1.x - 3)/4, (p1.y - 3)/4, 6, 6);
-            painter.drawLine(p2.x / 4, p2.y / 4, p1.x / 4, p1.y / 4);
+            if(drawLines)
+            {
+                painter.drawLine(p2.x / 4, p2.y / 4, p1.x / 4, p1.y / 4);
+            }
         }
 
         Point p = shapeCollection.points[shapeCollection.points.size() - 1];

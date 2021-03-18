@@ -39,11 +39,15 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     repeatsInput->setRange(10, 5000);
     repeatsInput->setValue(configuration.repeats);
 
+    drawLinesCheckbox = new QCheckBox("draw lines", this);
+    drawLinesCheckbox->setChecked(true);
+
     vbox->setSpacing(5);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
     vbox->addWidget(openButton, 0, Qt::AlignTop);
+    vbox->addWidget(drawLinesCheckbox, 0, Qt::AlignTop);
     vbox->addStretch(5);
     vbox->addWidget(shapeSelector, 0, Qt::AlignTop);
     vbox->addStretch(5);
@@ -61,6 +65,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(saveButton, SIGNAL(clicked()), this, SLOT(SaveFiel()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(Clear()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
+    connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
 
     connector = new HardwareConnector();
 
@@ -95,6 +100,12 @@ void MainPanel::hardwareDraw()
     }
     displayThread = new std::thread(&MainPanel::draw, this);
     startButton -> setText("Stop");
+}
+
+void MainPanel::lineChecbox()
+{
+    bezierDesigner->drawLines = drawLinesCheckbox->isChecked();
+    bezierDesigner->update();
 }
 
 void MainPanel::draw()

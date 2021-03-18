@@ -13,6 +13,7 @@ class BezierDesigner : public QFrame
     Q_OBJECT
 public:
     explicit BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QWidget *parent = nullptr);
+    bool drawLines = true;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

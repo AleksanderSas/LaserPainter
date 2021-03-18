@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QCheckBox>
 
 class MainPanel : public QWidget
 {
@@ -28,6 +29,7 @@ private:
     QSpinBox *pointsInput;
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
+    QCheckBox* drawLinesCheckbox;
 
 signals:
 
@@ -36,6 +38,7 @@ public slots:
     void SaveFiel();
     void Clear();
     void hardwareDraw();
+    void lineChecbox();
 };
 
 #endif // MAINPANEL_H
