@@ -16,4 +16,6 @@ protected:
     unsigned int offset;
 };
 
+Point linearCombination(Point& p1, Point& p2, float t);
+
 #endif // ABSTRACTVISITOR_H

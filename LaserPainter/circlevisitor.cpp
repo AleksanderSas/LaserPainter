@@ -16,14 +16,6 @@ CircleVisitor::CircleVisitor(unsigned int pointNumber, unsigned int offset, unsi
     tInComponent = 0.0;
 }
 
-static Point linearCombination(Point& p1, Point& p2, float t)
-{
-    Point p;
-    p.x = (1.0 - t) * p1.x + t * p2.x;
-    p.y = (1.0 - t) * p1.y + t * p2.y;
-    return p;
-}
-
 const Point* CircleVisitor::next(std::vector<Point>& points)
 {
     if(currentPoint + 1 >= offset + pointNumber)

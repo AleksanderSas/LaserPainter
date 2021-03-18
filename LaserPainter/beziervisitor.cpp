@@ -37,21 +37,13 @@ const Point* BezierVisitor::next(std::vector<Point>& points)
     return tmp1;
 }
 
-static Point line(Point& p1, Point& p2, float t)
-{
-    Point p;
-    p.x = (1.0 - t) * p1.x + t * p2.x;
-    p.y = (1.0 - t) * p1.y + t * p2.y;
-    return p;
-}
-
 void BezierVisitor::compute(std::vector<Point> &points)
 {
     for(unsigned int i = DEGREE - 1; i > 0; i--)
     {
         for(unsigned int k = 0; k < i; k++)
        {
-           tmp1[k] = line(points[currentPoint + k], points[currentPoint + k+1], tInComponent);
+           tmp1[k] = linearCombination(points[currentPoint + k], points[currentPoint + k+1], tInComponent);
        }
     }
 
@@ -59,7 +51,7 @@ void BezierVisitor::compute(std::vector<Point> &points)
     {
        for(int k = 0; k < i; k++)
        {
-           tmp2[k] = line(tmp1[k], tmp1[k+1], tInComponent);
+           tmp2[k] = linearCombination(tmp1[k], tmp1[k+1], tInComponent);
        }
        Point* xxx = tmp1;
        tmp1 = tmp2;
