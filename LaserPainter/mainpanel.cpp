@@ -32,7 +32,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     auto* pointsLabel = new QLabel("Points" ,this);
     pointsInput = new QSpinBox(this);
-    pointsInput->setRange(10, 5000);
+    pointsInput->setRange(1, 100);
     pointsInput->setValue(configuration.resolution);
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);
@@ -80,6 +80,12 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
         msgBox.setText(QString(configuration.GetErrors().c_str()));
         msgBox.exec();
     }
+}
+
+MainPanel::~MainPanel()
+{
+    configuration.resolution = pointsInput->value();
+    configuration.repeats = repeatsInput->value();
 }
 
 void MainPanel::hardwareDraw()

@@ -7,13 +7,20 @@
 class AbstractVisitor
 {
 public:
-    AbstractVisitor(unsigned int pointNumber, unsigned int offset);
+    AbstractVisitor(unsigned int pointNumber, unsigned int offset, unsigned int pointsPerComponent);
     virtual ~AbstractVisitor();
-    virtual const Point* next(std::vector<Point>& points) = 0;
+    const Point* next(std::vector<Point>& points, unsigned int stepsSize);
 
 protected:
+    virtual Point compute(std::vector<Point>& points) = 0;
+    virtual float getComponentDelta(std::vector<Point>& points, unsigned int stepsSize) = 0;
     unsigned int pointNumber;
     unsigned int offset;
+    Point p;
+    float tInComponent;
+    float deltaT;
+    unsigned int currentPoint;
+    unsigned int pointsPerComponent;
 };
 
 Point linearCombination(Point& p1, Point& p2, float t);
