@@ -19,7 +19,7 @@ public:
     std::string GetErrors();
 
     std::string dir = "/home", file = "";
-    int repeats = 100, resolution = 300;
+    int repeats = 100, resolution = 25;
 
 private:
     std::string errors;

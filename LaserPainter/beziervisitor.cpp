@@ -1,49 +1,42 @@
 #include "beziervisitor.h"
 #include <iostream>
-
-BezierVisitor::BezierVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor (pointNumber, offset)
+#include <math.h>
+BezierVisitor::BezierVisitor(unsigned int pointNumber, unsigned int offset)
+    : AbstractVisitor (pointNumber, offset, DEGREE)
 {
-    if(pointNumber >= DEGREE)
-    {
-        int components = (pointNumber - 1) / (DEGREE - 1);
-        deltaT = 1.0f / steps * components;
-    }
-    else {
-          deltaT = 1.0f / steps;
-    }
+    deltaT = -1.0f;
     tmp1 = tmp[0];
     tmp2 = tmp[1];
     currentPoint = offset;
     tInComponent = 0.0;
 }
 
-const Point* BezierVisitor::next(std::vector<Point>& points)
+float BezierVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)
 {
-    if(currentPoint + DEGREE > offset + pointNumber)
+    if(points.size() < currentPoint + DEGREE)
     {
-        return nullptr;
+        return 1.0f;
     }
-
-    compute(points);
-    tmp1->enableLaser = points[currentPoint].enableLaser;
-    tInComponent += deltaT;
-
-    if(tInComponent + deltaT > 1.0f)
+    float sum = 0.0f;
+    Point previous = compute(points, 0.0f);
+    float t = 0.05;
+    while(t < 1.0f)
     {
-        tInComponent = 0.0;
-        currentPoint += DEGREE - 1;
+        Point tmp = compute(points, t);
+        t += 0.05f;
+        sum += hypot(previous.x - tmp.x, previous.y - tmp.y);
+        previous = tmp;
     }
-
-    return tmp1;
+    return 1.0f * stepsSize / sum;
 }
 
-void BezierVisitor::compute(std::vector<Point> &points)
+Point BezierVisitor::compute(std::vector<Point> &points, float t)
 {
     for(unsigned int i = DEGREE - 1; i > 0; i--)
     {
         for(unsigned int k = 0; k < i; k++)
        {
-           tmp1[k] = linearCombination(points[currentPoint + k], points[currentPoint + k+1], tInComponent);
+           tmp1[k] = linearCombination(points[currentPoint + k], points[currentPoint + k+1], t);
        }
     }
 
@@ -51,11 +44,17 @@ void BezierVisitor::compute(std::vector<Point> &points)
     {
        for(int k = 0; k < i; k++)
        {
-           tmp2[k] = linearCombination(tmp1[k], tmp1[k+1], tInComponent);
+           tmp2[k] = linearCombination(tmp1[k], tmp1[k+1], t);
        }
        Point* xxx = tmp1;
        tmp1 = tmp2;
        tmp2 = xxx;
     }
+    return tmp1[0];
+}
+
+Point BezierVisitor::compute(std::vector<Point> &points)
+{
+    return compute(points, tInComponent);
 }
 

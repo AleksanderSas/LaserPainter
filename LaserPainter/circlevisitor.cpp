@@ -1,29 +1,24 @@
 #include "circlevisitor.h"
 #include "math.h"
 
-CircleVisitor::CircleVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor(pointNumber, offset)
+CircleVisitor::CircleVisitor(unsigned int pointNumber, unsigned int offset)
+    : AbstractVisitor(pointNumber, offset, 2)
 {
-    if(pointNumber >= 2)
-    {
-        unsigned int components = pointNumber - 1;
-        deltaT = 1.0f / steps * components;
-    }
-    else {
-          deltaT = 1.0f / steps;
-    }
-
+    deltaT = -1.0f;
     currentPoint = offset;
     tInComponent = 0.0;
 }
 
-const Point* CircleVisitor::next(std::vector<Point>& points)
+float CircleVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)
 {
-    if(currentPoint + 1 >= offset + pointNumber)
-    {
-        return nullptr;
-    }
+    int x = points[currentPoint].x - points[currentPoint + 1].x;
+    int y = points[currentPoint].y - points[currentPoint + 1].y;
+    r = hypot(x, y);
+    deltaT = 1.0f * stepsSize / (3.1415 * 1.25 * r);
+}
 
-
+Point CircleVisitor::compute(std::vector<Point>& points)
+{
     Point &p1 = points[currentPoint];
     Point &p2 = points[currentPoint + 1];
     Point centre = linearCombination(p1, p2, 0.5);
@@ -32,21 +27,10 @@ const Point* CircleVisitor::next(std::vector<Point>& points)
 
     float angel = offset + tInComponent * 1.5f * 2 * 3.1415f;
 
-    p.x = centre.x + r * sinf(angel);
-    p.y = centre.y + r * cosf(angel);
-    p.enableLaser = p1.enableLaser;
-
-    tInComponent += deltaT;
+    Point p(centre.x + r * sinf(angel), centre.y + r * cosf(angel));
     if(tInComponent > 0.66f)
     {
         tInComponent += deltaT / 2;
     }
-
-    if(tInComponent > 1.0f)
-    {
-        tInComponent = 0.0;
-        currentPoint ++;
-    }
-
-    return &p;
+    return p;
 }

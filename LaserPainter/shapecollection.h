@@ -12,7 +12,7 @@ class ShapeCollection
 public:
     ShapeCollection();
     ~ShapeCollection();
-    const Point* next(unsigned int steps);
+    const Point* next(unsigned int stepsSize);
 
     void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position = -1);
     std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
@@ -28,7 +28,7 @@ public:
 
 private :
     std::vector<Point>::iterator getPointIterator(int x, int y);
-    bool SetNextVisitor(bool firstVisitor,  unsigned int steps);
+    bool SetNextVisitor(bool firstVisitor);
     AbstractVisitor *currectVisitor = nullptr;
     unsigned int currentShape = 0;
     void loadV1(std::ifstream &myfile);

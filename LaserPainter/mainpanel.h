@@ -17,6 +17,7 @@ class MainPanel : public QWidget
     Q_OBJECT
 public:
     explicit MainPanel(QWidget *parent = nullptr);
+    virtual ~MainPanel();
 
 private:
     Configuration configuration;

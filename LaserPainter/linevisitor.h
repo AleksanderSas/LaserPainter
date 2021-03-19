@@ -6,13 +6,11 @@
 class LineVisitor : public AbstractVisitor
 {
 public:
-    LineVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps);
-    const Point* next(std::vector<Point>& points) override;
+    LineVisitor(unsigned int pointNumber, unsigned int offset);
 
 private:
-    unsigned int currentPoint;
-    float deltaT;
-    float tInComponent;
+    Point compute(std::vector<Point>& points) override;
+    float getComponentDelta(std::vector<Point>& points, unsigned int stepsSize) override;
     point p;
 };
 
