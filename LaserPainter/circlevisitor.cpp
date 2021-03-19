@@ -3,11 +3,7 @@
 
 CircleVisitor::CircleVisitor(unsigned int pointNumber, unsigned int offset)
     : AbstractVisitor(pointNumber, offset, 2)
-{
-    deltaT = -1.0f;
-    currentPoint = offset;
-    tInComponent = 0.0;
-}
+{}
 
 float CircleVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)
 {

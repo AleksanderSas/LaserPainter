@@ -4,8 +4,10 @@
 AbstractVisitor::AbstractVisitor(unsigned int pointNumber, unsigned int offset, unsigned int pointsPerComponent) :
     pointNumber(pointNumber),
     offset(offset),
+    currentPoint(offset),
     pointsPerComponent(pointsPerComponent),
-    deltaT(-1.0f)
+    deltaT(-1.0f),
+    tInComponent(0.0f)
 {
 }
 

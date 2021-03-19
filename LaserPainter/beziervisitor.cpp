@@ -4,11 +4,8 @@
 BezierVisitor::BezierVisitor(unsigned int pointNumber, unsigned int offset)
     : AbstractVisitor (pointNumber, offset, DEGREE)
 {
-    deltaT = -1.0f;
     tmp1 = tmp[0];
     tmp2 = tmp[1];
-    currentPoint = offset;
-    tInComponent = 0.0;
 }
 
 float BezierVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)

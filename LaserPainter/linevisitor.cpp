@@ -3,11 +3,7 @@
 
 LineVisitor::LineVisitor(unsigned int pointNumber, unsigned int offset)
     : AbstractVisitor (pointNumber, offset, 2)
-{
-    deltaT = -1.0f;
-    currentPoint = offset;
-    tInComponent = 0.0;
-}
+{}
 
 float LineVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)
 {
