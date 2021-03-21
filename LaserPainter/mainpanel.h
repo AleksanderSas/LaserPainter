@@ -11,6 +11,8 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QScrollBar>
+#include <QLabel>
 
 class MainPanel : public QWidget
 {
@@ -31,6 +33,9 @@ private:
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
     QCheckBox* drawLinesCheckbox;
+    QCheckBox* enableWaitCircuid;
+    QScrollBar *scaleBar;
+    QLabel *scaleLabel;
 
 signals:
 
@@ -40,6 +45,7 @@ public slots:
     void Clear();
     void hardwareDraw();
     void lineChecbox();
+    void scaleUpdated(int value);
 };
 
 #endif // MAINPANEL_H

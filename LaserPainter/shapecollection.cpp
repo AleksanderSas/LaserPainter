@@ -193,7 +193,7 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor)
     return true;
 }
 
-const Point* ShapeCollection::next(unsigned int stepsSize)
+const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
 {
     if(currectVisitor == nullptr)
     {
@@ -202,7 +202,7 @@ const Point* ShapeCollection::next(unsigned int stepsSize)
             return  nullptr;
     }
 
-    const Point* p = currectVisitor->next(points, stepsSize);
+    const PointWithMetadata* p = currectVisitor->next(points, stepsSize);
     while(p == nullptr)
     {
         delete  currectVisitor;

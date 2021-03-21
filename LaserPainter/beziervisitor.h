@@ -17,6 +17,5 @@ class BezierVisitor : public AbstractVisitor
         Point tmp[2][DEGREE];
         Point* tmp1;
         Point* tmp2;
-        int _dummy_;
 };
 #endif // BEZIERVISITOR_H

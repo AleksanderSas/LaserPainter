@@ -23,7 +23,7 @@ Point linearCombination(Point& p1, Point& p2, float t)
     return p;
 }
 
-const Point* AbstractVisitor::next(std::vector<Point>& points, unsigned int stepsSize)
+const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsigned int stepsSize)
 {
     if(currentPoint + pointsPerComponent - 1 >= offset + pointNumber)
     {
@@ -34,21 +34,25 @@ const Point* AbstractVisitor::next(std::vector<Point>& points, unsigned int step
         deltaT = getComponentDelta(points, stepsSize);
     }
 
-    p = compute(points);
-    p.enableLaser = points[currentPoint].enableLaser;
-
-    tInComponent += deltaT;
-    if(!p.enableLaser)
-    {
-        tInComponent += deltaT;
-    }
+    p.isNextComponent = tInComponent == 0.0f;
 
     if(tInComponent > 1.0f)
     {
+        tInComponent = 1.0f;
+        p.point = compute(points);
         tInComponent = 0.0;
         currentPoint += pointsPerComponent - 1;
         deltaT = getComponentDelta(points, stepsSize);
     }
+    else {
+        p.point = compute(points);
+        tInComponent += deltaT;
+        if(!p.point.enableLaser)
+        {
+            tInComponent += deltaT;
+        }
+    }
+    p.point.enableLaser = points[currentPoint].enableLaser;
 
     return &p;
 }

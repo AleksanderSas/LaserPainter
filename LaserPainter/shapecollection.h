@@ -12,7 +12,7 @@ class ShapeCollection
 public:
     ShapeCollection();
     ~ShapeCollection();
-    const Point* next(unsigned int stepsSize);
+    const PointWithMetadata* next(unsigned int stepsSize);
 
     void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position = -1);
     std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
