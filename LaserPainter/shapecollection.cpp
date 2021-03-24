@@ -160,35 +160,21 @@ void ShapeCollection::clear()
     insertPosition = points.begin();
 }
 
-AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsigned int offset, unsigned int steps)
+AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsigned int offset)
 {
     switch(type)
     {
         case ShapeType::LINE:
-            return  new LineVisitor(pointNumber, offset, steps);
+            return  new LineVisitor(pointNumber, offset);
         case ShapeType::BEZIER:
-            return  new BezierVisitor(pointNumber, offset, steps);
+            return  new BezierVisitor(pointNumber, offset);
         case ShapeType::CIRCLE:
-            return  new CircleVisitor(pointNumber, offset, steps);
+            return  new CircleVisitor(pointNumber, offset);
     }
     return nullptr;
 }
 
-unsigned int GetShapeFactor(ShapeType type)
-{
-    switch(type)
-    {
-        case ShapeType::LINE:
-            return 1;
-        case ShapeType::BEZIER:
-            return 1;
-        case ShapeType::CIRCLE:
-            return 4;
-    }
-    return 0;
-}
-
-bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)
+bool ShapeCollection::SetNextVisitor(bool firstVisitor)
 {
     if(iter == points.end())
         return false;
@@ -203,28 +189,27 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor, unsigned int steps)
     }
 
     unsigned int offset = iter - points.begin() - pointNumber;
-    unsigned int visitorSteps = steps * pointNumber * GetShapeFactor(type) / points.size();
-    currectVisitor = GetNextVisitor(type, pointNumber, offset, visitorSteps);
+    currectVisitor = GetNextVisitor(type, pointNumber, offset);
     return true;
 }
 
-const Point* ShapeCollection::next(unsigned int steps)
+const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
 {
     if(currectVisitor == nullptr)
     {
         iter = points.begin();
-        if(!SetNextVisitor(true, steps))
+        if(!SetNextVisitor(true))
             return  nullptr;
     }
 
-    const Point* p = currectVisitor->next(points);
+    const PointWithMetadata* p = currectVisitor->next(points, stepsSize);
     while(p == nullptr)
     {
         delete  currectVisitor;
         currectVisitor = nullptr;
-        if(!SetNextVisitor(false, steps))
+        if(!SetNextVisitor(false))
             return  nullptr;
-        p = currectVisitor->next(points);
+        p = currectVisitor->next(points, stepsSize);
     }
     return p;
 }

@@ -1,7 +1,6 @@
 #include "mainpanel.h"
 #include "bezierdesigner.h"
 #include "hardwareconnector.h"
-#include <QLabel>
 #include <QFrame>
 #include <QStatusBar>
 #include <QHBoxLayout>
@@ -32,7 +31,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     auto* pointsLabel = new QLabel("Points" ,this);
     pointsInput = new QSpinBox(this);
-    pointsInput->setRange(10, 5000);
+    pointsInput->setRange(1, 100);
     pointsInput->setValue(configuration.resolution);
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);
@@ -42,12 +41,19 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     drawLinesCheckbox = new QCheckBox("draw lines", this);
     drawLinesCheckbox->setChecked(true);
 
+    scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
+    scaleBar->setRange(1, 100);
+    scaleBar->setValue(100);
+    scaleLabel = new QLabel("Scale: 100%", this);
+    enableWaitCircuid = new QCheckBox("wait circuid", this);
+
     vbox->setSpacing(5);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
     vbox->addWidget(openButton, 0, Qt::AlignTop);
     vbox->addWidget(drawLinesCheckbox, 0, Qt::AlignTop);
+    vbox->addWidget(enableWaitCircuid, 0, Qt::AlignTop);
     vbox->addStretch(5);
     vbox->addWidget(shapeSelector, 0, Qt::AlignTop);
     vbox->addStretch(5);
@@ -56,6 +62,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addStretch(2);
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);
+    vbox->addStretch(5);
+    vbox->addWidget(scaleLabel, 0, Qt::AlignTop);
+    vbox->addWidget(scaleBar, 0, Qt::AlignTop);
     vbox->addStretch(90);
 
     hbox->addItem(vbox);
@@ -66,6 +75,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(clearButton, SIGNAL(clicked()), this, SLOT(Clear()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
+    connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
 
     connector = new HardwareConnector();
 
@@ -80,6 +90,17 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
         msgBox.setText(QString(configuration.GetErrors().c_str()));
         msgBox.exec();
     }
+}
+
+MainPanel::~MainPanel()
+{
+    configuration.resolution = pointsInput->value();
+    configuration.repeats = repeatsInput->value();
+}
+
+void MainPanel::scaleUpdated(int value)
+{
+    scaleLabel->setText(QString("Scale: ") + QString::number(value) + "%");
 }
 
 void MainPanel::hardwareDraw()
@@ -110,7 +131,7 @@ void MainPanel::lineChecbox()
 
 void MainPanel::draw()
 {
-    connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value());
+    connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
     startButton -> setText("Start");
 }
 

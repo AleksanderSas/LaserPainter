@@ -19,6 +19,12 @@ typedef struct point
     point(int x, int y, ShapeType t, bool enableLaser): x(x), y(y), type(t), enableLaser(enableLaser) {};
 } Point;
 
+typedef struct pointWithMetadata
+{
+    Point point;
+    bool isNextComponent;
+} PointWithMetadata;
+
 #define BEZIER_ "Bezier"
 #define LINE_ "Line"
 #define CIRCLE_ "Circle"

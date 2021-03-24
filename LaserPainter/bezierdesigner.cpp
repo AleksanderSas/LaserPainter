@@ -213,10 +213,10 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
     }
 
     painter.setBrush(QBrush(Qt::red));
-    const Point *pt;
-    while((pt = shapeCollection.next(700)) != nullptr)
+    const PointWithMetadata *pt;
+    while((pt = shapeCollection.next(30)) != nullptr)
     {
-        painter.drawPoint(pt->x / 4, pt->y / 4);
+        painter.drawPoint(pt->point.x / 4, pt->point.y / 4);
     }
   }
 

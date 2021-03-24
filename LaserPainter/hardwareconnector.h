@@ -6,13 +6,15 @@
 
 #define RESET_PIN 4
 #define LASER_PIN 5
+#define TEST_PIN 1
+#define LDAC_PIN 7
 
 class HardwareConnector
 {
 public:
     HardwareConnector();
     ~HardwareConnector();
-    void draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats);
+    void draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
     bool run = false;
 
 private:

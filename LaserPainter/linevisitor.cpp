@@ -1,41 +1,18 @@
 #include "linevisitor.h"
+#include <math.h>
 
-LineVisitor::LineVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps) : AbstractVisitor (pointNumber, offset)
+LineVisitor::LineVisitor(unsigned int pointNumber, unsigned int offset)
+    : AbstractVisitor (pointNumber, offset, 2)
+{}
+
+float LineVisitor::getComponentDelta(std::vector<Point>& points, unsigned int stepsSize)
 {
-    if(pointNumber >= 2)
-    {
-        unsigned int components = pointNumber - 1;
-        deltaT = 1.0f / steps * components;
-    }
-    else {
-          deltaT = 1.0f / steps;
-    }
-
-    currentPoint = offset;
-    tInComponent = 0.0;
+    int x = points[currentPoint].x - points[currentPoint + 1].x;
+    int y = points[currentPoint].y - points[currentPoint + 1].y;
+    deltaT = 1.0 * stepsSize / hypot(x, y);
 }
 
-const Point* LineVisitor::next(std::vector<Point>& points)
+Point LineVisitor::compute(std::vector<Point>& points)
 {
-    if(currentPoint + 1 >= offset + pointNumber)
-    {
-        return nullptr;
-    }
-
-    p = linearCombination(points[currentPoint], points[currentPoint + 1], tInComponent);
-    p.enableLaser = points[currentPoint].enableLaser;
-
-    tInComponent += deltaT;
-    if(!p.enableLaser)
-    {
-        tInComponent += deltaT;
-    }
-
-    if(tInComponent > 1.0f)
-    {
-        tInComponent = 0.0;
-        currentPoint ++;
-    }
-
-    return &p;
+    return linearCombination(points[currentPoint], points[currentPoint + 1], tInComponent);
 }

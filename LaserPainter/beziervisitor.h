@@ -8,18 +8,14 @@
 class BezierVisitor : public AbstractVisitor
 {
     public:
-        BezierVisitor(unsigned int pointNumber, unsigned int offset, unsigned int steps);
-        const Point* next(std::vector<Point>& points) override;
+        BezierVisitor(unsigned int pointNumber, unsigned int offset);
 
     private:
-        float tInComponent;
-        float deltaT;
-        unsigned int currentPoint;
+        Point compute(std::vector<Point>& points) override;
+        Point compute(std::vector<Point>& points, float t);
+        float getComponentDelta(std::vector<Point>& points, unsigned int stepsSize) override;
         Point tmp[2][DEGREE];
         Point* tmp1;
         Point* tmp2;
-        int _dummy_;
-
-        void compute(std::vector<Point>& points);
 };
 #endif // BEZIERVISITOR_H

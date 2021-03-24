@@ -21,8 +21,9 @@ HardwareConnector::HardwareConnector()
 #ifdef R_PI
     wiringPiSetup();
     pinMode(LASER_PIN, OUTPUT);
+    pinMode(LDAC_PIN, OUTPUT);
+    pinMode(TEST_PIN, INPUT);
 
-    SpiOpenPort(0);
     SpiOpenPort(1);
 #endif
 }
@@ -58,7 +59,7 @@ int HardwareConnector::SpiOpenPort (int spi_device)
     spi_bitsPerWord = 8;
 
     //----- SET SPI BUS SPEED -----
-    spi_speed = 10000000;		//10000000 = 10MHz (0.1uS per bit)
+    spi_speed = 16000000;		//16000000 = 16MHz (0.0625uS per bit)
 
 
     if (spi_device)
@@ -194,26 +195,32 @@ int HardwareConnector::SpiWriteAndRead (int SpiDevice, unsigned char *TxData, un
 static unsigned char buffer[4];
 void HardwareConnector::sent(unsigned int x, unsigned int y)
 {
-
-#if 1
     buffer[0] = 0x30 | (x >> 8);
     buffer[1] = x & 255;
     buffer[2] = 0x30 | (y >> 8);
     buffer[3] = y & 255;
 
+    //wiringPiSPIDataRW(1, buffer, 4);
     SpiWriteAndRead(1, buffer, buffer, 4, 0);
-#else
-    buffer[0] = 0x30 | (x >> 8);
-    buffer[1] = x & 255;
-    SpiWriteAndRead(0, buffer, buffer, 2, 0);
-
-    buffer[0] = 0x30 | (y >> 8);
-    buffer[1] = y & 255;
-    SpiWriteAndRead(1, buffer, buffer, 2, 0);
-#endif
 }
 
-void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats)
+static int scaleValue(int value, int scale)
+{
+    if(scale == 100) return value;
+    return (value - 2048) * scale / 100 + 2048;
+}
+
+static void waitUntillReachPosition()
+{
+    int pinValu = digitalRead(TEST_PIN);
+    while(pinValu == 0)
+    {
+        usleep(5);
+        pinValu = digitalRead(TEST_PIN);
+    }
+}
+
+void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;
@@ -221,6 +228,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     long long int positionComputeDelay = 0L;
     long long int ioDelay = 0L;
     unsigned long long int counter = 0;
+    unsigned long long int pinRead = 0;
     
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
@@ -229,21 +237,32 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
 
     bool enableLaser = false;
     digitalWrite(LASER_PIN, enableLaser);
+    digitalWrite(LDAC_PIN, false);
 
     run = true;
     long long int totalTime = clock();
     for(unsigned int i = 0; i < repeats && run; i++)
     {
-        const Point* p;
+        const PointWithMetadata* p;
         tmpDelay = clock();
         while((p = sc.next(resolution)) != nullptr)
         {
             positionComputeDelay += clock() - tmpDelay;
-            if(enableLaser != p->enableLaser)
+            bool ldacValue = false;
+            if(enableWaitCircuid && p->isNextComponent)
+            {
+                int pinValu = digitalRead(TEST_PIN);
+                if(pinValu == 0 && counter > 0)
+                {
+                    ldacValue = true;
+                    digitalWrite(LDAC_PIN, ldacValue);
+                }
+            }
+            if(enableLaser != p->point.enableLaser)
             {
                 tmpDelay = clock();
                 usleep(250);
-                enableLaser = p->enableLaser;
+                enableLaser = p->point.enableLaser;
                 digitalWrite(LASER_PIN, enableLaser);
                 usleep(250);
                 laserSwitchDelay += clock() - tmpDelay;
@@ -251,15 +270,24 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
             
             counter++;
             tmpDelay = clock();
-            sent(p->x, p->y);
-            ioDelay += clock() - tmpDelay;
-            tmpDelay = clock();
+
+            sent(scaleValue(p->point.x, scale), scaleValue(p->point.y, scale));
+
+            if(ldacValue)
+            {
+                waitUntillReachPosition();
+                digitalWrite(LDAC_PIN, false);
+            }
+            auto tmpDelay2 = clock();
+            ioDelay += tmpDelay2 - tmpDelay;
+            tmpDelay = tmpDelay2;
         }
     }
     run = false;
     printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
     printf("Position compute delay: %lld ms\n", positionComputeDelay * 1000 / CLOCKS_PER_SEC);
     printf("IO delay:               %lld ms\n", ioDelay * 1000 / CLOCKS_PER_SEC);
+    printf("Pin delay:              %lld ms\n", pinRead * 1000 / CLOCKS_PER_SEC);
 
     totalTime = clock() - totalTime;
     long long int ioOperationsPerSec = counter * CLOCKS_PER_SEC / totalTime;
