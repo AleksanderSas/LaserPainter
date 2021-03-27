@@ -535,10 +535,6 @@ Wire Wire Line
 Connection ~ 6150 2550
 Wire Wire Line
 	6150 2350 6150 2550
-Wire Wire Line
-	6150 2650 6150 2550
-Wire Wire Line
-	6150 3100 6150 2850
 $Comp
 L pspice:DIODE D?
 U 1 1 60829511
@@ -607,17 +603,9 @@ Wire Wire Line
 	7600 1950 7600 2200
 Wire Wire Line
 	7400 1950 7600 1950
-Wire Wire Line
-	7150 1950 7200 1950
-Wire Wire Line
-	7150 1950 7150 1800
 Connection ~ 7150 2350
 Wire Wire Line
 	7150 2350 7200 2350
-Wire Wire Line
-	7150 2150 7150 2350
-Wire Wire Line
-	6550 2050 6550 2350
 $Comp
 L Device:R_Small R?
 U 1 1 6076015F
@@ -739,17 +727,6 @@ F 3 "~" H 7300 2950 50  0001 C CNN
 $EndComp
 $Comp
 L Device:R_Small R?
-U 1 1 6066ECC6
-P 6150 2750
-F 0 "R?" V 5954 2750 50  0001 C CNN
-F 1 "100k" H 6209 2750 50  0000 L CNN
-F 2 "" H 6150 2750 50  0001 C CNN
-F 3 "~" H 6150 2750 50  0001 C CNN
-	1    6150 2750
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:R_Small R?
 U 1 1 6066EADA
 P 7300 2550
 F 0 "R?" V 7104 2550 50  0001 C CNN
@@ -849,29 +826,9 @@ Wire Wire Line
 	4700 1950 4700 2200
 Wire Wire Line
 	4900 1950 4700 1950
-Connection ~ 5150 1950
-Wire Wire Line
-	5150 1950 5100 1950
-Wire Wire Line
-	5150 1950 5150 1800
 Connection ~ 5150 2350
 Wire Wire Line
 	5150 2350 5100 2350
-Wire Wire Line
-	5150 2150 5150 2350
-Wire Wire Line
-	5750 2050 5750 2350
-$Comp
-L Amplifier_Operational:TL062 U?
-U 1 1 60DF4F42
-P 5450 2050
-F 0 "U?" H 5450 2417 50  0001 C CNN
-F 1 "TL062" H 5450 1775 50  0000 C CNN
-F 2 "" H 5450 2050 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 5450 2050 50  0001 C CNN
-	1    5450 2050
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 60DF4F4C
@@ -1014,102 +971,6 @@ F 3 "" H 5150 1600 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Connection ~ 6150 2350
-Connection ~ 7150 1950
-Wire Wire Line
-	6150 1300 6150 1550
-Connection ~ 5550 1300
-Wire Wire Line
-	5550 1200 5550 1300
-Connection ~ 6150 1300
-Wire Wire Line
-	6150 1200 6150 1300
-Wire Wire Line
-	6150 1300 5550 1300
-$Comp
-L power:GND #PWR?
-U 1 1 6095BE6F
-P 5550 1000
-F 0 "#PWR?" H 5550 750 50  0001 C CNN
-F 1 "GND" H 5555 827 50  0001 C CNN
-F 2 "" H 5550 1000 50  0001 C CNN
-F 3 "" H 5550 1000 50  0001 C CNN
-	1    5550 1000
-	1    0    0    1   
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 60900FD3
-P 5550 1100
-F 0 "R?" H 5491 1054 50  0001 R CNN
-F 1 "15k" V 5446 1100 50  0000 C CNN
-F 2 "" H 5550 1100 50  0001 C CNN
-F 3 "~" H 5550 1100 50  0001 C CNN
-	1    5550 1100
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	5550 1350 5550 1300
-Wire Wire Line
-	5550 1550 5550 1650
-$Comp
-L Device:R_Small R?
-U 1 1 609D56D5
-P 5550 1450
-F 0 "R?" H 5491 1404 50  0001 R CNN
-F 1 "250l" H 5492 1450 50  0000 R CNN
-F 2 "" H 5550 1450 50  0001 C CNN
-F 3 "~" H 5550 1450 50  0001 C CNN
-	1    5550 1450
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 60760175
-P 6150 1100
-F 0 "R?" H 6091 1054 50  0001 R CNN
-F 1 "35k" V 6046 1100 50  0000 C CNN
-F 2 "" H 6150 1100 50  0001 C CNN
-F 3 "~" H 6150 1100 50  0001 C CNN
-	1    6150 1100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6150 950  6150 1000
-$Comp
-L Amplifier_Operational:TL062 U?
-U 2 1 6060E2C6
-P 5850 1650
-F 0 "U?" H 5850 2017 50  0001 C CNN
-F 1 "TL062" H 5850 1925 50  0000 C CNN
-F 2 "" H 5850 1650 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 5850 1650 50  0001 C CNN
-	2    5850 1650
-	-1   0    0    -1  
-$EndComp
-$Comp
-L power:+15V #PWR?
-U 1 1 609214BF
-P 6150 950
-F 0 "#PWR?" H 6150 800 50  0001 C CNN
-F 1 "+15V" V 6165 1078 50  0000 L CNN
-F 2 "" H 6150 950 50  0001 C CNN
-F 3 "" H 6150 950 50  0001 C CNN
-	1    6150 950 
-	-1   0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:TL062 U?
-U 1 1 60760169
-P 6850 2050
-F 0 "U?" H 6850 2417 50  0001 C CNN
-F 1 "TL062" H 6850 1775 50  0000 C CNN
-F 2 "" H 6850 2050 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 6850 2050 50  0001 C CNN
-	1    6850 2050
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	6150 1750 6150 2350
 $Comp
 L Connector:Conn_01x02_Female J?
 U 1 1 6106DD49
@@ -1190,12 +1051,204 @@ Connection ~ 1500 4500
 Wire Wire Line
 	1500 4500 4000 4500
 Wire Wire Line
-	5550 1650 5350 1650
+	6150 2650 6150 2550
 Wire Wire Line
-	5350 1650 5350 1450
+	6150 3100 6150 2850
+$Comp
+L Device:R_Small R?
+U 1 1 6066ECC6
+P 6150 2750
+F 0 "R?" V 5954 2750 50  0001 C CNN
+F 1 "100k" H 6209 2750 50  0000 L CNN
+F 2 "" H 6150 2750 50  0001 C CNN
+F 3 "~" H 6150 2750 50  0001 C CNN
+	1    6150 2750
+	-1   0    0    1   
+$EndComp
+$Comp
+L Transistor_BJT:BC414 Q?
+U 1 1 60666583
+P 4350 1400
+F 0 "Q?" H 4541 1446 50  0000 L CNN
+F 1 "BC414" H 4541 1355 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline" H 4550 1325 50  0001 L CIN
+F 3 "http://www.cdil.com/datasheets/bc413_14_b_c.pdf" H 4350 1400 50  0001 L CNN
+	1    4350 1400
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60603338
+P 4650 1400
+F 0 "R?" V 4454 1400 50  0001 C CNN
+F 1 "100k" H 4709 1400 50  0000 L CNN
+F 2 "" H 4650 1400 50  0001 C CNN
+F 3 "~" H 4650 1400 50  0001 C CNN
+	1    4650 1400
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 606A1BA0
+P 4250 1100
+F 0 "R?" V 4054 1100 50  0001 C CNN
+F 1 "5k" H 4309 1100 50  0000 L CNN
+F 2 "" H 4250 1100 50  0001 C CNN
+F 3 "~" H 4250 1100 50  0001 C CNN
+	1    4250 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 606C2708
+P 4250 1600
+F 0 "#PWR?" H 4250 1350 50  0001 C CNN
+F 1 "GND" H 4255 1427 50  0001 C CNN
+F 2 "" H 4250 1600 50  0001 C CNN
+F 3 "" H 4250 1600 50  0001 C CNN
+	1    4250 1600
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 606ECE46
+P 4250 1000
+F 0 "#PWR?" H 4250 850 50  0001 C CNN
+F 1 "+5V" H 4265 1173 50  0000 C CNN
+F 2 "" H 4250 1000 50  0001 C CNN
+F 3 "" H 4250 1000 50  0001 C CNN
+	1    4250 1000
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	5350 1450 900  1450
+	4250 1250 900  1250
 Wire Wire Line
-	900  1450 900  4200
-Connection ~ 5550 1650
+	900  1250 900  4200
+Connection ~ 7150 1950
+Wire Wire Line
+	7150 1950 7150 1800
+Wire Wire Line
+	7150 1950 7200 1950
+Wire Wire Line
+	7150 2150 7150 2350
+Wire Wire Line
+	6550 2050 6550 2350
+Wire Wire Line
+	5150 1950 5150 1800
+Wire Wire Line
+	5150 1950 5100 1950
+Connection ~ 5150 1950
+Wire Wire Line
+	5150 2150 5150 2350
+Wire Wire Line
+	5750 2050 5750 2350
+$Comp
+L Amplifier_Operational:TL062 U?
+U 1 1 60760169
+P 6850 2050
+F 0 "U?" H 6850 2417 50  0001 C CNN
+F 1 "TL062" H 6850 1775 50  0000 C CNN
+F 2 "" H 6850 2050 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 6850 2050 50  0001 C CNN
+	1    6850 2050
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL062 U?
+U 1 1 60DF4F42
+P 5450 2050
+F 0 "U?" H 5450 2417 50  0001 C CNN
+F 1 "TL062_x" H 5450 1775 50  0000 C CNN
+F 2 "" H 5450 2050 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 5450 2050 50  0001 C CNN
+	1    5450 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6150 1500 6150 2350
+Wire Wire Line
+	6150 1050 6150 1300
+Connection ~ 5550 1050
+Wire Wire Line
+	5550 1000 5550 1050
+Connection ~ 6150 1050
+Wire Wire Line
+	6150 1000 6150 1050
+Wire Wire Line
+	6150 1050 5550 1050
+$Comp
+L power:GND #PWR?
+U 1 1 6095BE6F
+P 5550 800
+F 0 "#PWR?" H 5550 550 50  0001 C CNN
+F 1 "GND" H 5555 627 50  0001 C CNN
+F 2 "" H 5550 800 50  0001 C CNN
+F 3 "" H 5550 800 50  0001 C CNN
+	1    5550 800 
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60900FD3
+P 5550 900
+F 0 "R?" H 5491 854 50  0001 R CNN
+F 1 "15k" V 5446 900 50  0000 C CNN
+F 2 "" H 5550 900 50  0001 C CNN
+F 3 "~" H 5550 900 50  0001 C CNN
+	1    5550 900 
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5550 1100 5550 1050
+Wire Wire Line
+	5550 1300 5550 1400
+$Comp
+L Device:R_Small R?
+U 1 1 609D56D5
+P 5550 1200
+F 0 "R?" H 5491 1154 50  0001 R CNN
+F 1 "250l" H 5492 1200 50  0000 R CNN
+F 2 "" H 5550 1200 50  0001 C CNN
+F 3 "~" H 5550 1200 50  0001 C CNN
+	1    5550 1200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60760175
+P 6150 900
+F 0 "R?" H 6091 854 50  0001 R CNN
+F 1 "35k" V 6046 900 50  0000 C CNN
+F 2 "" H 6150 900 50  0001 C CNN
+F 3 "~" H 6150 900 50  0001 C CNN
+	1    6150 900 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6150 750  6150 800 
+$Comp
+L Amplifier_Operational:TL062 U?
+U 2 1 6060E2C6
+P 5850 1400
+F 0 "U?" H 5850 1767 50  0001 C CNN
+F 1 "TL062_x" H 5850 1675 50  0000 C CNN
+F 2 "" H 5850 1400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl061.pdf" H 5850 1400 50  0001 C CNN
+	2    5850 1400
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:+15V #PWR?
+U 1 1 609214BF
+P 6150 750
+F 0 "#PWR?" H 6150 600 50  0001 C CNN
+F 1 "+15V" V 6165 878 50  0000 L CNN
+F 2 "" H 6150 750 50  0001 C CNN
+F 3 "" H 6150 750 50  0001 C CNN
+	1    6150 750 
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	4750 1400 5550 1400
+Connection ~ 5550 1400
 $EndSCHEMATC
