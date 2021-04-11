@@ -24,7 +24,7 @@ HardwareConnector::HardwareConnector()
     pinMode(LDAC_PIN, OUTPUT);
     pinMode(TEST_PIN, INPUT);
 
-    SpiOpenPort(1);
+    SpiOpenPort(0);
 #endif
 }
 
@@ -201,7 +201,7 @@ void HardwareConnector::sent(unsigned int x, unsigned int y)
     buffer[3] = y & 255;
 
     //wiringPiSPIDataRW(1, buffer, 4);
-    SpiWriteAndRead(1, buffer, buffer, 4, 0);
+    SpiWriteAndRead(0, buffer, buffer, 4, 0);
 }
 
 static int scaleValue(int value, int scale)
@@ -213,7 +213,7 @@ static int scaleValue(int value, int scale)
 static void waitUntillReachPosition()
 {
     int pinValu = digitalRead(TEST_PIN);
-    while(pinValu == 0)
+    while(pinValu == TEST_FAILURE)
     {
         usleep(5);
         pinValu = digitalRead(TEST_PIN);
@@ -252,7 +252,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
             if(enableWaitCircuid && p->isNextComponent)
             {
                 int pinValu = digitalRead(TEST_PIN);
-                if(pinValu == 0 && counter > 0)
+                if(pinValu == TEST_FAILURE && counter > 0)
                 {
                     ldacValue = true;
                     digitalWrite(LDAC_PIN, ldacValue);

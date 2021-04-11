@@ -4,10 +4,11 @@
 #include "stdio.h"
 #include "shapecollection.h"
 
-#define RESET_PIN 4
-#define LASER_PIN 5
-#define TEST_PIN 1
-#define LDAC_PIN 7
+#define RESET_PIN 3
+#define LASER_PIN 0
+#define TEST_PIN 6
+#define LDAC_PIN 2
+#define TEST_FAILURE 1
 
 class HardwareConnector
 {
