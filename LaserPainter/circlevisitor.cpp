@@ -10,7 +10,7 @@ float CircleVisitor::getComponentDelta(std::vector<Point>& points, unsigned int 
     int x = points[currentPoint].x - points[currentPoint + 1].x;
     int y = points[currentPoint].y - points[currentPoint + 1].y;
     r = hypot(x, y);
-    deltaT = 1.0f * stepsSize / (3.1415 * 1.25 * r);
+    return 1.0f * stepsSize / (3.1415f * 1.25f * r);
 }
 
 Point CircleVisitor::compute(std::vector<Point>& points)
