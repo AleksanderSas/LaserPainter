@@ -40,6 +40,7 @@ private:
 signals:
 
 public slots:
+    void DisplayError();
     void OpenFile();
     void SaveFiel();
     void Clear();

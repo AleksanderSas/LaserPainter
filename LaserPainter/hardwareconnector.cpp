@@ -210,17 +210,25 @@ static int scaleValue(int value, int scale)
     return (value - 2048) * scale / 100 + 2048;
 }
 
-static void waitUntillReachPosition()
+//returns true if number of wait iterations is exceeded
+//otherwise false
+static bool waitUntillReachPosition()
 {
+    unsigned int counter = 0;
     int pinValu = digitalRead(TEST_PIN);
     while(pinValu == TEST_FAILURE)
     {
-        usleep(5);
+        counter++;
+        if(counter++ == 2000)
+            return true;
+        usleep(15);
         pinValu = digitalRead(TEST_PIN);
     }
+    printf("number of wait iteration exceeded: %d\n", counter);
+    return false;
 }
 
-void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
+const char* HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;
@@ -239,6 +247,7 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     digitalWrite(LASER_PIN, enableLaser);
     digitalWrite(LDAC_PIN, false);
 
+    return waitExceededErrorMessage;
     run = true;
     long long int totalTime = clock();
     for(unsigned int i = 0; i < repeats && run; i++)
@@ -275,7 +284,11 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
 
             if(ldacValue)
             {
-                waitUntillReachPosition();
+                if(waitUntillReachPosition())
+                {
+                    return waitExceededErrorMessage;
+                }
+
                 digitalWrite(LDAC_PIN, false);
             }
             auto tmpDelay2 = clock();
@@ -296,4 +309,5 @@ void HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsig
     printf("IO operations per sec:  %llu\n", ioOperationsPerSec);
     printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);
 #endif
+    return  nullptr;
 }

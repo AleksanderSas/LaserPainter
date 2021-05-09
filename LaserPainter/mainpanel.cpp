@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <thread>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "math.h"
 
@@ -129,9 +130,30 @@ void MainPanel::lineChecbox()
     bezierDesigner->update();
 }
 
+const char* errorMessage;
+QTimer* timer;
+void MainPanel::DisplayError()
+{
+    QMessageBox msgBox(this);
+    msgBox.setInformativeText(QString(errorMessage));
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+    timer->deleteLater();
+}
+
 void MainPanel::draw()
 {
-    connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
+    errorMessage = connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
+    if(errorMessage != nullptr)
+    {
+        // any thread
+        timer = new QTimer();
+        timer->moveToThread(this->thread());
+        timer->setSingleShot(true);
+        connect(timer, SIGNAL(timeout()), this, SLOT(DisplayError()));
+        QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
+    }
     startButton -> setText("Start");
 }
 

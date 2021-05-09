@@ -15,7 +15,7 @@ class HardwareConnector
 public:
     HardwareConnector();
     ~HardwareConnector();
-    void draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
+    const char* draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
     bool run = false;
 
 private:
@@ -30,6 +30,7 @@ private:
     unsigned char spi_mode;
     unsigned char spi_bitsPerWord;
     unsigned int spi_speed;
+    const char* waitExceededErrorMessage = "Number of wait iteration exceeded";
 
 };
 
