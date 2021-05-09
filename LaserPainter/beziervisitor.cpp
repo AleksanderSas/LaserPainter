@@ -16,12 +16,12 @@ float BezierVisitor::getComponentDelta(std::vector<Point>& points, unsigned int 
     }
     float sum = 0.0f;
     Point previous = compute(points, 0.0f);
-    float t = 0.05;
+    float t = 0.05f;
     while(t < 1.0f)
     {
         Point tmp = compute(points, t);
         t += 0.05f;
-        sum += hypot(previous.x - tmp.x, previous.y - tmp.y);
+        sum += hypotf(previous.x - tmp.x, previous.y - tmp.y);
         previous = tmp;
     }
     return 1.0f * stepsSize / sum;

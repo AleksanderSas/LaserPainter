@@ -12,7 +12,6 @@ private:
     Point compute(std::vector<Point>& points) override;
     float getComponentDelta(std::vector<Point>& points, unsigned int stepsSize) override;
     Point centre;
-    unsigned int r;
     point p;
 };
 
