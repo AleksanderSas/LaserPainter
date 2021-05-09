@@ -247,7 +247,6 @@ const char* HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution
     digitalWrite(LASER_PIN, enableLaser);
     digitalWrite(LDAC_PIN, false);
 
-    return waitExceededErrorMessage;
     run = true;
     long long int totalTime = clock();
     for(unsigned int i = 0; i < repeats && run; i++)
