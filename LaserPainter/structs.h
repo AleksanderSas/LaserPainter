@@ -14,9 +14,11 @@ typedef struct point
     int y;
     ShapeType type;
     bool enableLaser;
-    point(){};
-    point(int x, int y): x(x), y(y) {};
-    point(int x, int y, ShapeType t, bool enableLaser): x(x), y(y), type(t), enableLaser(enableLaser) {};
+    bool wait;
+    point(){}
+    point(int x, int y): x(x), y(y) {}
+    point(int x, int y, ShapeType t, bool enableLaser, bool wait):
+        x(x), y(y), type(t), enableLaser(enableLaser), wait(wait) {}
 } Point;
 
 typedef struct pointWithMetadata

@@ -14,7 +14,7 @@ public:
     ~ShapeCollection();
     const PointWithMetadata* next(unsigned int stepsSize);
 
-    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position = -1);
+    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, bool wait, int position = -1);
     std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
     Point* getPoint(unsigned int x, unsigned int y);
     void save(const char* file);
@@ -31,9 +31,9 @@ private :
     bool SetNextVisitor(bool firstVisitor);
     AbstractVisitor *currectVisitor = nullptr;
     unsigned int currentShape = 0;
-    void loadV1(std::ifstream &myfile);
     void loadV2(std::ifstream &myfile);
     void loadV3(std::ifstream &myfile);
+    void loadV4(std::ifstream &myfile);
     std::vector<Point>::iterator insertPosition;
 };
 

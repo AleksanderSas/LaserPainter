@@ -43,9 +43,9 @@ Point BezierVisitor::compute(std::vector<Point> &points, float t)
        {
            tmp2[k] = linearCombination(tmp1[k], tmp1[k+1], t);
        }
-       Point* xxx = tmp1;
+       Point* tmp = tmp1;
        tmp1 = tmp2;
-       tmp2 = xxx;
+       tmp2 = tmp;
     }
     return tmp1[0];
 }

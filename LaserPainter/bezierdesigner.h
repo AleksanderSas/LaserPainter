@@ -20,7 +20,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *e);
-    void doPainting();
 
 signals:
 
@@ -32,6 +31,7 @@ public slots:
     void insertLine();
     void executeReDo();
     void executeUnDo();
+    void setWait();
 
 private:
     void addDo(AbstractOperation* op);
@@ -47,7 +47,10 @@ private:
     QAction *insertBezierAction;
     QAction *insertLineAction;
     QAction *insertCircleAction;
+    QAction *setWaitleAction;
     unsigned int clickPointX, clickPointY;
+    void drawControlPoints(QPainter &painter);
+    void drawLaserPath(QPainter &painter);
 };
 
 #endif // BEZIERDESIGNER_H

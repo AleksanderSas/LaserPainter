@@ -15,9 +15,9 @@ ShapeCollection::~ShapeCollection()
     clear();
 }
 
-void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, int position)
+void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, bool wait, int position)
 {
-    Point p(x, y, type, enableLaser);
+    Point p(x, y, type, enableLaser, wait);
     if(position < 0)
     {
         insertPosition = points.insert(insertPosition, p);
@@ -70,7 +70,7 @@ std::pair<bool, Point*> ShapeCollection::getOrAddPoint(unsigned int x, unsigned 
     {
         return std::pair<bool, Point*>(false, &(*iter));
     }
-    Add(x, y, type, true);
+    Add(x, y, type, true, false);
     return std::pair<bool, Point*>(true, &(*(insertPosition - 1)));
 }
 
@@ -86,17 +86,6 @@ void ShapeCollection::insertPointAfter(Point &p)
     insertPosition++;
 }
 
-void ShapeCollection::loadV1(std::ifstream &myfile)
-{
-    while(myfile.good())
-    {
-        unsigned int x, y;
-        myfile >> x;
-        myfile >> y;
-        Add(x, y, ShapeType::BEZIER, true);
-    }
-}
-
 void ShapeCollection::loadV2(std::ifstream &myfile)
 {
     while(myfile.good())
@@ -105,7 +94,7 @@ void ShapeCollection::loadV2(std::ifstream &myfile)
         myfile >> lineType;
         myfile >> x;
         myfile >> y;
-        Add(x, y, (ShapeType)lineType, true);
+        Add(x, y, (ShapeType)lineType, true, false);
     }
 }
 
@@ -119,7 +108,22 @@ void ShapeCollection::loadV3(std::ifstream &myfile)
         myfile >> x;
         myfile >> y;
         myfile >> enableLaser;
-        Add(x, y, (ShapeType)lineType, enableLaser);
+        Add(x, y, (ShapeType)lineType, enableLaser, false);
+    }
+}
+
+void ShapeCollection::loadV4(std::ifstream &myfile)
+{
+    while(myfile.good())
+    {
+        unsigned int x, y, lineType;
+        bool enableLaser, wait;
+        myfile >> lineType;
+        myfile >> x;
+        myfile >> y;
+        myfile >> enableLaser;
+        myfile >> wait;
+        Add(x, y, (ShapeType)lineType, enableLaser, wait);
     }
 }
 
@@ -129,16 +133,19 @@ void ShapeCollection::load(const char* file)
     myfile.open (file);
     std::string version;
     myfile >> version;
-    if(version != "V1" && version != "V2" && version != "V3")
+    if(version != "V4" && version != "V2" && version != "V3")
     {
-        throw "only V1, V2 and V3 standards are supported";
+        throw "only V2, V3 and V4 standards are supported";
     }
-    if(version == "V1")
-        loadV1(myfile);
+
     if(version == "V2")
         loadV2(myfile);
     if(version == "V3")
         loadV3(myfile);
+    if(version == "V3")
+        loadV3(myfile);
+    if(version == "V4")
+        loadV4(myfile);
     myfile.close();
 }
 
@@ -146,10 +153,10 @@ void ShapeCollection::save(const char* file)
 {
     std::ofstream myfile;
     myfile.open (file);
-    myfile << "V3" << std::endl;
+    myfile << "V4" << std::endl;
     for(Point &p : points)
     {
-        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << std::endl;
+        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
     }
     myfile.close();
 }

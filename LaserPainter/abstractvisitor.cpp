@@ -53,6 +53,6 @@ const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsig
         }
     }
     p.point.enableLaser = points[currentPoint].enableLaser;
-
+    p.isNextComponent &= points[currentPoint].wait;
     return &p;
 }

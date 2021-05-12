@@ -23,17 +23,20 @@ BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QW
     insertBezierAction = new QAction("Insert Bezier", this);
     insertLineAction = new QAction("Insert Line", this);
     insertCircleAction = new QAction("Insert Circle", this);
+    setWaitleAction = new QAction("Set wait", this);
     menu->addAction(delteAction);
     menu->addAction(switchLaserAction);
     menu->addAction(insertBezierAction);
     menu->addAction(insertLineAction);
     menu->addAction(insertCircleAction);
+    menu->addAction(setWaitleAction);
 
     connect(delteAction, SIGNAL(triggered()), this, SLOT(deletePoint()));
     connect(switchLaserAction, SIGNAL(triggered()), this, SLOT(switchLaser()));
     connect(insertBezierAction, SIGNAL(triggered()), this, SLOT(insertBezier()));
     connect(insertCircleAction, SIGNAL(triggered()), this, SLOT(insertCircle()));
     connect(insertLineAction, SIGNAL(triggered()), this, SLOT(insertLine()));
+    connect(setWaitleAction, SIGNAL(triggered()), this, SLOT(setWait()));
 
     setStyleSheet("border: 1px solid red");
     this->setFixedSize(MAX_W, MAX_H);
@@ -82,7 +85,7 @@ void BezierDesigner::executeUnDo()
 
 void BezierDesigner::insert(ShapeType type)
 {
-    Point p(clickPointX * 4, clickPointY * 4, type, true);
+    Point p(clickPointX * 4, clickPointY * 4, type, true, false);
     shapeCollection.insertPointAfter(p);
     addDo(new AddDeleteOperation(p));
     this->repaint();
@@ -117,6 +120,13 @@ void BezierDesigner::switchLaser()
     this->repaint();
 }
 
+void BezierDesigner::setWait()
+{
+    auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
+    bezierPoint->wait = !bezierPoint->wait;
+    this->repaint();
+}
+
 ShapeType getShapeType(QString str)
 {
     if(str == BEZIER_)
@@ -144,6 +154,7 @@ void BezierDesigner::mousePressEvent(QMouseEvent* e)
         delteAction->setEnabled(bezierPoint != nullptr);
         if(bezierPoint != nullptr)
         {
+            setWaitleAction->setText(bezierPoint->wait? "Disable wait" : "Enable wait");
             switchLaserAction->setText(bezierPoint->enableLaser? "Disable Laser" : "Enable Laser");
         }
         menu->popup(this->mapToGlobal(QPoint(clickPointX, clickPointY)));
@@ -185,14 +196,17 @@ void BezierDesigner::mouseMoveEvent(QMouseEvent *e)
 void BezierDesigner::paintEvent(QPaintEvent *e) {
     Q_UNUSED(e);
 
-    doPainting();
-  }
-
-  void BezierDesigner::doPainting() {
-
     QPainter painter(this);
 
     painter.setBrush(QBrush(Qt::darkBlue));
+    drawControlPoints(painter);
+
+    painter.setBrush(QBrush(Qt::red));
+    drawLaserPath(painter);
+  }
+
+void BezierDesigner::drawControlPoints(QPainter &painter)
+{
     if(shapeCollection.points.size() > 0)
     {
         for(unsigned int i = 0; i < shapeCollection.points.size() - 1; i++)
@@ -200,7 +214,8 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
             Point &p1 = shapeCollection.points[i];
             Point &p2 = shapeCollection.points[i+1];
             painter.setBrush(p1.enableLaser? QBrush(Qt::red) : QBrush(Qt::green));
-            painter.drawEllipse((p1.x - 3)/4, (p1.y - 3)/4, 6, 6);
+            int circleSize = p1.wait? 10 : 6;
+            painter.drawEllipse((p1.x - 3)/4, (p1.y - 3)/4, circleSize, circleSize);
             if(drawLines)
             {
                 painter.drawLine(p2.x / 4, p2.y / 4, p1.x / 4, p1.y / 4);
@@ -211,12 +226,14 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
         painter.setBrush(p.enableLaser? QBrush(Qt::red) : QBrush(Qt::green));
         painter.drawEllipse((p.x - 3) / 4, (p.y - 3) / 4, 6, 6);
     }
+}
 
-    painter.setBrush(QBrush(Qt::red));
+void BezierDesigner::drawLaserPath(QPainter &painter)
+{
     const PointWithMetadata *pt;
     while((pt = shapeCollection.next(30)) != nullptr)
     {
         painter.drawPoint(pt->point.x / 4, pt->point.y / 4);
     }
-  }
+}
 
