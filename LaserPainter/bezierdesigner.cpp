@@ -7,15 +7,15 @@
 #include "structs.h"
 #include "adddeleteoperation.h"
 #include "moveoperation.h"
-#include <QShortcut>
 
 #define MAX_W 1024
 #define MAX_H 780
 
-BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QWidget *parent) :
+BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent) :
     QFrame(parent),
     shapeCollection(sc),
-    shapeSelector(shapeSelector)
+    shapeSelector(shapeSelector),
+    unredoPanle(unredoPanle)
 {
     menu = new QMenu(this);
     delteAction = new QAction("Delete", this);
@@ -40,54 +40,13 @@ BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QW
 
     setStyleSheet("border: 1px solid red");
     this->setFixedSize(MAX_W, MAX_H);
-
-    QShortcut* undoShortcut = new QShortcut(this);
-    undoShortcut->setKey(Qt::CTRL + Qt::Key_Z);
-    connect(undoShortcut, SIGNAL(activated()), this, SLOT(executeUnDo()));
-
-    QShortcut* redoShortcut = new QShortcut(this);
-    redoShortcut->setKey(Qt::CTRL + Qt::Key_Y);
-    connect(redoShortcut, SIGNAL(activated()), this, SLOT(executeReDo()));
-}
-
-void BezierDesigner::addDo(AbstractOperation* operation)
-{
-    undo.push(operation);
-    while (!redo.empty())
-    {
-        redo.pop();
-    }
-}
-
-void BezierDesigner::executeReDo()
-{
-    if(redo.size() > 0)
-    {
-        AbstractOperation* operation = redo.top();
-        redo.pop();
-        operation->reDo(shapeCollection);
-        undo.push(operation);
-    }
-    this->repaint();
-}
-
-void BezierDesigner::executeUnDo()
-{
-    if(undo.size() > 0)
-    {
-        AbstractOperation* operation = undo.top();
-        undo.pop();
-        operation->unDo(shapeCollection);
-        redo.push(operation);
-    }
-    this->repaint();
 }
 
 void BezierDesigner::insert(ShapeType type)
 {
     Point p(clickPointX * 4, clickPointY * 4, type, true, false);
     shapeCollection.insertPointAfter(p);
-    addDo(new AddDeleteOperation(p));
+    unredoPanle->addDo(new AddDeleteOperation(p));
     this->repaint();
 }
 
@@ -109,7 +68,7 @@ void BezierDesigner::insertLine()
 void BezierDesigner::deletePoint()
 {
     auto deleted = shapeCollection.deletePoint(clickPointX * 4, clickPointY * 4);
-    addDo(new AddDeleteOperation(deleted.second, deleted.first));
+    unredoPanle->addDo(new AddDeleteOperation(deleted.second, deleted.first));
     this->repaint();
 }
 
@@ -143,6 +102,20 @@ int inline limit(int x, const int max)
     return x > max? max : x;
 }
 
+void BezierDesigner::configureContextMenuButtons(point* selectedPoint)
+{
+    bool isExistingPointSelected = selectedPoint != nullptr;
+
+    delteAction->setEnabled(isExistingPointSelected);
+    switchLaserAction->setEnabled(isExistingPointSelected);
+    setWaitleAction->setEnabled(isExistingPointSelected);
+    if(isExistingPointSelected)
+    {
+        setWaitleAction->setText(selectedPoint->wait? "Disable wait" : "Enable wait");
+        switchLaserAction->setText(selectedPoint->enableLaser? "Disable Laser" : "Enable Laser");
+    }
+}
+
 void BezierDesigner::mousePressEvent(QMouseEvent* e)
 {
     clickPointX = limit(e->x(), MAX_W - 5);
@@ -151,12 +124,7 @@ void BezierDesigner::mousePressEvent(QMouseEvent* e)
     if(e->button() == Qt::MouseButton::RightButton)
     {
         auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
-        delteAction->setEnabled(bezierPoint != nullptr);
-        if(bezierPoint != nullptr)
-        {
-            setWaitleAction->setText(bezierPoint->wait? "Disable wait" : "Enable wait");
-            switchLaserAction->setText(bezierPoint->enableLaser? "Disable Laser" : "Enable Laser");
-        }
+        configureContextMenuButtons(bezierPoint);
         menu->popup(this->mapToGlobal(QPoint(clickPointX, clickPointY)));
         return;
     }
@@ -176,7 +144,7 @@ void BezierDesigner::mouseReleaseEvent(QMouseEvent *e)
         AbstractOperation* operation = isPointAdded
                 ? (AbstractOperation*) new AddDeleteOperation(*selectedPoint)
                 : new MoveOperation(*selectedPoint, clickPointX * 4, clickPointY * 4);
-        addDo(operation);
+        unredoPanle->addDo(operation);
     }
     selectedPoint = nullptr;
 }

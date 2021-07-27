@@ -5,16 +5,16 @@
 #include "shapecollection.h"
 #include <QMenu>
 #include <QComboBox>
-#include <stack>
 #include "abstractoperation.h"
+#include "unredopanel.h"
 
 class BezierDesigner : public QFrame
 {
     Q_OBJECT
 public:
-    explicit BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, QWidget *parent = nullptr);
+    explicit BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent = nullptr);
     bool drawLines = true;
-
+    
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -29,14 +29,12 @@ public slots:
     void insertBezier();
     void insertCircle();
     void insertLine();
-    void executeReDo();
-    void executeUnDo();
     void setWait();
 
 private:
-    void addDo(AbstractOperation* op);
+
+    UnReDoPanel *unredoPanle;
     void insert(ShapeType type);
-    std::stack<AbstractOperation*> undo, redo;
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
@@ -51,6 +49,7 @@ private:
     unsigned int clickPointX, clickPointY;
     void drawControlPoints(QPainter &painter);
     void drawLaserPath(QPainter &painter);
+    void ConfigureContextMenuButtons(point* selectedPoint);
 };
 
 #endif // BEZIERDESIGNER_H

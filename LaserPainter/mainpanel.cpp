@@ -1,6 +1,8 @@
 #include "mainpanel.h"
 #include "bezierdesigner.h"
 #include "hardwareconnector.h"
+#include "unredopanel.h"
+
 #include <QFrame>
 #include <QStatusBar>
 #include <QHBoxLayout>
@@ -23,7 +25,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *hbox = new QHBoxLayout(this);
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
-    bezierDesigner = new BezierDesigner(shapeCollection, shapeSelector, this);
+    auto* unrePanel = new UnReDoPanel(this, shapeCollection, this);
+    bezierDesigner = new BezierDesigner(shapeCollection, shapeSelector, unrePanel, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -48,6 +51,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     scaleLabel = new QLabel("Scale: 100%", this);
     enableWaitCircuid = new QCheckBox("wait circuid", this);
 
+    vbox->setSpacing(5);
+    vbox->addWidget(unrePanel, 0, Qt::AlignTop);
     vbox->setSpacing(5);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
@@ -130,8 +135,8 @@ void MainPanel::lineChecbox()
     bezierDesigner->update();
 }
 
-const char* errorMessage;
-QTimer* timer;
+static const char* errorMessage;
+static QTimer* timer;
 void MainPanel::DisplayError()
 {
     QMessageBox msgBox(this);

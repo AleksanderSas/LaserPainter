@@ -44,7 +44,8 @@ SOURCES += \
     abstractoperation.cpp \
     moveoperation.cpp \
     adddeleteoperation.cpp \
-    configuration.cpp
+    configuration.cpp \
+    unredopanel.cpp
 
 HEADERS += \
     bezierdesigner.h \
@@ -59,7 +60,8 @@ HEADERS += \
     abstractoperation.h \
     moveoperation.h \
     adddeleteoperation.h \
-    configuration.h
+    configuration.h \
+    unredopanel.h
 
 FORMS +=
 
