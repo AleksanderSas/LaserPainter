@@ -230,7 +230,7 @@ static bool waitUntillReachPosition()
     return false;
 }
 
-const char* HardwareConnector::draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
+const char* HardwareConnector::draw(Project &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;

@@ -2,7 +2,7 @@
 #define MAINPANEL_H
 
 #include <QWidget>
-#include "Collection/shapecollection.h"
+#include "Collection/project.h"
 #include "shapedesigner.h"
 #include "hardwareconnector.h"
 #include "configuration.h"
@@ -23,7 +23,7 @@ public:
 
 private:
     Configuration configuration;
-    ShapeCollection shapeCollection;
+    Project project;
     ShapeDesigner *shapeDesigner;
     HardwareConnector *connector = nullptr;
     void draw();
@@ -42,7 +42,7 @@ signals:
 public slots:
     void DisplayError();
     void OpenFile();
-    void SaveFiel();
+    void SaveFile();
     void Clear();
     void hardwareDraw();
     void lineChecbox();

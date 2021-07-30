@@ -11,6 +11,7 @@
 #include <thread>
 #include <QMessageBox>
 #include <QTimer>
+#include <QTabWidget>
 
 #include "math.h"
 
@@ -25,8 +26,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *hbox = new QHBoxLayout(this);
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
-    auto* unrePanel = new UnReDoPanel(this, shapeCollection, this);
-    shapeDesigner = new ShapeDesigner(shapeCollection, shapeSelector, unrePanel, this);
+    auto* unrePanel = new UnReDoPanel(this, project.shape, this);
+    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -74,10 +75,12 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addStretch(90);
 
     hbox->addItem(vbox);
-    hbox->addWidget(shapeDesigner, 5);
+    auto* tabWidget = new QTabWidget(this);
+    tabWidget->addTab(shapeDesigner, "shape designer");
+    hbox->addWidget(tabWidget, 5);
 
     connect(openButton, SIGNAL(clicked()), this, SLOT(OpenFile()));
-    connect(saveButton, SIGNAL(clicked()), this, SLOT(SaveFiel()));
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(SaveFile()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(Clear()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
@@ -87,7 +90,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     if(ifFileExists(configuration.file))
     {
-        shapeCollection.load(configuration.file.c_str());
+        project.load(configuration.file.c_str());
     }
 
     if(!configuration.GetErrors().empty())
@@ -149,7 +152,7 @@ void MainPanel::DisplayError()
 
 void MainPanel::draw()
 {
-    errorMessage = connector->draw(shapeCollection, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
+    errorMessage = connector->draw(project, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
     if(errorMessage != nullptr)
     {
         // any thread
@@ -162,15 +165,15 @@ void MainPanel::draw()
     startButton -> setText("Start");
 }
 
-void MainPanel::SaveFiel()
+void MainPanel::SaveFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), configuration.dir.c_str());
-    shapeCollection.save(fileName.toStdString().c_str());
+    project.save(fileName.toStdString().c_str());
 }
 
 void MainPanel::Clear()
 {
-    if(shapeCollection.points.size() > 0)
+    if(project.isEmpty())
     {
         QMessageBox msgBox(this);
         msgBox.setInformativeText("Do you want to clear all points?");
@@ -179,7 +182,7 @@ void MainPanel::Clear()
         int ret = msgBox.exec();
         if(ret == QMessageBox::Yes)
         {
-            shapeCollection.clear();
+            project.clear();
             shapeDesigner->update();
         }
     }
@@ -188,12 +191,12 @@ void MainPanel::Clear()
 void MainPanel::OpenFile()
 {
     try {
-        shapeCollection.clear();
+        project.clear();
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), QString(configuration.dir.c_str()));
         if(fileName.size() > 0)
         {
             std::string selectedFile = fileName.toStdString();
-            shapeCollection.load(selectedFile.c_str());
+            project.load(selectedFile.c_str());
             configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
             configuration.file = selectedFile;
             shapeDesigner->update();

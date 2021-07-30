@@ -32,6 +32,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    Collection/project.cpp \
         main.cpp \
     hardwareconnector.cpp \
     configuration.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
     Ui/unredopanel.cpp
 
 HEADERS += \
+    Collection/project.h \
     hardwareconnector.h \
     configuration.h \
     Collection/shapecollection.h \
