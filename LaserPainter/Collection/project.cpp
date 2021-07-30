@@ -101,14 +101,34 @@ static int scaleValue(int value, int scale)
     return (value - 2048) * scale / 100 + 2048;
 }
 
-static PointWithMetadata p;
+void Project::restart()
+{
+    move.restart();
+    shape.restart();
+    SetNextPath();
+}
+
+void Project::SetNextPath()
+{
+    path = move.next(1);
+    while(path == nullptr)
+    {
+        path = move.next(1);
+    }
+}
+
 const PointWithMetadata* Project::next(unsigned int stepsSize)
 {
-    const PointWithMetadata* path = move.next(stepsSize * 100);
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
+    if(shapePoint == nullptr)
+    {
+        SetNextPath();
+        return nullptr;
+    }
 
-    p.point.x = scaleValue(shapePoint->point.x, 25) + path->point.x;
-    p.point.y = scaleValue(shapePoint->point.y, 25) + path->point.y;
+    p.point = shapePoint->point;
+    p.point.x = scaleValue(shapePoint->point.x, 25) - 2048 + path->point.x;
+    p.point.y = scaleValue(shapePoint->point.y, 25) - 2048 + path->point.y;
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;

@@ -13,6 +13,7 @@ public:
     ShapeCollection();
     ~ShapeCollection();
     const PointWithMetadata* next(unsigned int stepsSize);
+    void restart();
 
     void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, bool wait, int position = -1);
     std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
@@ -27,7 +28,7 @@ public:
 private :
     std::vector<Point>::iterator getPointIterator(int x, int y);
     bool SetNextVisitor(bool firstVisitor);
-    AbstractVisitor *currectVisitor = nullptr;
+    AbstractVisitor *currentVisitor = nullptr;
     unsigned int currentShape = 0;
     std::vector<Point>::iterator insertPosition;
 };

@@ -106,6 +106,16 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
     return nullptr;
 }
 
+void ShapeCollection::restart()
+{
+    if(currentVisitor != nullptr)
+    {
+        delete currentVisitor;
+        currentVisitor = nullptr;
+    }
+    insertPosition = points.begin();
+}
+
 bool ShapeCollection::SetNextVisitor(bool firstVisitor)
 {
     if(iter == points.end())
@@ -121,27 +131,27 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor)
     }
 
     unsigned int offset = iter - points.begin() - pointNumber;
-    currectVisitor = GetNextVisitor(type, pointNumber, offset);
+    currentVisitor = GetNextVisitor(type, pointNumber, offset);
     return true;
 }
 
 const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
 {
-    if(currectVisitor == nullptr)
+    if(currentVisitor == nullptr)
     {
         iter = points.begin();
         if(!SetNextVisitor(true))
             return  nullptr;
     }
 
-    const PointWithMetadata* p = currectVisitor->next(points, stepsSize);
+    const PointWithMetadata* p = currentVisitor->next(points, stepsSize);
     while(p == nullptr)
     {
-        delete  currectVisitor;
-        currectVisitor = nullptr;
+        delete  currentVisitor;
+        currentVisitor = nullptr;
         if(!SetNextVisitor(false))
             return  nullptr;
-        p = currectVisitor->next(points, stepsSize);
+        p = currentVisitor->next(points, stepsSize);
     }
     return p;
 }
