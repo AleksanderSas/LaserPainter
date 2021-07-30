@@ -28,6 +28,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* shapeSelector = new QComboBox(this);
     auto* unrePanel = new UnReDoPanel(this, project.shape, this);
     shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, this);
+    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -77,6 +78,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     hbox->addItem(vbox);
     auto* tabWidget = new QTabWidget(this);
     tabWidget->addTab(shapeDesigner, "shape designer");
+    tabWidget->addTab(moveDesigner, "move designer");
     hbox->addWidget(tabWidget, 5);
 
     connect(openButton, SIGNAL(clicked()), this, SLOT(OpenFile()));

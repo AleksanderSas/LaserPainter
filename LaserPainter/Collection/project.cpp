@@ -95,8 +95,22 @@ void Project::save(const char* file)
     myfile.close();
 }
 
+static int scaleValue(int value, int scale)
+{
+    if(scale == 100) return value;
+    return (value - 2048) * scale / 100 + 2048;
+}
+
+static PointWithMetadata p;
 const PointWithMetadata* Project::next(unsigned int stepsSize)
 {
-    return shape.next(stepsSize);
+    const PointWithMetadata* path = move.next(stepsSize * 100);
+    const PointWithMetadata* shapePoint = shape.next(stepsSize);
+
+    p.point.x = scaleValue(shapePoint->point.x, 25) + path->point.x;
+    p.point.y = scaleValue(shapePoint->point.y, 25) + path->point.y;
+    p.isNextComponent = shapePoint->isNextComponent;
+
+    return &p;
 }
 

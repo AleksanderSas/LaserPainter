@@ -25,6 +25,7 @@ private:
     Configuration configuration;
     Project project;
     ShapeDesigner *shapeDesigner;
+    ShapeDesigner *moveDesigner;
     HardwareConnector *connector = nullptr;
     void draw();
     std::thread *displayThread = nullptr;
