@@ -1,5 +1,5 @@
 #include "mainpanel.h"
-#include "bezierdesigner.h"
+#include "shapedesigner.h"
 #include "hardwareconnector.h"
 #include "unredopanel.h"
 
@@ -26,7 +26,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
     auto* unrePanel = new UnReDoPanel(this, shapeCollection, this);
-    bezierDesigner = new BezierDesigner(shapeCollection, shapeSelector, unrePanel, this);
+    shapeDesigner = new ShapeDesigner(shapeCollection, shapeSelector, unrePanel, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -74,7 +74,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addStretch(90);
 
     hbox->addItem(vbox);
-    hbox->addWidget(bezierDesigner, 5);
+    hbox->addWidget(shapeDesigner, 5);
 
     connect(openButton, SIGNAL(clicked()), this, SLOT(OpenFile()));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(SaveFiel()));
@@ -131,8 +131,8 @@ void MainPanel::hardwareDraw()
 
 void MainPanel::lineChecbox()
 {
-    bezierDesigner->drawLines = drawLinesCheckbox->isChecked();
-    bezierDesigner->update();
+    shapeDesigner->drawLines = drawLinesCheckbox->isChecked();
+    shapeDesigner->update();
 }
 
 static const char* errorMessage;
@@ -180,7 +180,7 @@ void MainPanel::Clear()
         if(ret == QMessageBox::Yes)
         {
             shapeCollection.clear();
-            bezierDesigner->update();
+            shapeDesigner->update();
         }
     }
 }
@@ -196,7 +196,7 @@ void MainPanel::OpenFile()
             shapeCollection.load(selectedFile.c_str());
             configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
             configuration.file = selectedFile;
-            bezierDesigner->update();
+            shapeDesigner->update();
         }
     } catch (const char* error) {
         QMessageBox msgBox(this);

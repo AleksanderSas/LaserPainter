@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "shapecollection.h"
-#include "bezierdesigner.h"
+#include "shapedesigner.h"
 #include "hardwareconnector.h"
 #include "configuration.h"
 #include <thread>
@@ -24,7 +24,7 @@ public:
 private:
     Configuration configuration;
     ShapeCollection shapeCollection;
-    BezierDesigner *bezierDesigner;
+    ShapeDesigner *shapeDesigner;
     HardwareConnector *connector = nullptr;
     void draw();
     std::thread *displayThread = nullptr;

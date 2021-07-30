@@ -214,6 +214,7 @@ static int scaleValue(int value, int scale)
 //otherwise false
 static bool waitUntillReachPosition()
 {
+#ifdef R_PI
     unsigned int counter = 0;
     int pinValu = digitalRead(TEST_PIN);
     while(pinValu == TEST_FAILURE)
@@ -225,6 +226,7 @@ static bool waitUntillReachPosition()
         pinValu = digitalRead(TEST_PIN);
     }
     printf("number of wait iteration exceeded: %d\n", counter);
+#endif
     return false;
 }
 

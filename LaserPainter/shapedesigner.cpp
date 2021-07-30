@@ -1,4 +1,4 @@
-#include "bezierdesigner.h"
+#include "shapedesigner.h"
 #include "beziervisitor.h"
 #include <QApplication>
 #include <QPainter>
@@ -11,7 +11,7 @@
 #define MAX_W 1024
 #define MAX_H 780
 
-BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent) :
+ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent) :
     QFrame(parent),
     shapeCollection(sc),
     shapeSelector(shapeSelector),
@@ -42,7 +42,7 @@ BezierDesigner::BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, Un
     this->setFixedSize(MAX_W, MAX_H);
 }
 
-void BezierDesigner::insert(ShapeType type)
+void ShapeDesigner::insert(ShapeType type)
 {
     Point p(clickPointX * 4, clickPointY * 4, type, true, false);
     shapeCollection.insertPointAfter(p);
@@ -50,36 +50,36 @@ void BezierDesigner::insert(ShapeType type)
     this->repaint();
 }
 
-void BezierDesigner::insertBezier()
+void ShapeDesigner::insertBezier()
 {
     insert(ShapeType::BEZIER);
 }
 
-void BezierDesigner::insertCircle()
+void ShapeDesigner::insertCircle()
 {
     insert(ShapeType::CIRCLE);
 }
 
-void BezierDesigner::insertLine()
+void ShapeDesigner::insertLine()
 {
     insert(ShapeType::LINE);
 }
 
-void BezierDesigner::deletePoint()
+void ShapeDesigner::deletePoint()
 {
     auto deleted = shapeCollection.deletePoint(clickPointX * 4, clickPointY * 4);
     unredoPanle->addDo(new AddDeleteOperation(deleted.second, deleted.first));
     this->repaint();
 }
 
-void BezierDesigner::switchLaser()
+void ShapeDesigner::switchLaser()
 {
     auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
     bezierPoint->enableLaser = !bezierPoint->enableLaser;
     this->repaint();
 }
 
-void BezierDesigner::setWait()
+void ShapeDesigner::setWait()
 {
     auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
     bezierPoint->wait = !bezierPoint->wait;
@@ -102,7 +102,7 @@ int inline limit(int x, const int max)
     return x > max? max : x;
 }
 
-void BezierDesigner::configureContextMenuButtons(point* selectedPoint)
+void ShapeDesigner::configureContextMenuButtons(point* selectedPoint)
 {
     bool isExistingPointSelected = selectedPoint != nullptr;
 
@@ -116,7 +116,7 @@ void BezierDesigner::configureContextMenuButtons(point* selectedPoint)
     }
 }
 
-void BezierDesigner::mousePressEvent(QMouseEvent* e)
+void ShapeDesigner::mousePressEvent(QMouseEvent* e)
 {
     clickPointX = limit(e->x(), MAX_W - 5);
     clickPointY = limit(e->y(), MAX_H - 5);
@@ -137,7 +137,7 @@ void BezierDesigner::mousePressEvent(QMouseEvent* e)
     this->repaint();
 }
 
-void BezierDesigner::mouseReleaseEvent(QMouseEvent *e)
+void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
 {
     if(selectedPoint != nullptr && e->button() == Qt::MouseButton::LeftButton)
     {
@@ -149,7 +149,7 @@ void BezierDesigner::mouseReleaseEvent(QMouseEvent *e)
     selectedPoint = nullptr;
 }
 
-void BezierDesigner::mouseMoveEvent(QMouseEvent *e)
+void ShapeDesigner::mouseMoveEvent(QMouseEvent *e)
 {
     if(selectedPoint != nullptr)
     {
@@ -161,7 +161,7 @@ void BezierDesigner::mouseMoveEvent(QMouseEvent *e)
     }
 }
 
-void BezierDesigner::paintEvent(QPaintEvent *e) {
+void ShapeDesigner::paintEvent(QPaintEvent *e) {
     Q_UNUSED(e);
 
     QPainter painter(this);
@@ -173,7 +173,7 @@ void BezierDesigner::paintEvent(QPaintEvent *e) {
     drawLaserPath(painter);
   }
 
-void BezierDesigner::drawControlPoints(QPainter &painter)
+void ShapeDesigner::drawControlPoints(QPainter &painter)
 {
     if(shapeCollection.points.size() > 0)
     {
@@ -196,7 +196,7 @@ void BezierDesigner::drawControlPoints(QPainter &painter)
     }
 }
 
-void BezierDesigner::drawLaserPath(QPainter &painter)
+void ShapeDesigner::drawLaserPath(QPainter &painter)
 {
     const PointWithMetadata *pt;
     while((pt = shapeCollection.next(30)) != nullptr)

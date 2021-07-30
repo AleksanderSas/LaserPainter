@@ -33,3 +33,7 @@
 
 #QT temporary files
 build-LaserPainter-Desktop-Debug/*
+
+#KiCad
+*.gbr
+*.sch-bak

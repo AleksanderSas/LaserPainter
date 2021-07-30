@@ -8,11 +8,11 @@
 #include "abstractoperation.h"
 #include "unredopanel.h"
 
-class BezierDesigner : public QFrame
+class ShapeDesigner : public QFrame
 {
     Q_OBJECT
 public:
-    explicit BezierDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent = nullptr);
+    explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent = nullptr);
     bool drawLines = true;
     
 protected:
@@ -49,7 +49,7 @@ private:
     unsigned int clickPointX, clickPointY;
     void drawControlPoints(QPainter &painter);
     void drawLaserPath(QPainter &painter);
-    void ConfigureContextMenuButtons(point* selectedPoint);
+    void configureContextMenuButtons(point* selectedPoint);
 };
 
 #endif // BEZIERDESIGNER_H
