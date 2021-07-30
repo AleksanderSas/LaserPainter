@@ -10,7 +10,7 @@
 #include <cstring>
 #include "math.h"
 #include "time.h"
-#include "beziervisitor.h"
+#include "Visitors/beziervisitor.h"
 
 #ifdef R_PI
 #include <wiringPi.h>

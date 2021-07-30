@@ -1,12 +1,12 @@
 #include "shapedesigner.h"
-#include "beziervisitor.h"
+#include "Visitors/beziervisitor.h"
 #include <QApplication>
 #include <QPainter>
 #include <QMouseEvent>
 #include "math.h"
-#include "structs.h"
-#include "adddeleteoperation.h"
-#include "moveoperation.h"
+#include "Collection//structs.h"
+#include "Collection/adddeleteoperation.h"
+#include "Collection/moveoperation.h"
 
 #define MAX_W 1024
 #define MAX_H 780

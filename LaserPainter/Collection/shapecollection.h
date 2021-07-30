@@ -2,7 +2,7 @@
 #define SHAPECOLLECTION_H
 
 #include <vector>
-#include "abstractvisitor.h"
+#include "Visitors/abstractvisitor.h"
 #include "shadow.h"
 #include <fstream>
 #include <utility>

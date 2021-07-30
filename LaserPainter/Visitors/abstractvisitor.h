@@ -1,7 +1,7 @@
 #ifndef ABSTRACTVISITOR_H
 #define ABSTRACTVISITOR_H
 
-#include "structs.h"
+#include "Collection/structs.h"
 #include <vector>
 
 class AbstractVisitor

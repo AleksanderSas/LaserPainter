@@ -1,9 +1,9 @@
 #include "shapecollection.h"
 #include <iostream>
 #include <fstream>
-#include "beziervisitor.h"
-#include "circlevisitor.h"
-#include "linevisitor.h"
+#include "Visitors/beziervisitor.h"
+#include "Visitors/circlevisitor.h"
+#include "Visitors/linevisitor.h"
 
 ShapeCollection::ShapeCollection()
 {

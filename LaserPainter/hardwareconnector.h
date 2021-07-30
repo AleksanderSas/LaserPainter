@@ -2,7 +2,7 @@
 #define HARDWARECONNECTOR_H
 
 #include "stdio.h"
-#include "shapecollection.h"
+#include "Collection/shapecollection.h"
 
 #define RESET_PIN 3
 #define LASER_PIN 0

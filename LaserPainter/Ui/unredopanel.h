@@ -1,7 +1,7 @@
 #ifndef UNREDOPANEL_H
 #define UNREDOPANEL_H
 
-#include "abstractoperation.h"
+#include "Collection/abstractoperation.h"
 
 #include <QWidget>
 #include <QFrame>

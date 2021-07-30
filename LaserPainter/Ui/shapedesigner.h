@@ -2,10 +2,10 @@
 #define BEZIERDESIGNER_H
 
 #include <QFrame>
-#include "shapecollection.h"
+#include "Collection/shapecollection.h"
 #include <QMenu>
 #include <QComboBox>
-#include "abstractoperation.h"
+#include "Collection/abstractoperation.h"
 #include "unredopanel.h"
 
 class ShapeDesigner : public QFrame

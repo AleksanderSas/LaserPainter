@@ -12,7 +12,7 @@ TARGET = LaserPainter
 TEMPLATE = app
 
 #comment the line below to compile on desktop
-CONFIG += r_pi
+#CONFIG += r_pi
 
 r_pi {
 DEFINES += R_PI
@@ -33,35 +33,35 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    bezierdesigner.cpp \
-    beziervisitor.cpp \
-    mainpanel.cpp \
     hardwareconnector.cpp \
-    shapecollection.cpp \
-    abstractvisitor.cpp \
-    linevisitor.cpp \
-    circlevisitor.cpp \
-    abstractoperation.cpp \
-    moveoperation.cpp \
-    adddeleteoperation.cpp \
     configuration.cpp \
-    unredopanel.cpp
+    Collection/shapecollection.cpp \
+    Collection/abstractoperation.cpp \
+    Collection/moveoperation.cpp \
+    Collection/adddeleteoperation.cpp \
+    Visitors/beziervisitor.cpp \
+    Visitors/abstractvisitor.cpp \
+    Visitors/linevisitor.cpp \
+    Visitors/circlevisitor.cpp \
+    Ui/mainpanel.cpp \
+    Ui/shapedesigner.cpp \
+    Ui/unredopanel.cpp
 
 HEADERS += \
-    bezierdesigner.h \
-    beziervisitor.h \
-    mainpanel.h \
     hardwareconnector.h \
-    shapecollection.h \
-    abstractvisitor.h \
-    structs.h \
-    linevisitor.h \
-    circlevisitor.h \
-    abstractoperation.h \
-    moveoperation.h \
-    adddeleteoperation.h \
     configuration.h \
-    unredopanel.h
+    Collection/shapecollection.h \
+    Collection/structs.h \
+    Collection/abstractoperation.h \
+    Collection/moveoperation.h \
+    Collection/adddeleteoperation.h \
+    Visitors/abstractvisitor.h \
+    Visitors/beziervisitor.h \
+    Visitors/linevisitor.h \
+    Visitors/circlevisitor.h \
+    Ui/mainpanel.h \
+    Ui/shapedesigner.h \
+    Ui/unredopanel.h
 
 FORMS +=
 

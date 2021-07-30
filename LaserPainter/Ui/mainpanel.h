@@ -2,7 +2,7 @@
 #define MAINPANEL_H
 
 #include <QWidget>
-#include "shapecollection.h"
+#include "Collection/shapecollection.h"
 #include "shapedesigner.h"
 #include "hardwareconnector.h"
 #include "configuration.h"

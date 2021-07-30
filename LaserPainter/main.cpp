@@ -1,4 +1,4 @@
-#include "mainpanel.h"
+#include "Ui/mainpanel.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
