@@ -1,5 +1,6 @@
 #include "project.h"
 #include "shapecollection.h"
+#include <string>
 
 Project::Project()
 {
@@ -61,15 +62,45 @@ void Project::loadV4(std::ifstream &myfile)
     }
 }
 
+void Project::readPointSequenceV5(std::ifstream &myfile, ShapeCollection& sc)
+{
+    int pointNumber = 0;
+    myfile >> pointNumber;
+    for(int i = 0; i < pointNumber; i++)
+    {
+        if(!myfile.good())
+        {
+            std::string errorMessage = "Expected ";
+            errorMessage+= pointNumber +  " points, butfound only " + i;
+            throw errorMessage;
+        }
+
+        unsigned int x, y, lineType;
+        bool enableLaser, wait;
+        myfile >> lineType;
+        myfile >> x;
+        myfile >> y;
+        myfile >> enableLaser;
+        myfile >> wait;
+        sc.Add(x, y, (ShapeType)lineType, enableLaser, wait);
+    }
+}
+
+void Project::loadV5(std::ifstream &myfile)
+{
+    readPointSequenceV5(myfile, shape);
+    readPointSequenceV5(myfile, move);
+}
+
 void Project::load(const char* file)
 {
     std::ifstream myfile;
     myfile.open (file);
     std::string version;
     myfile >> version;
-    if(version != "V4" && version != "V2" && version != "V3")
+    if(version != "V5" && version != "V4" && version != "V2" && version != "V3")
     {
-        throw "only V2, V3 and V4 standards are supported";
+        throw "only V2, V3, V4 and V5 standards are supported";
     }
 
     if(version == "V2")
@@ -80,6 +111,8 @@ void Project::load(const char* file)
         loadV3(myfile);
     if(version == "V4")
         loadV4(myfile);
+    if(version == "V5")
+        loadV5(myfile);
     myfile.close();
 }
 
@@ -87,8 +120,15 @@ void Project::save(const char* file)
 {
     std::ofstream myfile;
     myfile.open (file);
-    myfile << "V4" << std::endl;
+    myfile << "V5" << std::endl;
+    myfile << shape.points.size() << std::endl;
     for(Point &p : shape.points)
+    {
+        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
+    }
+
+    myfile << std::endl << move.points.size() << std::endl;
+    for(Point &p : move.points)
     {
         myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
     }
@@ -106,14 +146,18 @@ void Project::restart()
     move.restart();
     shape.restart();
     SetNextPath();
+    path = nullptr;
 }
 
 void Project::SetNextPath()
 {
-    path = move.next(1);
-    while(path == nullptr)
+    if(move.points.size() > 0)
     {
         path = move.next(1);
+        while(path == nullptr)
+        {
+            path = move.next(1);
+        }
     }
 }
 
@@ -126,6 +170,11 @@ const PointWithMetadata* Project::next(unsigned int stepsSize)
         return nullptr;
     }
 
+    if(path == nullptr)
+    {
+        //animation is not configured
+        return shapePoint;
+    }
     p.point = shapePoint->point;
     p.point.x = scaleValue(shapePoint->point.x, 25) - 2048 + path->point.x;
     p.point.y = scaleValue(shapePoint->point.y, 25) - 2048 + path->point.y;
