@@ -11,11 +11,12 @@
 #define MAX_W 1024
 #define MAX_H 780
 
-ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent) :
+ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, int mode, QWidget *parent) :
     QFrame(parent),
     shapeCollection(sc),
     shapeSelector(shapeSelector),
-    unredoPanle(unredoPanle)
+    unredoPanle(unredoPanle),
+    mode(mode)
 {
     menu = new QMenu(this);
     delteAction = new QAction("Delete", this);
@@ -46,7 +47,7 @@ void ShapeDesigner::insert(ShapeType type)
 {
     Point p(clickPointX * 4, clickPointY * 4, type, true, false);
     shapeCollection.insertPointAfter(p);
-    unredoPanle->addDo(new AddDeleteOperation(p));
+    unredoPanle->addDo(new AddDeleteOperation(p), mode);
     this->repaint();
 }
 
@@ -68,7 +69,7 @@ void ShapeDesigner::insertLine()
 void ShapeDesigner::deletePoint()
 {
     auto deleted = shapeCollection.deletePoint(clickPointX * 4, clickPointY * 4);
-    unredoPanle->addDo(new AddDeleteOperation(deleted.second, deleted.first));
+    unredoPanle->addDo(new AddDeleteOperation(deleted.second, deleted.first), mode);
     this->repaint();
 }
 
@@ -144,7 +145,7 @@ void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
         AbstractOperation* operation = isPointAdded
                 ? (AbstractOperation*) new AddDeleteOperation(*selectedPoint)
                 : new MoveOperation(*selectedPoint, clickPointX * 4, clickPointY * 4);
-        unredoPanle->addDo(operation);
+        unredoPanle->addDo(operation, mode);
     }
     selectedPoint = nullptr;
 }

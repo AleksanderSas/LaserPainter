@@ -12,7 +12,7 @@ class ShapeDesigner : public QFrame
 {
     Q_OBJECT
 public:
-    explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, QWidget *parent = nullptr);
+    explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, int mode, QWidget *parent = nullptr);
     bool drawLines = true;
     
 protected:
@@ -50,6 +50,7 @@ private:
     void drawControlPoints(QPainter &painter);
     void drawLaserPath(QPainter &painter);
     void configureContextMenuButtons(point* selectedPoint);
+    int mode;
 };
 
 #endif // BEZIERDESIGNER_H

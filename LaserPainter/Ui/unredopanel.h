@@ -14,21 +14,24 @@ class UnReDoPanel : public QFrame
     Q_OBJECT
 
 public:
-    UnReDoPanel(QWidget *panelToRepaint, ShapeCollection &sc, QWidget *parent = nullptr);
-    void addDo(AbstractOperation* op);
+    UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent = nullptr);
+    void addDo(AbstractOperation* op, int mode);
 
 protected:
 
 public slots:
     void executeUnDo();
     void executeReDo();
+    void setMode(int mode);
 
 private:
     QPushButton *unDoButton;
     QPushButton *reDoButton;
     QWidget* panelToRepaint;
-    ShapeCollection &shapeCollection;
-    std::stack<AbstractOperation*> undo, redo;
+    ShapeCollection* shapeCollection[2];
+    std::stack<AbstractOperation*> undo[2], redo[2];
+    int mode = 0;
+    void updateButtons();
 };
 
 #endif // UNREDOPANEL_H

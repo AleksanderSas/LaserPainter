@@ -26,9 +26,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *hbox = new QHBoxLayout(this);
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
-    auto* unrePanel = new UnReDoPanel(this, project.shape, this);
-    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, this);
-    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, this);
+    auto* unrePanel = new UnReDoPanel(this, &project.shape, &project.move, this);
+    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, 0, this);
+    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, 1, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -87,6 +87,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
     connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), unrePanel, SLOT(setMode(int)));
 
     connector = new HardwareConnector();
 
