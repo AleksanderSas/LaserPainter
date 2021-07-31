@@ -35,30 +35,30 @@ UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCol
     connect(redoShortcut, SIGNAL(activated()), this, SLOT(executeReDo()));
 }
 
-void UnReDoPanel::addDo(AbstractOperation* operation, int mode)
+void UnReDoPanel::addDo(AbstractOperation* operation, OperationLayer layer)
 {
-    undo[mode].push(operation);
-    while (!redo[mode].empty())
+    undo[layer].push(operation);
+    while (!redo[layer].empty())
     {
-        redo[mode].pop();
+        redo[layer].pop();
     }
    updateButtons();
 }
 
 void UnReDoPanel::updateButtons()
 {
-    unDoButton->setEnabled(undo[mode].size() > 0);
-    reDoButton->setEnabled(redo[mode].size() > 0);
+    unDoButton->setEnabled(undo[layer].size() > 0);
+    reDoButton->setEnabled(redo[layer].size() > 0);
 }
 
 void UnReDoPanel::executeReDo()
 {
-    if(redo[mode].size() > 0)
+    if(redo[layer].size() > 0)
     {
-        AbstractOperation* operation = redo[mode].top();
-        redo[mode].pop();
-        operation->reDo(*shapeCollection[mode]);
-        undo[mode].push(operation);
+        AbstractOperation* operation = redo[layer].top();
+        redo[layer].pop();
+        operation->reDo(*shapeCollection[layer]);
+        undo[layer].push(operation);
     }
     updateButtons();
     panelToRepaint->repaint();
@@ -66,19 +66,19 @@ void UnReDoPanel::executeReDo()
 
 void UnReDoPanel::executeUnDo()
 {
-    if(undo[mode].size() > 0)
+    if(undo[layer].size() > 0)
     {
-        AbstractOperation* operation = undo[mode].top();
-        undo[mode].pop();
-        operation->unDo(*shapeCollection[mode]);
-        redo[mode].push(operation);
+        AbstractOperation* operation = undo[layer].top();
+        undo[layer].pop();
+        operation->unDo(*shapeCollection[layer]);
+        redo[layer].push(operation);
     }
     updateButtons();
     panelToRepaint->repaint();
 }
 
-void UnReDoPanel::setMode(int mode)
+void UnReDoPanel::setMode(int layer)
 {
-    this->mode = mode;
+    this->layer = static_cast<OperationLayer>(layer);
     updateButtons();
 }

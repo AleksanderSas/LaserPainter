@@ -27,8 +27,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
     auto* unrePanel = new UnReDoPanel(this, &project.shape, &project.move, this);
-    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, 0, this);
-    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, 1, this);
+    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, OperationLayer::shape, this);
+    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, OperationLayer::move, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);

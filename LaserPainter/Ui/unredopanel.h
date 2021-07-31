@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <stack>
 
+enum OperationLayer { shape, move };
 
 class UnReDoPanel : public QFrame
 {
@@ -15,7 +16,7 @@ class UnReDoPanel : public QFrame
 
 public:
     UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent = nullptr);
-    void addDo(AbstractOperation* op, int mode);
+    void addDo(AbstractOperation* op, OperationLayer layer);
 
 protected:
 
@@ -30,7 +31,7 @@ private:
     QWidget* panelToRepaint;
     ShapeCollection* shapeCollection[2];
     std::stack<AbstractOperation*> undo[2], redo[2];
-    int mode = 0;
+    OperationLayer layer = OperationLayer::shape;
     void updateButtons();
 };
 
