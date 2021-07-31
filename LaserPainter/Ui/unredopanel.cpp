@@ -3,11 +3,12 @@
 #include <QShortcut>
 #include <QStyle>
 
-UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection &sc, QWidget *parent):
+UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent):
     QFrame(parent),
-    panelToRepaint(panelToRepaint),
-    shapeCollection(sc)
+    panelToRepaint(panelToRepaint)
 {
+    shapeCollection[0] = sc1;
+    shapeCollection[1] = sc2;
     auto *undoredoBox = new QHBoxLayout(this);
     unDoButton = new QPushButton(this);
     unDoButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
@@ -34,41 +35,50 @@ UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection &sc, QWidget *
     connect(redoShortcut, SIGNAL(activated()), this, SLOT(executeReDo()));
 }
 
-void UnReDoPanel::addDo(AbstractOperation* operation)
+void UnReDoPanel::addDo(AbstractOperation* operation, OperationLayer layer)
 {
-    undo.push(operation);
-    while (!redo.empty())
+    undo[layer].push(operation);
+    while (!redo[layer].empty())
     {
-        redo.pop();
+        redo[layer].pop();
     }
-    unDoButton->setEnabled(true);
-    reDoButton->setEnabled(false);
+   updateButtons();
+}
+
+void UnReDoPanel::updateButtons()
+{
+    unDoButton->setEnabled(undo[layer].size() > 0);
+    reDoButton->setEnabled(redo[layer].size() > 0);
 }
 
 void UnReDoPanel::executeReDo()
 {
-    if(redo.size() > 0)
+    if(redo[layer].size() > 0)
     {
-        AbstractOperation* operation = redo.top();
-        redo.pop();
-        operation->reDo(shapeCollection);
-        undo.push(operation);
+        AbstractOperation* operation = redo[layer].top();
+        redo[layer].pop();
+        operation->reDo(*shapeCollection[layer]);
+        undo[layer].push(operation);
     }
-    unDoButton->setEnabled(true);
-    reDoButton->setEnabled(redo.size() > 0);
+    updateButtons();
     panelToRepaint->repaint();
 }
 
 void UnReDoPanel::executeUnDo()
 {
-    if(undo.size() > 0)
+    if(undo[layer].size() > 0)
     {
-        AbstractOperation* operation = undo.top();
-        undo.pop();
-        operation->unDo(shapeCollection);
-        redo.push(operation);
+        AbstractOperation* operation = undo[layer].top();
+        undo[layer].pop();
+        operation->unDo(*shapeCollection[layer]);
+        redo[layer].push(operation);
     }
-    unDoButton->setEnabled(undo.size() > 0);
-    reDoButton->setEnabled(true);
+    updateButtons();
     panelToRepaint->repaint();
+}
+
+void UnReDoPanel::setMode(int layer)
+{
+    this->layer = static_cast<OperationLayer>(layer);
+    updateButtons();
 }

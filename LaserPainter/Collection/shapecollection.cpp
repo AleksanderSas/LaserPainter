@@ -86,81 +86,6 @@ void ShapeCollection::insertPointAfter(Point &p)
     insertPosition++;
 }
 
-void ShapeCollection::loadV2(std::ifstream &myfile)
-{
-    while(myfile.good())
-    {
-        unsigned int x, y, lineType;
-        myfile >> lineType;
-        myfile >> x;
-        myfile >> y;
-        Add(x, y, (ShapeType)lineType, true, false);
-    }
-}
-
-void ShapeCollection::loadV3(std::ifstream &myfile)
-{
-    while(myfile.good())
-    {
-        unsigned int x, y, lineType;
-        bool enableLaser;
-        myfile >> lineType;
-        myfile >> x;
-        myfile >> y;
-        myfile >> enableLaser;
-        Add(x, y, (ShapeType)lineType, enableLaser, false);
-    }
-}
-
-void ShapeCollection::loadV4(std::ifstream &myfile)
-{
-    while(myfile.good())
-    {
-        unsigned int x, y, lineType;
-        bool enableLaser, wait;
-        myfile >> lineType;
-        myfile >> x;
-        myfile >> y;
-        myfile >> enableLaser;
-        myfile >> wait;
-        Add(x, y, (ShapeType)lineType, enableLaser, wait);
-    }
-}
-
-void ShapeCollection::load(const char* file)
-{
-    std::ifstream myfile;
-    myfile.open (file);
-    std::string version;
-    myfile >> version;
-    if(version != "V4" && version != "V2" && version != "V3")
-    {
-        throw "only V2, V3 and V4 standards are supported";
-    }
-
-    if(version == "V2")
-        loadV2(myfile);
-    if(version == "V3")
-        loadV3(myfile);
-    if(version == "V3")
-        loadV3(myfile);
-    if(version == "V4")
-        loadV4(myfile);
-    myfile.close();
-}
-
-void ShapeCollection::save(const char* file)
-{
-    std::ofstream myfile;
-    myfile.open (file);
-    myfile << "V4" << std::endl;
-    for(Point &p : points)
-    {
-        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
-    }
-    myfile.close();
-}
-
 void ShapeCollection::clear()
 {
     points.clear();
@@ -181,6 +106,16 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
     return nullptr;
 }
 
+void ShapeCollection::restart()
+{
+    if(currentVisitor != nullptr)
+    {
+        delete currentVisitor;
+        currentVisitor = nullptr;
+    }
+    insertPosition = points.begin();
+}
+
 bool ShapeCollection::SetNextVisitor(bool firstVisitor)
 {
     if(iter == points.end())
@@ -196,27 +131,27 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor)
     }
 
     unsigned int offset = iter - points.begin() - pointNumber;
-    currectVisitor = GetNextVisitor(type, pointNumber, offset);
+    currentVisitor = GetNextVisitor(type, pointNumber, offset);
     return true;
 }
 
 const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
 {
-    if(currectVisitor == nullptr)
+    if(currentVisitor == nullptr)
     {
         iter = points.begin();
         if(!SetNextVisitor(true))
             return  nullptr;
     }
 
-    const PointWithMetadata* p = currectVisitor->next(points, stepsSize);
+    const PointWithMetadata* p = currentVisitor->next(points, stepsSize);
     while(p == nullptr)
     {
-        delete  currectVisitor;
-        currectVisitor = nullptr;
+        delete  currentVisitor;
+        currentVisitor = nullptr;
         if(!SetNextVisitor(false))
             return  nullptr;
-        p = currectVisitor->next(points, stepsSize);
+        p = currentVisitor->next(points, stepsSize);
     }
     return p;
 }

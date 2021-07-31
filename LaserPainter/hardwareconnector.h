@@ -2,7 +2,7 @@
 #define HARDWARECONNECTOR_H
 
 #include "stdio.h"
-#include "Collection/shapecollection.h"
+#include "Collection/project.h".h"
 
 #define RESET_PIN 3
 #define LASER_PIN 0
@@ -15,7 +15,7 @@ class HardwareConnector
 public:
     HardwareConnector();
     ~HardwareConnector();
-    const char* draw(ShapeCollection &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
+    const char* draw(Project &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
     bool run = false;
 
 private:
