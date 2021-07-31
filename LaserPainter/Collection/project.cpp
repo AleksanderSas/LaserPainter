@@ -135,17 +135,22 @@ void Project::save(const char* file)
     myfile.close();
 }
 
-static int scaleValue(int value, int scale)
+static int scaleAndShift(int value, int scale, int offset)
 {
-    if(scale == 100) return value;
-    return (value - 2048) * scale / 100 + 2048;
+    value -= 2048;
+    if(scale != 100)
+    {
+        value = value * scale / 100;
+    }
+    value = value + offset;
+    value = value < 0? 0 : value;
+    return value > 4095? 4095 : value;
 }
 
 void Project::restart()
 {
     move.restart();
     shape.restart();
-    SetNextPath();
     path = nullptr;
 }
 
@@ -176,8 +181,8 @@ const PointWithMetadata* Project::next(unsigned int stepsSize)
         return shapePoint;
     }
     p.point = shapePoint->point;
-    p.point.x = scaleValue(shapePoint->point.x, 25) - 2048 + path->point.x;
-    p.point.y = scaleValue(shapePoint->point.y, 25) - 2048 + path->point.y;
+    p.point.x = scaleAndShift(shapePoint->point.x, 25, path->point.x);
+    p.point.y = scaleAndShift(shapePoint->point.y, 25, path->point.y);
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;

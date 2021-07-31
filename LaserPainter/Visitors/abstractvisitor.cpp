@@ -23,6 +23,7 @@ Point linearCombination(Point& p1, Point& p2, float t)
     return p;
 }
 
+//nullpth is returned when whole sequence is visited
 const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsigned int stepsSize)
 {
     if(currentPoint + pointsPerComponent - 1 >= offset + pointNumber)
