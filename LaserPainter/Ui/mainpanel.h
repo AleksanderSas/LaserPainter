@@ -13,6 +13,7 @@
 #include <QCheckBox>
 #include <QScrollBar>
 #include <QLabel>
+#include <QVBoxLayout>
 
 class MainPanel : public QWidget
 {
@@ -31,6 +32,7 @@ private:
     std::thread *displayThread = nullptr;
     QPushButton *startButton;
     QSpinBox *pointsInput;
+    QSpinBox *moveSpeedInput;
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
     QCheckBox* drawLinesCheckbox;
@@ -38,13 +40,16 @@ private:
     QScrollBar *scaleBar;
     QLabel *scaleLabel;
 
+    QSpinBox* CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout);
+    void updateConfiguration();
+
 signals:
 
 public slots:
-    void DisplayError();
-    void OpenFile();
-    void SaveFile();
-    void Clear();
+    void displayError();
+    void openFile();
+    void saveFile();
+    void clear();
     void hardwareDraw();
     void lineChecbox();
     void scaleUpdated(int value);

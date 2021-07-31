@@ -2,7 +2,8 @@
 #define HARDWARECONNECTOR_H
 
 #include "stdio.h"
-#include "Collection/project.h".h"
+#include "Collection/project.h"
+#include "configuration.h"
 
 #define RESET_PIN 3
 #define LASER_PIN 0
@@ -15,7 +16,7 @@ class HardwareConnector
 public:
     HardwareConnector();
     ~HardwareConnector();
-    const char* draw(Project &sc, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid);
+    const char* draw(Project &sc,  Configuration *config, bool enableWaitCircuid);
     bool run = false;
 
 private:

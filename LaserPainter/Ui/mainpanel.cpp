@@ -21,6 +21,19 @@ bool ifFileExists(std::string fileName)
     return infile.good();
 }
 
+QSpinBox* MainPanel::CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout)
+{
+    auto *spinner = new QSpinBox(this);
+    spinner->setRange(1, 100);
+    spinner->setValue(initValue);
+
+    layout->addWidget(new QLabel(title ,this), 0, Qt::AlignTop);
+    layout->addWidget(spinner, 0, Qt::AlignTop);
+    layout->addStretch(2);
+
+    return spinner;
+}
+
 MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 {
     auto *hbox = new QHBoxLayout(this);
@@ -35,10 +48,6 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* openButton = new QPushButton("Open", this);
     shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_});
 
-    auto* pointsLabel = new QLabel("Points" ,this);
-    pointsInput = new QSpinBox(this);
-    pointsInput->setRange(1, 100);
-    pointsInput->setValue(configuration.resolution);
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);
     repeatsInput->setRange(10, 5000);
@@ -49,8 +58,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
     scaleBar->setRange(1, 100);
-    scaleBar->setValue(100);
-    scaleLabel = new QLabel("Scale: 100%", this);
+    scaleBar->setValue(configuration.scale);
+    scaleLabel = new QLabel(QString("Scale: ") + QString::number(configuration.scale) + "%", this);
     enableWaitCircuid = new QCheckBox("wait circuid", this);
 
     vbox->setSpacing(5);
@@ -65,9 +74,10 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addStretch(5);
     vbox->addWidget(shapeSelector, 0, Qt::AlignTop);
     vbox->addStretch(5);
-    vbox->addWidget(pointsLabel, 0, Qt::AlignTop);
-    vbox->addWidget(pointsInput, 0, Qt::AlignTop);
-    vbox->addStretch(2);
+
+    moveSpeedInput = CreateAndAddSpinner("Move Speed", configuration.moveSpeed, vbox);
+    pointsInput = CreateAndAddSpinner("Points", configuration.resolution, vbox);
+
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);
     vbox->addStretch(5);
@@ -81,9 +91,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     tabWidget->addTab(moveDesigner, "move designer");
     hbox->addWidget(tabWidget, 5);
 
-    connect(openButton, SIGNAL(clicked()), this, SLOT(OpenFile()));
-    connect(saveButton, SIGNAL(clicked()), this, SLOT(SaveFile()));
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(Clear()));
+    connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveFile()));
+    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
     connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
@@ -104,10 +114,17 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     }
 }
 
-MainPanel::~MainPanel()
+void MainPanel::updateConfiguration()
 {
     configuration.resolution = pointsInput->value();
     configuration.repeats = repeatsInput->value();
+    configuration.moveSpeed = moveSpeedInput->value();
+    configuration.scale = scaleBar->value();
+}
+
+MainPanel::~MainPanel()
+{
+    updateConfiguration();
 }
 
 void MainPanel::scaleUpdated(int value)
@@ -143,7 +160,7 @@ void MainPanel::lineChecbox()
 
 static const char* errorMessage;
 static QTimer* timer;
-void MainPanel::DisplayError()
+void MainPanel::displayError()
 {
     QMessageBox msgBox(this);
     msgBox.setInformativeText(QString(errorMessage));
@@ -155,26 +172,27 @@ void MainPanel::DisplayError()
 
 void MainPanel::draw()
 {
-    errorMessage = connector->draw(project, pointsInput->value(), repeatsInput->value(), scaleBar->value(), enableWaitCircuid->checkState() == Qt::CheckState::Checked);
+    updateConfiguration();
+    errorMessage = connector->draw(project, &configuration, enableWaitCircuid->checkState() == Qt::CheckState::Checked);
     if(errorMessage != nullptr)
     {
         // any thread
         timer = new QTimer();
         timer->moveToThread(this->thread());
         timer->setSingleShot(true);
-        connect(timer, SIGNAL(timeout()), this, SLOT(DisplayError()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(displayError()));
         QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
     }
     startButton -> setText("Start");
 }
 
-void MainPanel::SaveFile()
+void MainPanel::saveFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), configuration.dir.c_str());
     project.save(fileName.toStdString().c_str());
 }
 
-void MainPanel::Clear()
+void MainPanel::clear()
 {
     if(project.isEmpty())
     {
@@ -191,7 +209,7 @@ void MainPanel::Clear()
     }
 }
 
-void MainPanel::OpenFile()
+void MainPanel::openFile()
 {
     try {
         project.clear();

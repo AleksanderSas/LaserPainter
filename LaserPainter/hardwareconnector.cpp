@@ -230,7 +230,7 @@ static bool waitUntillReachPosition()
     return false;
 }
 
-const char* HardwareConnector::draw(Project &project, unsigned int resolution, unsigned int repeats, int scale, bool enableWaitCircuid)
+const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;
@@ -239,7 +239,7 @@ const char* HardwareConnector::draw(Project &project, unsigned int resolution, u
     long long int ioDelay = 0L;
     unsigned long long int counter = 0;
     unsigned long long int pinRead = 0;
-    
+
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
     delay(5);

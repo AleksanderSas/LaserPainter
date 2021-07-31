@@ -34,6 +34,22 @@ Configuration::Configuration()
            continue;
         }
 
+        if(key == CNF_MOVE_SPEED)
+        {
+           moveSpeed = atoi(value.c_str());
+           if(moveSpeed == 0)
+               errors += value + " is not correct integer.\n";
+           continue;
+        }
+
+        if(key == CNF_SCALE)
+        {
+           scale = atoi(value.c_str());
+           if(scale == 0)
+               errors += value + " is not correct integer.\n";
+           continue;
+        }
+
         if(key == CNF_RESOLUTION)
         {
            resolution = atoi(value.c_str());
@@ -59,6 +75,8 @@ Configuration::~Configuration()
         output << CNF_FILE << " " << file << std::endl;
     output << CNF_REPEARS << " " << repeats << std::endl;
     output << CNF_RESOLUTION << " " << resolution << std::endl;
+    output << CNF_MOVE_SPEED << " " << moveSpeed << std::endl;
+    output << CNF_SCALE << " " << scale << std::endl;
 
     output.close();
 }
