@@ -184,8 +184,8 @@ const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int move
     if(shapePoint == nullptr)
     {
         bool setSinCos = false;
-        int previousX;
-        int previousY;
+        float previousX = 0.0f;
+        float previousY = 0.0f;
         if(path !=  nullptr)
         {
             previousX = path->point.x;
@@ -195,9 +195,9 @@ const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int move
         SetNextPath(moveSpeed);
         if(setSinCos)
         {
-            int dx = path->point.x - previousX;
-            int dy = path->point.y - previousY;
-            if(dx != 0 || dy != 0)
+            float dx = path->point.x - previousX;
+            float dy = path->point.y - previousY;
+            if(abs(dx) > 0.001f || abs(dy) > 0.001f)
             {
                 float d = hypotf(dx, dy);
                 rotateSin = dy / d;

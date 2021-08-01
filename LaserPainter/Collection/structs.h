@@ -10,14 +10,14 @@ enum ShapeType
 
 typedef struct point
 {
-    int x;
-    int y;
+    float x;
+    float y;
     ShapeType type;
     bool enableLaser;
     bool wait;
     point(){}
-    point(int x, int y): x(x), y(y) {}
-    point(int x, int y, ShapeType t, bool enableLaser, bool wait):
+    point(float x, float y): x(x), y(y) {}
+    point(float x, float y, ShapeType t, bool enableLaser, bool wait):
         x(x), y(y), type(t), enableLaser(enableLaser), wait(wait) {}
 } Point;
 
