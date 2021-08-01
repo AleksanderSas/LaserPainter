@@ -11,7 +11,7 @@ public:
 
     void save(const char* file);
     void load(const char* file);
-    const PointWithMetadata* next(unsigned int stepsSize);
+    const PointWithMetadata* next(unsigned int stepsSize, unsigned int moveSpeed);
     void restart();
     void clear();
     bool isEmpty();
@@ -24,7 +24,7 @@ private:
     void loadV3(std::ifstream &myfile);
     void loadV4(std::ifstream &myfile);
     void loadV5(std::ifstream &myfile);
-    void SetNextPath();
+    void SetNextPath(unsigned int moveSpeed);
     
     const PointWithMetadata* path;
     PointWithMetadata p;

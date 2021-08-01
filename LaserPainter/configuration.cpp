@@ -28,7 +28,7 @@ Configuration::Configuration()
 
         if(key == CNF_REPEARS)
         {
-           repeats = atoi(value.c_str());
+           repeats = static_cast<unsigned int>(atoi(value.c_str()));
            if(repeats == 0)
                errors += value + " is not correct integer.\n";
            continue;
@@ -36,7 +36,7 @@ Configuration::Configuration()
 
         if(key == CNF_MOVE_SPEED)
         {
-           moveSpeed = atoi(value.c_str());
+           moveSpeed = static_cast<unsigned int>(atoi(value.c_str()));
            if(moveSpeed == 0)
                errors += value + " is not correct integer.\n";
            continue;
@@ -52,7 +52,7 @@ Configuration::Configuration()
 
         if(key == CNF_RESOLUTION)
         {
-           resolution = atoi(value.c_str());
+           resolution = static_cast<unsigned int>(atoi(value.c_str()));
            if(resolution == 0)
                errors += value + " is not correct integer.\n";
            continue;

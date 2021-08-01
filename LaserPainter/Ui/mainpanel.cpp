@@ -116,10 +116,10 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
 void MainPanel::updateConfiguration()
 {
-    configuration.resolution = pointsInput->value();
-    configuration.repeats = repeatsInput->value();
-    configuration.moveSpeed = moveSpeedInput->value();
-    configuration.scale = scaleBar->value();
+    configuration.resolution = static_cast<unsigned int>(pointsInput->value());
+    configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
+    configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
+    configuration.scale = static_cast<unsigned int>(scaleBar->value());
 }
 
 MainPanel::~MainPanel()

@@ -154,24 +154,24 @@ void Project::restart()
     path = nullptr;
 }
 
-void Project::SetNextPath()
+void Project::SetNextPath(unsigned int moveSpeed)
 {
     if(move.points.size() > 0)
     {
-        path = move.next(1);
+        path = move.next(moveSpeed);
         while(path == nullptr)
         {
-            path = move.next(1);
+            path = move.next(moveSpeed);
         }
     }
 }
 
-const PointWithMetadata* Project::next(unsigned int stepsSize)
+const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed)
 {
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
     if(shapePoint == nullptr)
     {
-        SetNextPath();
+        SetNextPath(moveSpeed);
         return nullptr;
     }
 

@@ -21,9 +21,9 @@ public:
     std::string GetErrors();
 
     std::string dir = "/home", file = "";
-    int repeats = 100;
-    int resolution = 25;
-    int moveSpeed = 3;
+    unsigned int repeats = 100;
+    unsigned int resolution = 25;
+    unsigned int moveSpeed = 3;
     int scale = 100;
 
 private:
