@@ -31,6 +31,7 @@ private:
     float rotateCos = 1.0f;
     PointWithMetadata p;
     void readPointSequenceV5(std::ifstream &myfile, ShapeCollection& sc);
+    void SetNextPathAndRotation(unsigned int moveSpeed);
 };
 
 #endif // COLLECTIONLOADER_H

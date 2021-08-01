@@ -136,18 +136,6 @@ void Project::save(const char* file)
     myfile.close();
 }
 
-static int scaleAndShift(int value, int scale, int offset)
-{
-    value -= 2048;
-    if(scale != 100)
-    {
-        value = value * scale / 100;
-    }
-    value = value + offset;
-    value = value < 0? 0 : value;
-    return value > 4095? 4095 : value;
-}
-
 void Project::restart()
 {
     move.restart();
@@ -169,13 +157,49 @@ void Project::SetNextPath(unsigned int moveSpeed)
     }
 }
 
-Point rotate(const Point& p, float sin, float cos)
+static float respectRange(float value)
 {
-    int xTmp = p.x - 2048;
-    int yTmp = p.y - 2048;
-    int x = cos * xTmp - sin * yTmp + 2048;
-    int y = sin * xTmp + cos * yTmp + 2048;
+    value = value < 0.0f? 0.0f : value;
+    return value > 4095.0f? 4095.0f : value;
+}
+
+Point rotateScaleAndShift(const Point& p, float sin, float cos, const Point& offset, int scale)
+{
+    float xTmp = p.x - 2048;
+    float yTmp = p.y - 2048;
+    if(scale != 100)
+    {
+        xTmp = xTmp * scale / 100;
+        yTmp = yTmp * scale / 100;
+    }
+    float x = respectRange(cos * xTmp - sin * yTmp + offset.x);
+    float y = respectRange(sin * xTmp + cos * yTmp + offset.y);
     return Point(x, y, p.type, p.enableLaser, p.wait);
+}
+
+void Project::SetNextPathAndRotation(unsigned int moveSpeed)
+{
+    bool setSinCos = false;
+    float previousX = 0.0f;
+    float previousY = 0.0f;
+    if(path !=  nullptr)
+    {
+        previousX = path->point.x;
+        previousY = path->point.y;
+        setSinCos = true;
+    }
+    SetNextPath(moveSpeed);
+    if(setSinCos)
+    {
+        float dx = path->point.x - previousX;
+        float dy = path->point.y - previousY;
+        if(abs(dx) > 0.001f || abs(dy) > 0.001f)
+        {
+            float d = hypotf(dx, dy);
+            rotateSin = dy / d;
+            rotateCos = dx / d;
+        }
+    }
 }
 
 const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed)
@@ -183,27 +207,7 @@ const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int move
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
     if(shapePoint == nullptr)
     {
-        bool setSinCos = false;
-        float previousX = 0.0f;
-        float previousY = 0.0f;
-        if(path !=  nullptr)
-        {
-            previousX = path->point.x;
-            previousY = path->point.y;
-            setSinCos = true;
-        }
-        SetNextPath(moveSpeed);
-        if(setSinCos)
-        {
-            float dx = path->point.x - previousX;
-            float dy = path->point.y - previousY;
-            if(abs(dx) > 0.001f || abs(dy) > 0.001f)
-            {
-                float d = hypotf(dx, dy);
-                rotateSin = dy / d;
-                rotateCos = dx / d;
-            }
-        }
+        SetNextPathAndRotation(moveSpeed);
         return nullptr;
     }
 
@@ -213,10 +217,7 @@ const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int move
         return shapePoint;
     }
 
-    p.point = shapePoint->point;
-    Point rotatedPoint = rotate(shapePoint->point, rotateSin, rotateCos);
-    p.point.x = scaleAndShift(rotatedPoint.x, 25, path->point.x);
-    p.point.y = scaleAndShift(rotatedPoint.y, 25, path->point.y);
+    p.point = rotateScaleAndShift(shapePoint->point, rotateSin, rotateCos, path->point, 25);
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;
