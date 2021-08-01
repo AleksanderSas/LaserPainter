@@ -17,6 +17,7 @@ public:
     HardwareConnector();
     ~HardwareConnector();
     const char* draw(Project &sc,  Configuration *config, bool enableWaitCircuid);
+    void centerLaser(bool isLaserEnabled);
     bool run = false;
 
 private:

@@ -46,6 +46,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
     auto* openButton = new QPushButton("Open", this);
+    enableLaser = new QCheckBox("Enable laser", this);
     shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_});
 
     auto* repeatsLabel = new QLabel("Repeats" ,this);
@@ -65,6 +66,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->setSpacing(5);
     vbox->addWidget(unrePanel, 0, Qt::AlignTop);
     vbox->setSpacing(5);
+    vbox->addWidget(enableLaser, 0, Qt::AlignTop);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
@@ -91,6 +93,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     tabWidget->addTab(moveDesigner, "move designer");
     hbox->addWidget(tabWidget, 5);
 
+    connect(enableLaser, SIGNAL(stateChanged(int)), this, SLOT(enableLaserSlot(int)));
     connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveFile()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
@@ -112,6 +115,12 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
         msgBox.setText(QString(configuration.GetErrors().c_str()));
         msgBox.exec();
     }
+    enableLaserSlot(false);
+}
+
+void MainPanel::enableLaserSlot(int state)
+{
+    connector->centerLaser(state);
 }
 
 void MainPanel::updateConfiguration()
@@ -119,12 +128,13 @@ void MainPanel::updateConfiguration()
     configuration.resolution = static_cast<unsigned int>(pointsInput->value());
     configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
     configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
-    configuration.scale = static_cast<unsigned int>(scaleBar->value());
+    configuration.scale = scaleBar->value();
 }
 
 MainPanel::~MainPanel()
 {
     updateConfiguration();
+    enableLaserSlot(false);
 }
 
 void MainPanel::scaleUpdated(int value)
@@ -183,6 +193,7 @@ void MainPanel::draw()
         connect(timer, SIGNAL(timeout()), this, SLOT(displayError()));
         QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
     }
+    enableLaserSlot(enableLaser->checkState());
     startButton -> setText("Start");
 }
 

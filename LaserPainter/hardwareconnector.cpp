@@ -314,3 +314,12 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
 #endif
     return  nullptr;
 }
+
+
+void HardwareConnector::centerLaser(bool isLaserEnabled)
+{
+#ifdef R_PI
+    digitalWrite(LASER_PIN, isLaserEnabled);
+    sent(2048, 2048);
+#endif
+}
