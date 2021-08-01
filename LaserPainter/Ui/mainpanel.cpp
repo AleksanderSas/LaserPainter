@@ -54,14 +54,14 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     repeatsInput->setRange(10, 5000);
     repeatsInput->setValue(configuration.repeats);
 
-    drawLinesCheckbox = new QCheckBox("draw lines", this);
+    drawLinesCheckbox = new QCheckBox("Draw lines", this);
     drawLinesCheckbox->setChecked(true);
 
     scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
     scaleBar->setRange(1, 100);
     scaleBar->setValue(configuration.scale);
     scaleLabel = new QLabel(QString("Scale: ") + QString::number(configuration.scale) + "%", this);
-    enableWaitCircuid = new QCheckBox("wait circuid", this);
+    enableWaitCircuid = new QCheckBox("Wait circuid", this);
 
     vbox->setSpacing(5);
     vbox->addWidget(unrePanel, 0, Qt::AlignTop);
@@ -89,8 +89,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     hbox->addItem(vbox);
     auto* tabWidget = new QTabWidget(this);
-    tabWidget->addTab(shapeDesigner, "shape designer");
-    tabWidget->addTab(moveDesigner, "move designer");
+    tabWidget->addTab(shapeDesigner, "Shape designer");
+    tabWidget->addTab(moveDesigner, "Move designer");
     hbox->addWidget(tabWidget, 5);
 
     connect(enableLaser, SIGNAL(stateChanged(int)), this, SLOT(enableLaserSlot(int)));

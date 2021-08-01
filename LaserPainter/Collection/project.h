@@ -27,6 +27,8 @@ private:
     void SetNextPath(unsigned int moveSpeed);
     
     const PointWithMetadata* path;
+    float rotateSin = 0.0f;
+    float rotateCos = 1.0f;
     PointWithMetadata p;
     void readPointSequenceV5(std::ifstream &myfile, ShapeCollection& sc);
 };

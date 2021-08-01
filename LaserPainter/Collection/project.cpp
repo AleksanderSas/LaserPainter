@@ -1,6 +1,7 @@
 #include "project.h"
 #include "shapecollection.h"
 #include <string>
+#include <math.h>
 
 Project::Project()
 {
@@ -152,6 +153,8 @@ void Project::restart()
     move.restart();
     shape.restart();
     path = nullptr;
+    rotateSin = 0.0f;
+    rotateCos = 1.0f;
 }
 
 void Project::SetNextPath(unsigned int moveSpeed)
@@ -166,12 +169,41 @@ void Project::SetNextPath(unsigned int moveSpeed)
     }
 }
 
+Point rotate(const Point& p, float sin, float cos)
+{
+    int xTmp = p.x - 2048;
+    int yTmp = p.y - 2048;
+    int x = cos * xTmp - sin * yTmp + 2048;
+    int y = sin * xTmp + cos * yTmp + 2048;
+    return Point(x, y, p.type, p.enableLaser, p.wait);
+}
+
 const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed)
 {
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
     if(shapePoint == nullptr)
     {
+        bool setSinCos = false;
+        int previousX;
+        int previousY;
+        if(path !=  nullptr)
+        {
+            previousX = path->point.x;
+            previousY = path->point.y;
+            setSinCos = true;
+        }
         SetNextPath(moveSpeed);
+        if(setSinCos)
+        {
+            int dx = path->point.x - previousX;
+            int dy = path->point.y - previousY;
+            if(dx != 0 || dy != 0)
+            {
+                float d = hypotf(dx, dy);
+                rotateSin = dy / d;
+                rotateCos = dx / d;
+            }
+        }
         return nullptr;
     }
 
@@ -180,9 +212,11 @@ const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int move
         //animation is not configured
         return shapePoint;
     }
+
     p.point = shapePoint->point;
-    p.point.x = scaleAndShift(shapePoint->point.x, 25, path->point.x);
-    p.point.y = scaleAndShift(shapePoint->point.y, 25, path->point.y);
+    Point rotatedPoint = rotate(shapePoint->point, rotateSin, rotateCos);
+    p.point.x = scaleAndShift(rotatedPoint.x, 25, path->point.x);
+    p.point.y = scaleAndShift(rotatedPoint.y, 25, path->point.y);
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;
