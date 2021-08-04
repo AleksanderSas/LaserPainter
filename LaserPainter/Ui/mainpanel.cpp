@@ -61,6 +61,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
     auto* openButton = new QPushButton("Open", this);
+    enableLaser = new QCheckBox("Enable laser", this);
     shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_});
 
     auto* repeatsLabel = new QLabel("Repeats" ,this);
@@ -68,7 +69,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     repeatsInput->setRange(10, 5000);
     repeatsInput->setValue(configuration.repeats);
 
-    drawLinesCheckbox = new QCheckBox("draw lines", this);
+    drawLinesCheckbox = new QCheckBox("Draw lines", this);
     drawLinesCheckbox->setChecked(true);
 
     scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
@@ -80,13 +81,12 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     moveScaleBar->setRange(1, 100);
     moveScaleBar->setValue(25);
     moveScaleLabel = new QLabel(QString("M scale: 25%"), this);
-
-
-    enableWaitCircuid = new QCheckBox("wait circuid", this);
+    enableWaitCircuid = new QCheckBox("Wait circuid", this);
 
     vbox->setSpacing(5);
     vbox->addWidget(unrePanel, 0, Qt::AlignTop);
     vbox->setSpacing(5);
+    vbox->addWidget(enableLaser, 0, Qt::AlignTop);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
@@ -112,10 +112,11 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     hbox->addItem(vbox);
     auto* tabWidget = new QTabWidget(this);
-    tabWidget->addTab(shapeDesigner, "shape designer");
-    tabWidget->addTab(moveDesigner, "move designer");
+    tabWidget->addTab(shapeDesigner, "Shape designer");
+    tabWidget->addTab(moveDesigner, "Move designer");
     hbox->addWidget(tabWidget, 5);
 
+    connect(enableLaser, SIGNAL(stateChanged(int)), this, SLOT(enableLaserSlot(int)));
     connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveFile()));
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
@@ -137,19 +138,26 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     {
         loadProject(configuration.file);
     }
+    enableLaserSlot(false);
+}
+
+void MainPanel::enableLaserSlot(int state)
+{
+    connector->centerLaser(state);
 }
 
 void MainPanel::updateConfiguration()
 {
-    configuration.resolution = pointsInput->value();
-    configuration.repeats = repeatsInput->value();
-    configuration.moveSpeed = moveSpeedInput->value();
+    configuration.resolution = static_cast<unsigned int>(pointsInput->value());
+    configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
+    configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
     configuration.scale = scaleBar->value();
 }
 
 MainPanel::~MainPanel()
 {
     updateConfiguration();
+    enableLaserSlot(false);
 }
 
 void MainPanel::scaleUpdated(int value)
@@ -217,6 +225,7 @@ void MainPanel::draw()
         connect(timer, SIGNAL(timeout()), this, SLOT(displayError()));
         QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
     }
+    enableLaserSlot(enableLaser->checkState());
     startButton -> setText("Start");
 }
 

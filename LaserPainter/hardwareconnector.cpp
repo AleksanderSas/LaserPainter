@@ -252,11 +252,11 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     run = true;
     long long int totalTime = clock();
     project.restart();
-    for(unsigned int i = 0; i < repeats && run; i++)
+    for(unsigned int i = 0; i < config->repeats && run; i++)
     {
         const PointWithMetadata* p;
         tmpDelay = clock();
-        while((p = project.next(resolution)) != nullptr)
+        while((p = project.next(config->resolution, config->moveSpeed)) != nullptr)
         {
             positionComputeDelay += clock() - tmpDelay;
             bool ldacValue = false;
@@ -282,6 +282,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
             counter++;
             tmpDelay = clock();
 
+            int scale = config->scale;
             sent(scaleValue(p->point.x, scale), scaleValue(p->point.y, scale));
 
             if(ldacValue)
@@ -312,4 +313,13 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);
 #endif
     return  nullptr;
+}
+
+
+void HardwareConnector::centerLaser(bool isLaserEnabled)
+{
+#ifdef R_PI
+    digitalWrite(LASER_PIN, isLaserEnabled);
+    sent(2048, 2048);
+#endif
 }

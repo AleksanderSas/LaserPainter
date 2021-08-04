@@ -1,6 +1,7 @@
 #include "project.h"
 #include "shapecollection.h"
 #include <string>
+#include <math.h>
 
 Project::Project()
 {
@@ -144,43 +145,78 @@ void Project::save(const char* file)
     myfile.close();
 }
 
-static int scaleAndShift(int value, int scale, int offset)
-{
-    value -= 2048;
-    if(scale != 100)
-    {
-        value = value * scale / 100;
-    }
-    value = value + offset;
-    value = value < 0? 0 : value;
-    return value > 4095? 4095 : value;
-}
-
 void Project::restart()
 {
     move.restart();
     shape.restart();
     path = nullptr;
+    rotateSin = 0.0f;
+    rotateCos = 1.0f;
 }
 
-void Project::SetNextPath()
+void Project::SetNextPath(unsigned int moveSpeed)
 {
     if(move.points.size() > 0)
     {
-        path = move.next(1);
+        path = move.next(moveSpeed);
         while(path == nullptr)
         {
-            path = move.next(1);
+            path = move.next(moveSpeed);
         }
     }
 }
 
-const PointWithMetadata* Project::next(unsigned int stepsSize)
+static float respectRange(float value)
+{
+    value = value < 0.0f? 0.0f : value;
+    return value > 4095.0f? 4095.0f : value;
+}
+
+Point rotateScaleAndShift(const Point& p, float sin, float cos, const Point& offset, int scale)
+{
+    float xTmp = p.x - 2048;
+    float yTmp = p.y - 2048;
+    if(scale != 100)
+    {
+        xTmp = xTmp * scale / 100;
+        yTmp = yTmp * scale / 100;
+    }
+    float x = respectRange(cos * xTmp - sin * yTmp + offset.x);
+    float y = respectRange(sin * xTmp + cos * yTmp + offset.y);
+    return Point(x, y, p.type, p.enableLaser, p.wait);
+}
+
+void Project::SetNextPathAndRotation(unsigned int moveSpeed)
+{
+    bool setSinCos = false;
+    float previousX = 0.0f;
+    float previousY = 0.0f;
+    if(path !=  nullptr)
+    {
+        previousX = path->point.x;
+        previousY = path->point.y;
+        setSinCos = true;
+    }
+    SetNextPath(moveSpeed);
+    if(setSinCos)
+    {
+        float dx = path->point.x - previousX;
+        float dy = path->point.y - previousY;
+        if(abs(dx) > 0.001f || abs(dy) > 0.001f)
+        {
+            float d = hypotf(dx, dy);
+            rotateSin = dy / d;
+            rotateCos = dx / d;
+        }
+    }
+}
+
+const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed)
 {
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
     if(shapePoint == nullptr)
     {
-        SetNextPath();
+        SetNextPathAndRotation(moveSpeed);
         return nullptr;
     }
 
@@ -189,9 +225,7 @@ const PointWithMetadata* Project::next(unsigned int stepsSize)
         //animation is not configured
         return shapePoint;
     }
-    p.point = shapePoint->point;
-    p.point.x = scaleAndShift(shapePoint->point.x, moveScale, path->point.x);
-    p.point.y = scaleAndShift(shapePoint->point.y, moveScale, path->point.y);
+    p.point = rotateScaleAndShift(shapePoint->point, rotateSin, rotateCos, path->point, moveScale);
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;

@@ -31,6 +31,7 @@ private:
     void draw();
     std::thread *displayThread = nullptr;
     QPushButton *startButton;
+    QCheckBox* enableLaser;
     QSpinBox *pointsInput;
     QSpinBox *moveSpeedInput;
     QSpinBox *repeatsInput;
@@ -58,6 +59,7 @@ public slots:
     void lineChecbox();
     void scaleUpdated(int value);
     void moveScaleUpdated(int value);
+    void enableLaserSlot(int state);
 };
 
 #endif // MAINPANEL_H
