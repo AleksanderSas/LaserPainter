@@ -4,7 +4,7 @@
 #include <QStyle>
 
 UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent):
-    QFrame(parent),
+    QWidget(parent),
     panelToRepaint(panelToRepaint)
 {
     shapeCollection[0] = sc1;

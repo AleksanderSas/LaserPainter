@@ -88,32 +88,40 @@ void Project::readPointSequenceV5(std::ifstream &myfile, ShapeCollection& sc)
 
 void Project::loadV5(std::ifstream &myfile)
 {
+    myfile >> moveScale;
     readPointSequenceV5(myfile, shape);
     readPointSequenceV5(myfile, move);
 }
 
-void Project::load(const char* file)
+void Project::load(std::string &file)
 {
     std::ifstream myfile;
-    myfile.open (file);
-    std::string version;
-    myfile >> version;
-    if(version != "V5" && version != "V4" && version != "V2" && version != "V3")
+    myfile.open(file);
+    try
     {
-        throw "only V2, V3, V4 and V5 standards are supported";
-    }
+        std::string version;
+        myfile >> version;
+        if(version != "V5" && version != "V4" && version != "V2" && version != "V3")
+        {
+            throw "only V2, V3, V4 and V5 standards are supported";
+        }
 
-    if(version == "V2")
-        loadV2(myfile);
-    if(version == "V3")
-        loadV3(myfile);
-    if(version == "V3")
-        loadV3(myfile);
-    if(version == "V4")
-        loadV4(myfile);
-    if(version == "V5")
-        loadV5(myfile);
-    myfile.close();
+        if(version == "V2")
+            loadV2(myfile);
+        if(version == "V3")
+            loadV3(myfile);
+        if(version == "V3")
+            loadV3(myfile);
+        if(version == "V4")
+            loadV4(myfile);
+        if(version == "V5")
+            loadV5(myfile);
+    }catch(std::string error)
+    {
+        myfile.close();
+        clear();
+        throw error;
+    }
 }
 
 void Project::save(const char* file)
@@ -121,6 +129,7 @@ void Project::save(const char* file)
     std::ofstream myfile;
     myfile.open (file);
     myfile << "V5" << std::endl;
+    myfile << moveScale << std::endl;
     myfile << shape.points.size() << std::endl;
     for(Point &p : shape.points)
     {
@@ -181,8 +190,8 @@ const PointWithMetadata* Project::next(unsigned int stepsSize)
         return shapePoint;
     }
     p.point = shapePoint->point;
-    p.point.x = scaleAndShift(shapePoint->point.x, 25, path->point.x);
-    p.point.y = scaleAndShift(shapePoint->point.y, 25, path->point.y);
+    p.point.x = scaleAndShift(shapePoint->point.x, moveScale, path->point.x);
+    p.point.y = scaleAndShift(shapePoint->point.y, moveScale, path->point.y);
     p.isNextComponent = shapePoint->isNextComponent;
 
     return &p;

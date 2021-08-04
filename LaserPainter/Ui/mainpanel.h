@@ -38,10 +38,14 @@ private:
     QCheckBox* drawLinesCheckbox;
     QCheckBox* enableWaitCircuid;
     QScrollBar *scaleBar;
+    QScrollBar *moveScaleBar;
     QLabel *scaleLabel;
+    QLabel *moveScaleLabel;
 
     QSpinBox* CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout);
     void updateConfiguration();
+    void setTitle(QString fileName);
+    void loadProject(std::string fileName);
 
 signals:
 
@@ -53,6 +57,7 @@ public slots:
     void hardwareDraw();
     void lineChecbox();
     void scaleUpdated(int value);
+    void moveScaleUpdated(int value);
 };
 
 #endif // MAINPANEL_H

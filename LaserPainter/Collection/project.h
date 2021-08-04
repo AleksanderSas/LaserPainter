@@ -10,7 +10,7 @@ public:
     ~Project();
 
     void save(const char* file);
-    void load(const char* file);
+    void load(std::string &file);
     const PointWithMetadata* next(unsigned int stepsSize);
     void restart();
     void clear();
@@ -18,6 +18,7 @@ public:
 
     ShapeCollection shape;
     ShapeCollection move;
+    int moveScale;
 
 private:
     void loadV2(std::ifstream &myfile);

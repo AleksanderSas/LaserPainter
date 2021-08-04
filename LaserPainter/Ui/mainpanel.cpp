@@ -34,6 +34,21 @@ QSpinBox* MainPanel::CreateAndAddSpinner(char* title, int initValue, QVBoxLayout
     return spinner;
 }
 
+void MainPanel::loadProject(std::string fileName)
+{
+    try
+    {
+        project.load(fileName);
+        QString fn(fileName.c_str());
+        setTitle(fn);
+        moveScaleBar->setValue(project.moveScale);
+    } catch (std::string error) {
+        QMessageBox msgBox(this);
+        msgBox.setText(QString(error.c_str()));
+        msgBox.exec();
+    }
+}
+
 MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 {
     auto *hbox = new QHBoxLayout(this);
@@ -60,6 +75,13 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     scaleBar->setRange(1, 100);
     scaleBar->setValue(configuration.scale);
     scaleLabel = new QLabel(QString("Scale: ") + QString::number(configuration.scale) + "%", this);
+
+    moveScaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
+    moveScaleBar->setRange(1, 100);
+    moveScaleBar->setValue(25);
+    moveScaleLabel = new QLabel(QString("M scale: 25%"), this);
+
+
     enableWaitCircuid = new QCheckBox("wait circuid", this);
 
     vbox->setSpacing(5);
@@ -83,6 +105,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addStretch(5);
     vbox->addWidget(scaleLabel, 0, Qt::AlignTop);
     vbox->addWidget(scaleBar, 0, Qt::AlignTop);
+    vbox->addStretch(3);
+    vbox->addWidget(moveScaleLabel, 0, Qt::AlignTop);
+    vbox->addWidget(moveScaleBar, 0, Qt::AlignTop);
     vbox->addStretch(90);
 
     hbox->addItem(vbox);
@@ -97,20 +122,20 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
     connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
+    connect(moveScaleBar, SIGNAL(valueChanged(int)), this, SLOT(moveScaleUpdated(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), unrePanel, SLOT(setMode(int)));
 
     connector = new HardwareConnector();
-
-    if(ifFileExists(configuration.file))
-    {
-        project.load(configuration.file.c_str());
-    }
 
     if(!configuration.GetErrors().empty())
     {
         QMessageBox msgBox(this);
         msgBox.setText(QString(configuration.GetErrors().c_str()));
         msgBox.exec();
+    }
+    else if(ifFileExists(configuration.file))
+    {
+        loadProject(configuration.file);
     }
 }
 
@@ -130,6 +155,12 @@ MainPanel::~MainPanel()
 void MainPanel::scaleUpdated(int value)
 {
     scaleLabel->setText(QString("Scale: ") + QString::number(value) + "%");
+}
+
+void MainPanel::moveScaleUpdated(int value)
+{
+    moveScaleLabel->setText(QString("M scale: ") + QString::number(value) + "%");
+    project.moveScale = value;
 }
 
 void MainPanel::hardwareDraw()
@@ -156,6 +187,9 @@ void MainPanel::lineChecbox()
 {
     shapeDesigner->drawLines = drawLinesCheckbox->isChecked();
     shapeDesigner->update();
+
+    moveDesigner->drawLines = drawLinesCheckbox->isChecked();
+    moveDesigner->update();
 }
 
 static const char* errorMessage;
@@ -205,27 +239,31 @@ void MainPanel::clear()
         {
             project.clear();
             shapeDesigner->update();
+            moveDesigner->update();
         }
+    }
+}
+
+void MainPanel::setTitle(QString fileName)
+{
+    int slashIdx = fileName.lastIndexOf('/');
+    if(slashIdx > 0)
+    {
+        this->setWindowTitle(fileName.mid(slashIdx + 1));
     }
 }
 
 void MainPanel::openFile()
 {
-    try {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), QString(configuration.dir.c_str()));
+    if(fileName.size() > 0)
+    {
         project.clear();
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), QString(configuration.dir.c_str()));
-        if(fileName.size() > 0)
-        {
-            std::string selectedFile = fileName.toStdString();
-            project.load(selectedFile.c_str());
-            configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
-            configuration.file = selectedFile;
-            shapeDesigner->update();
-        }
-    } catch (const char* error) {
-        QMessageBox msgBox(this);
-        msgBox.setText(error);
-        msgBox.exec();
+        std::string selectedFile = fileName.toStdString();
+        loadProject(selectedFile);
+        configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
+        configuration.file = selectedFile;
+
     }
 }
 

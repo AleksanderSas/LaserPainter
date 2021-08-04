@@ -10,7 +10,7 @@
 
 enum OperationLayer { shape, move };
 
-class UnReDoPanel : public QFrame
+class UnReDoPanel : public QWidget
 {
     Q_OBJECT
 
