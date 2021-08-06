@@ -40,6 +40,7 @@ ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnRe
     connect(setWaitleAction, SIGNAL(triggered()), this, SLOT(setWait()));
 
     this->setFixedSize(MAX_W, MAX_H);
+    this->setFocusPolicy(Qt::ClickFocus);
 }
 
 void ShapeDesigner::insert(ShapeType type)
@@ -116,6 +117,15 @@ void ShapeDesigner::configureContextMenuButtons(point* selectedPoint)
     }
 }
 
+void ShapeDesigner::keyPressEvent(QKeyEvent* event)
+{
+    if(event->key() == Qt::Key_Escape)
+    {
+        selectionManager.clear();
+        this->repaint();
+    }
+}
+
 void ShapeDesigner::mousePressEvent(QMouseEvent* e)
 {
     clickPointX = limit(e->x(), MAX_W - 5);
@@ -146,7 +156,7 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
 
 void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
 {    
-    if(selectionManager.onMouseRelease())
+    if(selectionManager.onMouseRelease(unredoPanle, layer));
     {
         this->repaint();
     }

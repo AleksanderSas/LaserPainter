@@ -17,10 +17,11 @@ public:
     bool drawLines = true;
     
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void paintEvent(QPaintEvent *e) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 signals:
 

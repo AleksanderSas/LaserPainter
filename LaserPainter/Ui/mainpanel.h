@@ -42,6 +42,7 @@ private:
     QScrollBar *moveScaleBar;
     QLabel *scaleLabel;
     QLabel *moveScaleLabel;
+    UnReDoPanel *unrePanel;
 
     QSpinBox* CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout);
     void updateConfiguration();

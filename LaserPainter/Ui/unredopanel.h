@@ -17,6 +17,7 @@ class UnReDoPanel : public QWidget
 public:
     UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent = nullptr);
     void addDo(AbstractOperation* op, OperationLayer layer);
+    void clear();
 
 protected:
 
@@ -33,6 +34,7 @@ private:
     std::stack<AbstractOperation*> undo[2], redo[2];
     OperationLayer layer = OperationLayer::shape;
     void updateButtons();
+    void clear(std::stack<AbstractOperation*> &set);
 };
 
 #endif // UNREDOPANEL_H

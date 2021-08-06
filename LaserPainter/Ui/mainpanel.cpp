@@ -54,7 +54,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto *hbox = new QHBoxLayout(this);
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
-    auto* unrePanel = new UnReDoPanel(this, &project.shape, &project.move, this);
+    unrePanel = new UnReDoPanel(this, &project.shape, &project.move, this);
     shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, OperationLayer::shape, this);
     moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, OperationLayer::move, this);
     startButton = new QPushButton("Start", this);
@@ -251,6 +251,7 @@ void MainPanel::clear()
             moveDesigner->update();
         }
     }
+    unrePanel->clear();
 }
 
 void MainPanel::setTitle(QString fileName)
@@ -268,6 +269,7 @@ void MainPanel::openFile()
     if(fileName.size() > 0)
     {
         project.clear();
+        unrePanel->clear();
         std::string selectedFile = fileName.toStdString();
         loadProject(selectedFile);
         configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));

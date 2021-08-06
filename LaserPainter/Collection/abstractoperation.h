@@ -12,6 +12,7 @@ enum OperationType
 class AbstractOperation
 {
 public:
+    virtual ~AbstractOperation();
     virtual void unDo(ShapeCollection &shapeCollection) = 0;
     virtual void reDo(ShapeCollection &shapeCollection) = 0;
 };

@@ -1,4 +1,5 @@
 #include "multipleselectionmanager.h"
+#include "../Collection/multiplemoveoperation.h"
 
 MultipleSelectionManager::MultipleSelectionManager()
 {
@@ -46,8 +47,14 @@ bool MultipleSelectionManager::onMousePress(ShapeCollection &shapeCollection, in
     return false;
 }
 
-bool MultipleSelectionManager::onMouseRelease()
+bool MultipleSelectionManager::onMouseRelease(UnReDoPanel *unredoPanle, OperationLayer layer)
 {
+    if(selectManyMode == SelectedManyMode::moving && (selectedManyStartX != selectedManyEndX || selectedManyStartY != selectedManyEndY))
+    {
+        unredoPanle->addDo(new MultipleMoveOperation(selectedPoints, (selectedManyEndX - selectedManyStartX) * 4, (selectedManyEndY - selectedManyStartY) * 4), layer);
+        return true;
+    }
+
     if(selectManyMode == SelectedManyMode::selecting)
     {
         selectedPoints.insert(selectedPointCondidates.begin(), selectedPointCondidates.end());
@@ -55,6 +62,7 @@ bool MultipleSelectionManager::onMouseRelease()
         selectManyMode = SelectedManyMode::moving;
         return true;
     }
+
     return false;
 }
 
@@ -78,18 +86,24 @@ bool MultipleSelectionManager::onMouseMove(int x, int y, ShapeCollection &shapeC
 
     if(selectManyMode == SelectedManyMode::moving)
     {
-        int dx = x - selectedManyStartX;
-        int dy = y - selectedManyStartY;
+        int dx = x - selectedManyEndX;
+        int dy = y - selectedManyEndY;
         for (auto point : selectedPoints)
         {
             point->x += dx * 4;
             point->y += dy * 4;
         }
-        selectedManyStartX = x;
-        selectedManyStartY = y;
+        selectedManyEndX = x;
+        selectedManyEndY = y;
         return true;
     }
     return false;
+}
+
+void MultipleSelectionManager::clear()
+{
+    selectedPointCondidates.clear();
+    selectedPoints.clear();
 }
 
 void MultipleSelectionManager::drawSelectionRectangle(QPainter &painter)

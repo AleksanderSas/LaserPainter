@@ -35,12 +35,35 @@ UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCol
     connect(redoShortcut, SIGNAL(activated()), this, SLOT(executeReDo()));
 }
 
+void UnReDoPanel::clear()
+{
+    clear(undo[OperationLayer::move]);
+    clear(undo[OperationLayer::shape]);
+    clear(redo[OperationLayer::move]);
+    clear(redo[OperationLayer::shape]);
+    updateButtons();
+}
+
+void UnReDoPanel::clear(std::stack<AbstractOperation*> &set)
+{
+    while (!set.empty())
+    {
+        auto op = set.top();
+        set.pop();
+        delete op;
+    }
+}
+
 void UnReDoPanel::addDo(AbstractOperation* operation, OperationLayer layer)
 {
     undo[layer].push(operation);
     while (!redo[layer].empty())
     {
+
+        auto op = redo[layer].top();
+        delete op;
         redo[layer].pop();
+
     }
    updateButtons();
 }
