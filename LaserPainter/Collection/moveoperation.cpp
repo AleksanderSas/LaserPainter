@@ -1,6 +1,6 @@
 #include "moveoperation.h"
 
-MoveOperation::MoveOperation(Point &p, int originX, int originY): p(p), x(originX), y(originY)
+MoveOperation::MoveOperation(Point &p, float originX, float originY): p(p), x(originX), y(originY)
 {
 }
 
@@ -8,8 +8,8 @@ MoveOperation::~MoveOperation() {}
 
 void MoveOperation::execute()
 {
-    int tmpX = p.x;
-    int tmpY = p.y;
+    float tmpX = p.x;
+    float tmpY = p.y;
     p.x = x;
     p.y = y;
     x = tmpX;

@@ -15,7 +15,7 @@ ShapeCollection::~ShapeCollection()
     clear();
 }
 
-void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, bool wait, int position)
+void ShapeCollection::Add(float x, float y, ShapeType type, bool enableLaser, bool wait, int position)
 {
     Point p(x, y, type, enableLaser, wait);
     if(position < 0)
@@ -29,14 +29,14 @@ void ShapeCollection::Add(unsigned int x, unsigned int y, ShapeType type, bool e
     }
 }
 
-std::vector<Point>::iterator ShapeCollection::getPointIterator(int x, int y)
+std::vector<Point>::iterator ShapeCollection::getPointIterator(float x, float y)
 {
-    unsigned int currentDist = 9999;
+    float currentDist = 9999.0f;
     std::vector<Point>::iterator itr = points.end();
     for(auto iter = points.begin(); iter != points.end(); iter++)
     {
-        unsigned int dist = (iter->x - x) * (iter->x - x) + (iter->y - y) * (iter->y - y);
-        if(dist < 1600 && dist < currentDist)
+        float dist = (iter->x - x) * (iter->x - x) + (iter->y - y) * (iter->y - y);
+        if(dist < 1600.0f && dist < currentDist)
         {
             itr = iter;
             currentDist = dist;
@@ -45,7 +45,7 @@ std::vector<Point>::iterator ShapeCollection::getPointIterator(int x, int y)
     return itr;
 }
 
-std::pair<int, Point> ShapeCollection::deletePoint(unsigned int x, unsigned int y)
+std::pair<int, Point> ShapeCollection::deletePoint(int x, int y)
 {
     Point p;
     auto iter = getPointIterator(x, y);
@@ -57,13 +57,13 @@ std::pair<int, Point> ShapeCollection::deletePoint(unsigned int x, unsigned int 
     return std::pair<int, Point>(iter - points.begin(), p);
 }
 
-Point* ShapeCollection::getPoint(unsigned int x, unsigned int y)
+Point* ShapeCollection::getPoint(int x, int y)
 {
     auto iter = getPointIterator(x, y);
     return iter != points.end()? &(*iter) : nullptr;
 }
 
-std::pair<bool, Point*> ShapeCollection::getOrAddPoint(unsigned int x, unsigned int y, ShapeType type)
+std::pair<bool, Point*> ShapeCollection::getOrAddPoint(int x, int y, ShapeType type)
 {
     auto iter = getPointIterator(x, y);
     if(iter != points.end())

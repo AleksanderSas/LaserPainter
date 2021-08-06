@@ -13,9 +13,9 @@
 
 ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, QWidget *parent) :
     QFrame(parent),
+    unredoPanle(unredoPanle),
     shapeCollection(sc),
     shapeSelector(shapeSelector),
-    unredoPanle(unredoPanle),
     layer(layer)
 {
     menu = new QMenu(this);

@@ -15,18 +15,18 @@ public:
     const PointWithMetadata* next(unsigned int stepsSize);
     void restart();
 
-    void Add(unsigned int x, unsigned int y, ShapeType type, bool enableLaser, bool wait, int position = -1);
-    std::pair<bool, Point*> getOrAddPoint(unsigned int x, unsigned int y, ShapeType type);
-    Point* getPoint(unsigned int x, unsigned int y);
+    void Add(float x, float y, ShapeType type, bool enableLaser, bool wait, int position = -1);
+    std::pair<bool, Point*> getOrAddPoint(int x, int y, ShapeType type);
+    Point* getPoint(int x, int y);
     void clear();
-    std::pair<int, Point> deletePoint(unsigned int x, unsigned int y);
+    std::pair<int, Point> deletePoint(int x, int y);
     void insertPointAfter(Point &p);
 
     std::vector<Point> points;
     std::vector<Point>::iterator iter;
 
 private :
-    std::vector<Point>::iterator getPointIterator(int x, int y);
+    std::vector<Point>::iterator getPointIterator(float x, float y);
     bool SetNextVisitor(bool firstVisitor);
     AbstractVisitor *currentVisitor = nullptr;
     unsigned int currentShape = 0;

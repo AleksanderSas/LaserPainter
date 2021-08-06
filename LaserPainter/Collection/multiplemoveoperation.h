@@ -8,7 +8,7 @@ class MultipleMoveOperation : public AbstractOperation
 {
 public:
     MultipleMoveOperation(std::set<Point*> &points, int shiftX, int shiftY);
-    virtual ~MultipleMoveOperation();
+    virtual ~MultipleMoveOperation() override;
     void unDo(ShapeCollection &shapeCollection) override;
     void reDo(ShapeCollection &shapeCollection) override;
 

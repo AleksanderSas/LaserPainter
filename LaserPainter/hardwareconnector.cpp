@@ -195,9 +195,9 @@ int HardwareConnector::SpiWriteAndRead (int SpiDevice, unsigned char *TxData, un
 static unsigned char buffer[4];
 void HardwareConnector::sent(unsigned int x, unsigned int y)
 {
-    buffer[0] = 0x30 | (x >> 8);
+    buffer[0] = static_cast<char>(0x30 | (x >> 8));
     buffer[1] = x & 255;
-    buffer[2] = 0x30 | (y >> 8);
+    buffer[2] = static_cast<char>(0x30 | (y >> 8));
     buffer[3] = y & 255;
 
     //wiringPiSPIDataRW(1, buffer, 4);

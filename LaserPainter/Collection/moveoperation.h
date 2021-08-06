@@ -6,16 +6,16 @@
 class MoveOperation: public AbstractOperation
 {
 public:
-    MoveOperation(Point &p, int originX, int origing);
-    virtual ~MoveOperation();
+    MoveOperation(Point &p, float originX, float origing);
+    virtual ~MoveOperation() override;
     void unDo(ShapeCollection &shapeCollection) override;
     void reDo(ShapeCollection &shapeCollection) override;
 
 private:
     void execute();
 
-    int x, y;
     Point &p;
+    float x, y;
 };
 
 #endif // MOVEOPERATION_H

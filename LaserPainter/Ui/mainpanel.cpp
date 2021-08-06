@@ -21,7 +21,7 @@ bool ifFileExists(std::string fileName)
     return infile.good();
 }
 
-QSpinBox* MainPanel::CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout)
+QSpinBox* MainPanel::CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout)
 {
     auto *spinner = new QSpinBox(this);
     spinner->setRange(1, 100);

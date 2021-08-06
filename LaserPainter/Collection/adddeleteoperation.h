@@ -8,7 +8,7 @@ class AddDeleteOperation: public AbstractOperation
 public:
     AddDeleteOperation(Point p, int position);
     AddDeleteOperation(Point p);
-    virtual ~AddDeleteOperation();
+    virtual ~AddDeleteOperation() override;
     void unDo(ShapeCollection &shapeCollection) override;
     void reDo(ShapeCollection &shapeCollection) override;
 

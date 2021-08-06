@@ -44,7 +44,7 @@ private:
     QLabel *moveScaleLabel;
     UnReDoPanel *unrePanel;
 
-    QSpinBox* CreateAndAddSpinner(char* title, int initValue, QVBoxLayout* layout);
+    QSpinBox* CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout);
     void updateConfiguration();
     void setTitle(QString fileName);
     void loadProject(std::string fileName);
