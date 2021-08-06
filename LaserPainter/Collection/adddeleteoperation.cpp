@@ -16,7 +16,7 @@ void AddDeleteOperation::execute(ShapeCollection &shapeCollection, bool add)
 {
     if(add)
     {
-        shapeCollection.Add(p.x, p.y, p.type, p.enableLaser, position);
+        shapeCollection.Add(p.x, p.y, p.type, p.enableLaser, p.wait, position);
     }
     else
     {
