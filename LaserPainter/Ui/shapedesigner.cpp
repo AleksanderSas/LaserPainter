@@ -39,7 +39,6 @@ ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnRe
     connect(insertLineAction, SIGNAL(triggered()), this, SLOT(insertLine()));
     connect(setWaitleAction, SIGNAL(triggered()), this, SLOT(setWait()));
 
-    setStyleSheet("border: 1px solid red");
     this->setFixedSize(MAX_W, MAX_H);
 }
 
@@ -122,6 +121,13 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
     clickPointX = limit(e->x(), MAX_W - 5);
     clickPointY = limit(e->y(), MAX_H - 5);
 
+    Qt::KeyboardModifiers modifier = QApplication::queryKeyboardModifiers();
+    if(selectionManager.onMousePress(shapeCollection, clickPointX, clickPointY, modifier))
+    {
+        this->repaint();
+        return;
+    }
+
     if(e->button() == Qt::MouseButton::RightButton)
     {
         auto* bezierPoint = shapeCollection.getPoint(clickPointX * 4, clickPointY * 4);
@@ -139,7 +145,12 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
 }
 
 void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
-{
+{    
+    if(selectionManager.onMouseRelease())
+    {
+        this->repaint();
+    }
+
     if(selectedPoint != nullptr && e->button() == Qt::MouseButton::LeftButton)
     {
         AbstractOperation* operation = isPointAdded
@@ -152,10 +163,17 @@ void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
 
 void ShapeDesigner::mouseMoveEvent(QMouseEvent *e)
 {
+    int x = limit(e->x(), MAX_W - 5);
+    int y = limit(e->y(), MAX_H - 5);
+
+    if(selectionManager.onMouseMove(x, y, shapeCollection))
+    {
+        this->repaint();
+        return;
+    }
+
     if(selectedPoint != nullptr)
     {
-        int x = limit(e->x(), MAX_W - 5);
-        int y = limit(e->y(), MAX_H - 5);
         selectedPoint->x = x * 4;
         selectedPoint->y = y * 4;
         this->repaint();
@@ -167,12 +185,23 @@ void ShapeDesigner::paintEvent(QPaintEvent *e) {
 
     QPainter painter(this);
 
+    selectionManager.drawSelectionRectangle(painter);
+
     painter.setBrush(QBrush(Qt::darkBlue));
     drawControlPoints(painter);
 
     painter.setBrush(QBrush(Qt::red));
     drawLaserPath(painter);
-  }
+}
+
+Qt::GlobalColor ShapeDesigner::getControlPointColor(Point &p)
+{
+    if(selectionManager.isPOintSelected(&p))
+    {
+        return Qt::darkGreen;
+    }
+    return p.enableLaser? Qt::red : Qt::green;
+}
 
 void ShapeDesigner::drawControlPoints(QPainter &painter)
 {
@@ -182,7 +211,7 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
         {
             Point &p1 = shapeCollection.points[i];
             Point &p2 = shapeCollection.points[i+1];
-            painter.setBrush(p1.enableLaser? QBrush(Qt::red) : QBrush(Qt::green));
+            painter.setBrush(QBrush(getControlPointColor(p1)));
             int circleSize = p1.wait? 10 : 6;
             painter.drawEllipse((p1.x - 3)/4, (p1.y - 3)/4, circleSize, circleSize);
             if(drawLines)
@@ -191,8 +220,8 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
             }
         }
 
-        Point p = shapeCollection.points[shapeCollection.points.size() - 1];
-        painter.setBrush(p.enableLaser? QBrush(Qt::red) : QBrush(Qt::green));
+        Point &p = shapeCollection.points[shapeCollection.points.size() - 1];
+        painter.setBrush(QBrush(getControlPointColor(p)));
         painter.drawEllipse((p.x - 3) / 4, (p.y - 3) / 4, 6, 6);
     }
 }

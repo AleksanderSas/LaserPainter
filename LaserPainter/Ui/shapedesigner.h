@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include "Collection/abstractoperation.h"
 #include "unredopanel.h"
+#include "multipleselectionmanager.h"
 
 class ShapeDesigner : public QFrame
 {
@@ -33,11 +34,13 @@ public slots:
 
 private:
 
+    MultipleSelectionManager selectionManager;
     UnReDoPanel *unredoPanle;
     void insert(ShapeType type);
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
+
     bool isPointAdded;
     QMenu * menu;
     QAction *delteAction;
@@ -46,10 +49,11 @@ private:
     QAction *insertLineAction;
     QAction *insertCircleAction;
     QAction *setWaitleAction;
-    unsigned int clickPointX, clickPointY;
+    int clickPointX, clickPointY;
     void drawControlPoints(QPainter &painter);
     void drawLaserPath(QPainter &painter);
     void configureContextMenuButtons(point* selectedPoint);
+    Qt::GlobalColor getControlPointColor(Point &p);
     OperationLayer layer;
 };
 
