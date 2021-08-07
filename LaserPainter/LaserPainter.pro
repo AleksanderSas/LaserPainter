@@ -6,13 +6,13 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = LaserPainter
 TEMPLATE = app
 
 #comment the line below to compile on desktop
-#CONFIG += r_pi
+CONFIG += r_pi
 
 r_pi {
 DEFINES += R_PI
@@ -46,7 +46,9 @@ SOURCES += \
     Visitors/circlevisitor.cpp \
     Ui/mainpanel.cpp \
     Ui/shapedesigner.cpp \
-    Ui/unredopanel.cpp
+    Ui/unredopanel.cpp \
+    Ui/multipleselectionmanager.cpp \
+    Collection/multiplemoveoperation.cpp
 
 HEADERS += \
     Collection/project.h \
@@ -63,7 +65,9 @@ HEADERS += \
     Visitors/circlevisitor.h \
     Ui/mainpanel.h \
     Ui/shapedesigner.h \
-    Ui/unredopanel.h
+    Ui/unredopanel.h \
+    Ui/multipleselectionmanager.h \
+    Collection/multiplemoveoperation.h
 
 FORMS +=
 
