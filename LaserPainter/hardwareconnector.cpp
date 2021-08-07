@@ -230,6 +230,17 @@ static bool waitUntillReachPosition()
     return false;
 }
 
+void HardwareConnector::ResetAndConfigure(bool enableLaser)
+{
+    pinMode(RESET_PIN, OUTPUT);
+    digitalWrite(RESET_PIN, 1);
+    delay(5);
+    digitalWrite(RESET_PIN, 0);
+
+    digitalWrite(LASER_PIN, enableLaser);
+    digitalWrite(LDAC_PIN, LDAC_FLUSH);
+}
+
 const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid)
 {
 #ifdef R_PI
@@ -240,14 +251,8 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     unsigned long long int counter = 0;
     unsigned long long int pinRead = 0;
 
-    pinMode(RESET_PIN, OUTPUT);
-    digitalWrite(RESET_PIN, 1);
-    delay(5);
-    digitalWrite(RESET_PIN, 0);
-
     bool enableLaser = false;
-    digitalWrite(LASER_PIN, enableLaser);
-    digitalWrite(LDAC_PIN, false);
+    ResetAndConfigure(enableLaser);
 
     run = true;
     long long int totalTime = clock();
@@ -259,13 +264,13 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
         while((p = project.next(config->resolution, config->moveSpeed)) != nullptr)
         {
             positionComputeDelay += clock() - tmpDelay;
-            bool ldacValue = false;
+            bool ldacValue = LDAC_FLUSH;
             if(enableWaitCircuid && p->isNextComponent)
             {
                 int pinValu = digitalRead(TEST_PIN);
                 if(pinValu == TEST_FAILURE && counter > 0)
                 {
-                    ldacValue = true;
+                    ldacValue = LDAC_BUFFER;
                     digitalWrite(LDAC_PIN, ldacValue);
                 }
             }
@@ -319,7 +324,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
 void HardwareConnector::centerLaser(bool isLaserEnabled)
 {
 #ifdef R_PI
-    digitalWrite(LASER_PIN, isLaserEnabled);
+    ResetAndConfigure(isLaserEnabled);
     sent(2048, 2048);
 #endif
 }

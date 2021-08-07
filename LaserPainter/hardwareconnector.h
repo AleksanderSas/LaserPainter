@@ -10,6 +10,8 @@
 #define TEST_PIN 6
 #define LDAC_PIN 2
 #define TEST_FAILURE 1
+#define LDAC_BUFFER true
+#define LDAC_FLUSH false
 
 class HardwareConnector
 {
@@ -24,7 +26,7 @@ private:
     int SpiOpenPort (int spi_device);
     int SpiClosePort (int spi_device);
     int SpiWriteAndRead (int SpiDevice, unsigned char *TxData, unsigned char *RxData, int Length, int LeaveCsLow);
-
+    void ResetAndConfigure(bool enableLaser);
     void sent(unsigned int x, unsigned int y);
 
     int spi_cs0_fd;				//file descriptor for the SPI device
