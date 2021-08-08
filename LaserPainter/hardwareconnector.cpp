@@ -232,6 +232,7 @@ static bool waitUntillReachPosition()
 
 void HardwareConnector::ResetAndConfigure(bool enableLaser)
 {
+#ifdef R_PI
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
     delay(5);
@@ -239,6 +240,7 @@ void HardwareConnector::ResetAndConfigure(bool enableLaser)
 
     digitalWrite(LASER_PIN, enableLaser);
     digitalWrite(LDAC_PIN, LDAC_FLUSH);
+#endif
 }
 
 const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid)

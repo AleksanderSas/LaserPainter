@@ -232,7 +232,10 @@ void MainPanel::draw()
 void MainPanel::saveFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), configuration.dir.c_str());
-    project.save(fileName.toStdString().c_str());
+    if(fileName.size() > 0)
+    {
+        project.save(fileName.toStdString().c_str());
+    }
 }
 
 void MainPanel::clear()
@@ -274,7 +277,7 @@ void MainPanel::openFile()
         loadProject(selectedFile);
         configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
         configuration.file = selectedFile;
-
+        moveDesigner->repaint();
+        shapeDesigner->repaint();
     }
 }
-
