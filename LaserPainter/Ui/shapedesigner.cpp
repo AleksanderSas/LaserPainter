@@ -24,18 +24,21 @@ ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnRe
     insertBezierAction = new QAction("Insert Bezier", this);
     insertLineAction = new QAction("Insert Line", this);
     insertCircleAction = new QAction("Insert Circle", this);
+    insertHalfCircleAction = new QAction("Insert Half Circle", this);
     setWaitleAction = new QAction("Set wait", this);
     menu->addAction(delteAction);
     menu->addAction(switchLaserAction);
     menu->addAction(insertBezierAction);
     menu->addAction(insertLineAction);
     menu->addAction(insertCircleAction);
+    menu->addAction(insertHalfCircleAction);
     menu->addAction(setWaitleAction);
 
     connect(delteAction, SIGNAL(triggered()), this, SLOT(deletePoint()));
     connect(switchLaserAction, SIGNAL(triggered()), this, SLOT(switchLaser()));
     connect(insertBezierAction, SIGNAL(triggered()), this, SLOT(insertBezier()));
     connect(insertCircleAction, SIGNAL(triggered()), this, SLOT(insertCircle()));
+    connect(insertHalfCircleAction, SIGNAL(triggered()), this, SLOT(insertHalfCircle()));
     connect(insertLineAction, SIGNAL(triggered()), this, SLOT(insertLine()));
     connect(setWaitleAction, SIGNAL(triggered()), this, SLOT(setWait()));
 
@@ -59,6 +62,11 @@ void ShapeDesigner::insertBezier()
 void ShapeDesigner::insertCircle()
 {
     insert(ShapeType::CIRCLE);
+}
+
+void ShapeDesigner::insertHalfCircle()
+{
+    insert(ShapeType::HALF_CIRCLE);
 }
 
 void ShapeDesigner::insertLine()
@@ -95,6 +103,8 @@ ShapeType getShapeType(QString str)
         return ShapeType::LINE;
     else if(str == CIRCLE_)
         return ShapeType::CIRCLE;
+    else if(str == HALF_CIRCLE_)
+        return ShapeType::HALF_CIRCLE;
 }
 
 int inline limit(int x, const int max)

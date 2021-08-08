@@ -62,7 +62,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* saveButton = new QPushButton("Save", this);
     auto* openButton = new QPushButton("Open", this);
     enableLaser = new QCheckBox("Enable laser", this);
-    shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_});
+    shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_, HALF_CIRCLE_});
 
     auto* repeatsLabel = new QLabel("Repeats" ,this);
     repeatsInput = new QSpinBox(this);

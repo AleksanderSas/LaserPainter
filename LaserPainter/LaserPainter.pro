@@ -40,15 +40,16 @@ SOURCES += \
     Collection/abstractoperation.cpp \
     Collection/moveoperation.cpp \
     Collection/adddeleteoperation.cpp \
+    Collection/multiplemoveoperation.cpp \
     Visitors/beziervisitor.cpp \
     Visitors/abstractvisitor.cpp \
     Visitors/linevisitor.cpp \
     Visitors/circlevisitor.cpp \
+    Visitors/halfcirclevisitor.cpp \
     Ui/mainpanel.cpp \
     Ui/shapedesigner.cpp \
     Ui/unredopanel.cpp \
-    Ui/multipleselectionmanager.cpp \
-    Collection/multiplemoveoperation.cpp
+    Ui/multipleselectionmanager.cpp
 
 HEADERS += \
     Collection/project.h \
@@ -59,15 +60,16 @@ HEADERS += \
     Collection/abstractoperation.h \
     Collection/moveoperation.h \
     Collection/adddeleteoperation.h \
+    Collection/multiplemoveoperation.h \
     Visitors/abstractvisitor.h \
     Visitors/beziervisitor.h \
     Visitors/linevisitor.h \
     Visitors/circlevisitor.h \
+    Visitors/halfcirclevisitor.h \
     Ui/mainpanel.h \
     Ui/shapedesigner.h \
     Ui/unredopanel.h \
-    Ui/multipleselectionmanager.h \
-    Collection/multiplemoveoperation.h
+    Ui/multipleselectionmanager.h
 
 FORMS +=
 

@@ -4,6 +4,7 @@
 #include "Visitors/beziervisitor.h"
 #include "Visitors/circlevisitor.h"
 #include "Visitors/linevisitor.h"
+#include "Visitors/halfcirclevisitor.h"
 
 ShapeCollection::ShapeCollection()
 {
@@ -102,6 +103,8 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
             return  new BezierVisitor(pointNumber, offset);
         case ShapeType::CIRCLE:
             return  new CircleVisitor(pointNumber, offset);
+        case ShapeType::HALF_CIRCLE:
+            return  new HalfCircleVisitor(pointNumber, offset);
     }
     return nullptr;
 }

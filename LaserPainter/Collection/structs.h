@@ -5,7 +5,8 @@ enum ShapeType
 {
     BEZIER,
     LINE,
-    CIRCLE
+    CIRCLE,
+    HALF_CIRCLE
 };
 
 typedef struct point
@@ -30,5 +31,6 @@ typedef struct pointWithMetadata
 #define BEZIER_ "Bezier"
 #define LINE_ "Line"
 #define CIRCLE_ "Circle"
+#define HALF_CIRCLE_ "Half Circle"
 
 #endif // STRUCTS_H

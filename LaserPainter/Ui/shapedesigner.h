@@ -30,6 +30,7 @@ public slots:
     void switchLaser();
     void insertBezier();
     void insertCircle();
+    void insertHalfCircle();
     void insertLine();
     void setWait();
 
@@ -49,6 +50,7 @@ private:
     QAction *insertBezierAction;
     QAction *insertLineAction;
     QAction *insertCircleAction;
+    QAction *insertHalfCircleAction;
     QAction *setWaitleAction;
     int clickPointX, clickPointY;
     void drawControlPoints(QPainter &painter);
