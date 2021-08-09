@@ -11,7 +11,7 @@ public:
 
     void save(const char* file);
     void load(std::string &file);
-    const PointWithMetadata* next(unsigned int stepsSize, unsigned int moveSpeed);
+    const PointWithMetadata* next(unsigned int stepsSize, unsigned int moveSpeed, bool enableMove);
     void restart();
     void clear();
     bool isEmpty();
@@ -32,7 +32,7 @@ private:
     float rotateCos = 1.0f;
     PointWithMetadata p;
     void readPointSequenceV5(std::ifstream &myfile, ShapeCollection& sc);
-    void SetNextPathAndRotation(unsigned int moveSpeed);
+    void SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove);
 };
 
 #endif // COLLECTIONLOADER_H

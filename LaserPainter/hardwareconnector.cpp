@@ -243,7 +243,7 @@ void HardwareConnector::ResetAndConfigure(bool enableLaser)
 #endif
 }
 
-const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid)
+const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid, bool enableMoving)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;
@@ -263,7 +263,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     {
         const PointWithMetadata* p;
         tmpDelay = clock();
-        while((p = project.next(config->resolution, config->moveSpeed)) != nullptr)
+        while((p = project.next(config->resolution, config->moveSpeed, enableMoving)) != nullptr)
         {
             positionComputeDelay += clock() - tmpDelay;
             bool ldacValue = LDAC_FLUSH;

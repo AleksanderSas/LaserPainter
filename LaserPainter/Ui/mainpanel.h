@@ -32,6 +32,7 @@ private:
     std::thread *displayThread = nullptr;
     QPushButton *startButton;
     QCheckBox* enableLaser;
+    QCheckBox* enableMove;
     QSpinBox *pointsInput;
     QSpinBox *moveSpeedInput;
     QSpinBox *repeatsInput;
