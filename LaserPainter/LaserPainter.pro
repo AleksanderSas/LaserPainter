@@ -34,6 +34,7 @@ CONFIG += c++11
 
 SOURCES += \
     Collection/project.cpp \
+    Ui/CoordinateTransformation.cpp \
         main.cpp \
     hardwareconnector.cpp \
     configuration.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
 
 HEADERS += \
     Collection/project.h \
+    Ui/CoordinateTransformation.h \
     hardwareconnector.h \
     configuration.h \
     Collection/shapecollection.h \

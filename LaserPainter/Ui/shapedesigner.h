@@ -8,6 +8,7 @@
 #include "Collection/abstractoperation.h"
 #include "unredopanel.h"
 #include "multipleselectionmanager.h"
+#include <tuple>
 
 class ShapeDesigner : public QFrame
 {
@@ -35,6 +36,7 @@ public slots:
     void setWait();
 
 private:
+    std::pair<int,int> toCollectionPoint();
 
     MultipleSelectionManager selectionManager;
     UnReDoPanel *unredoPanle;

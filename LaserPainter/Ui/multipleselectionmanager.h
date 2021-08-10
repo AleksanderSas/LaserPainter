@@ -16,7 +16,7 @@ public:
     bool onMouseMove(int x, int y, ShapeCollection &shapeCollection);
     bool onMouseRelease(UnReDoPanel *unredoPanle, OperationLayer layer);
     bool onMousePress(ShapeCollection &shapeCollection, int x, int y, Qt::KeyboardModifiers modifier);
-    bool isPOintSelected(Point *p);
+    bool isPointSelected(Point *p);
     void drawSelectionRectangle(QPainter &painter);
     void clear();
 

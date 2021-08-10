@@ -1,5 +1,6 @@
 #include "multipleselectionmanager.h"
 #include "../Collection/multiplemoveoperation.h"
+#include "CoordinateTransformation.h"
 
 MultipleSelectionManager::MultipleSelectionManager()
 {
@@ -9,9 +10,10 @@ bool MultipleSelectionManager::onMousePress(ShapeCollection &shapeCollection, in
 {
     selectedManyStartX = selectedManyEndX = x;
     selectedManyStartY = selectedManyEndY = y;
+    auto cord = toCollectionPoint2(x, y);
     if(modifier == Qt::NoModifier)
     {
-        if(selectManyMode != SelectedManyMode::no && isCloseToAnySelected(x * 4, y * 4))
+        if(selectManyMode != SelectedManyMode::no && isCloseToAnySelected(cord.first, cord.second))
         {
             selectManyMode = SelectedManyMode::moving;
             return true;
@@ -26,7 +28,7 @@ bool MultipleSelectionManager::onMousePress(ShapeCollection &shapeCollection, in
 
     if(modifier == Qt::ControlModifier)
     {
-        Point* selectedPoint = shapeCollection.getPoint(x * 4, y * 4);
+        Point* selectedPoint = shapeCollection.getPoint(cord.first, cord.second);
         selectManyMode = SelectedManyMode::selecting_ctrl;
         if(selectedPoints.find(selectedPoint) == selectedPoints.end())
         {
@@ -51,7 +53,8 @@ bool MultipleSelectionManager::onMouseRelease(UnReDoPanel *unredoPanle, Operatio
 {
     if(selectManyMode == SelectedManyMode::moving && (selectedManyStartX != selectedManyEndX || selectedManyStartY != selectedManyEndY))
     {
-        unredoPanle->addDo(new MultipleMoveOperation(selectedPoints, (selectedManyEndX - selectedManyStartX) * 4, (selectedManyEndY - selectedManyStartY) * 4), layer);
+        auto cord = scaleToCollection(selectedManyEndX - selectedManyStartX, selectedManyEndY - selectedManyStartY);
+        unredoPanle->addDo(new MultipleMoveOperation(selectedPoints, cord.first, cord.second), layer);
         return true;
     }
 
@@ -73,7 +76,8 @@ bool MultipleSelectionManager::onMouseMove(int x, int y, ShapeCollection &shapeC
         selectedPointCondidates.clear();
         for(auto &p : shapeCollection.points)
         {
-            if(isInsideSelectedArea(p.x / 4, p.y / 4))
+            auto cord = fromCollectionPoint(p);
+            if(isInsideSelectedArea(cord.first, cord.second))
             {
                 selectedPointCondidates.insert(&p);
             }
@@ -86,12 +90,11 @@ bool MultipleSelectionManager::onMouseMove(int x, int y, ShapeCollection &shapeC
 
     if(selectManyMode == SelectedManyMode::moving)
     {
-        int dx = x - selectedManyEndX;
-        int dy = y - selectedManyEndY;
+        auto cord = scaleToCollection(x - selectedManyEndX, y - selectedManyEndY);
         for (auto point : selectedPoints)
         {
-            point->x += dx * 4;
-            point->y += dy * 4;
+            point->x += cord.first;
+            point->y += cord.second;
         }
         selectedManyEndX = x;
         selectedManyEndY = y;
@@ -114,7 +117,7 @@ void MultipleSelectionManager::drawSelectionRectangle(QPainter &painter)
     }
 }
 
-bool MultipleSelectionManager::isPOintSelected(Point *p)
+bool MultipleSelectionManager::isPointSelected(Point *p)
 {
     return selectedPoints.find(p) != selectedPoints.end() || selectedPointCondidates.find(p) != selectedPointCondidates.end();
 }
