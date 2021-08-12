@@ -259,6 +259,15 @@ void ShapeDesigner::drawBackground(QPainter &painter)
     painter.setPen(QPen(Qt::black));
 }
 
+void ShapeDesigner::drawPoint(Point &p, QPainter &painter)
+{
+    painter.setBrush(QBrush(getControlPointColor(p)));
+    auto cord = fromCollectionPoint(p);
+    int circleSize = p.wait? 10 : 6;
+    int shift = circleSize / 2;
+    painter.drawEllipse(cord.first - shift, cord.second - shift, circleSize, circleSize);
+}
+
 void ShapeDesigner::drawControlPoints(QPainter &painter)
 {
     drawBackground(painter);
@@ -269,10 +278,8 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
         {
             Point &p1 = shapeCollection.points[i];
             Point &p2 = shapeCollection.points[i+1];
-            painter.setBrush(QBrush(getControlPointColor(p1)));
             auto cord1 = fromCollectionPoint(p1);
-            int circleSize = p1.wait? 10 : 6;
-            painter.drawEllipse(cord1.first - 3, cord1.second - 3, circleSize, circleSize);
+            drawPoint(p1, painter);
             if(drawLines)
             {
                 auto cord2 = fromCollectionPoint(p2);
@@ -281,9 +288,7 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
         }
 
         Point &p = shapeCollection.points[shapeCollection.points.size() - 1];
-        painter.setBrush(QBrush(getControlPointColor(p)));
-        auto cord = fromCollectionPoint(p);
-        painter.drawEllipse(cord.first - 3, cord.second, 6, 6);
+        drawPoint(p, painter);
     }
 }
 

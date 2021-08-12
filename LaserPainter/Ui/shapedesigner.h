@@ -61,6 +61,7 @@ private:
     void drawLaserPath(QPainter &painter);
     void configureContextMenuButtons(point* selectedPoint);
     Qt::GlobalColor getControlPointColor(Point &p);
+    void drawPoint(Point &p, QPainter &painter);
     OperationLayer layer;
 };
 
