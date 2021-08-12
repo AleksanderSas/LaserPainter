@@ -283,7 +283,7 @@ void MainPanel::openFile()
         loadProject(selectedFile);
         configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
         configuration.file = selectedFile;
-        moveDesigner->repaint();
-        shapeDesigner->repaint();
+        moveDesigner->reset();
+        shapeDesigner->reset();
     }
 }

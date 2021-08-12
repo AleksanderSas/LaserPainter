@@ -237,8 +237,32 @@ Qt::GlobalColor ShapeDesigner::getControlPointColor(Point &p)
     return p.enableLaser? Qt::red : Qt::green;
 }
 
+void ShapeDesigner::drawBackground(QPainter &painter)
+{
+    QPen p(QColor(235, 235, 235));
+    p.setWidth(3);
+    painter.setPen(p);
+
+    painter.drawLine(0, MAX_H / 2, MAX_W, MAX_H / 2);
+    painter.drawLine(MAX_W / 2, 0, MAX_W / 2, MAX_H);
+
+    p.setStyle(Qt::PenStyle::DashLine);
+    p.setWidth(1);
+    painter.setPen(p);
+
+    for(int i = -400; i <= 400; i += 200)
+    {
+        painter.drawLine(MAX_W / 2 + i, 0, MAX_W / 2 + i, MAX_H);
+        painter.drawLine(0, MAX_H / 2 + i, MAX_W, MAX_H / 2 + i);
+    }
+
+    painter.setPen(QPen(Qt::black));
+}
+
 void ShapeDesigner::drawControlPoints(QPainter &painter)
 {
+    drawBackground(painter);
+
     if(shapeCollection.points.size() > 0)
     {
         for(unsigned int i = 0; i < shapeCollection.points.size() - 1; i++)
@@ -273,3 +297,8 @@ void ShapeDesigner::drawLaserPath(QPainter &painter)
     }
 }
 
+void ShapeDesigner::reset()
+{
+    selectionManager.clear();
+    this->repaint();
+}
