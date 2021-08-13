@@ -28,6 +28,7 @@ private:
     int SpiWriteAndRead (int SpiDevice, unsigned char *TxData, unsigned char *RxData, int Length, int LeaveCsLow);
     void ResetAndConfigure(bool enableLaser);
     void sent(unsigned int x, unsigned int y);
+    bool handleLaserSwitch(bool enableWaitCircuid, const PointWithMetadata* p);
 
     int spi_cs0_fd;				//file descriptor for the SPI device
     int spi_cs1_fd;				//file descriptor for the SPI device

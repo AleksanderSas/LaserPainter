@@ -230,6 +230,41 @@ static bool waitUntillReachPosition()
     return false;
 }
 
+bool HardwareConnector::handleLaserSwitch(bool enableWaitCircuid, const PointWithMetadata* p)
+{
+#if 1
+    if(p->point.enableLaser)
+    {
+        digitalWrite(LASER_PIN, p->point.enableLaser);
+        if(enableWaitCircuid)
+        {
+            if(waitUntillReachPosition())
+            {
+                return waitExceededErrorMessage;
+            }
+        }
+        usleep(50);
+    }
+    else
+    {
+        if(enableWaitCircuid)
+        {
+            if(waitUntillReachPosition())
+            {
+                return waitExceededErrorMessage;
+            }
+        }
+        digitalWrite(LASER_PIN, p->point.enableLaser);
+    }
+#else
+
+    usleep(250);
+    digitalWrite(LASER_PIN, p->point.enableLaser;);
+    usleep(250);
+#endif
+    return  p->point.enableLaser;;
+}
+
 void HardwareConnector::ResetAndConfigure(bool enableLaser)
 {
 #ifdef R_PI
@@ -279,10 +314,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
             if(enableLaser != p->point.enableLaser)
             {
                 tmpDelay = clock();
-                usleep(250);
-                enableLaser = p->point.enableLaser;
-                digitalWrite(LASER_PIN, enableLaser);
-                usleep(250);
+                enableLaser = handleLaserSwitch(enableWaitCircuid, p);
                 laserSwitchDelay += clock() - tmpDelay;
             }
             
