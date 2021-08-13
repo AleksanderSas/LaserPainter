@@ -10,6 +10,7 @@ UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCol
     shapeCollection[0] = sc1;
     shapeCollection[1] = sc2;
     auto *undoredoBox = new QHBoxLayout(this);
+    undoredoBox->setContentsMargins(0, 0, 0, 0);
     unDoButton = new QPushButton(this);
     unDoButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
     unDoButton->setEnabled(false);

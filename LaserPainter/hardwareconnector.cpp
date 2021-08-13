@@ -232,6 +232,7 @@ static bool waitUntillReachPosition()
 
 void HardwareConnector::ResetAndConfigure(bool enableLaser)
 {
+#ifdef R_PI
     pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, 1);
     delay(5);
@@ -239,9 +240,10 @@ void HardwareConnector::ResetAndConfigure(bool enableLaser)
 
     digitalWrite(LASER_PIN, enableLaser);
     digitalWrite(LDAC_PIN, LDAC_FLUSH);
+#endif
 }
 
-const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid)
+const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid, bool enableMoving)
 {
 #ifdef R_PI
     long long int tmpDelay = 0L;
@@ -261,7 +263,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     {
         const PointWithMetadata* p;
         tmpDelay = clock();
-        while((p = project.next(config->resolution, config->moveSpeed)) != nullptr)
+        while((p = project.next(config->resolution, config->moveSpeed, enableMoving)) != nullptr)
         {
             positionComputeDelay += clock() - tmpDelay;
             bool ldacValue = LDAC_FLUSH;

@@ -62,6 +62,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* saveButton = new QPushButton("Save", this);
     auto* openButton = new QPushButton("Open", this);
     enableLaser = new QCheckBox("Enable laser", this);
+    enableMove = new QCheckBox("Enable move", this);
+    enableMove->setChecked(true);
     shapeSelector->addItems(QStringList{BEZIER_, LINE_, CIRCLE_, HALF_CIRCLE_});
 
     auto* repeatsLabel = new QLabel("Repeats" ,this);
@@ -82,17 +84,19 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     moveScaleBar->setValue(25);
     moveScaleLabel = new QLabel(QString("M scale: 25%"), this);
     enableWaitCircuid = new QCheckBox("Wait circuid", this);
+    enableWaitCircuid->setChecked(true);
 
     vbox->setSpacing(5);
     vbox->addWidget(unrePanel, 0, Qt::AlignTop);
     vbox->setSpacing(5);
-    vbox->addWidget(enableLaser, 0, Qt::AlignTop);
     vbox->addWidget(startButton, 0, Qt::AlignTop);
     vbox->addWidget(clearButton, 0, Qt::AlignTop);
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
     vbox->addWidget(openButton, 0, Qt::AlignTop);
     vbox->addWidget(drawLinesCheckbox, 0, Qt::AlignTop);
     vbox->addWidget(enableWaitCircuid, 0, Qt::AlignTop);
+    vbox->addWidget(enableLaser, 0, Qt::AlignTop);
+    vbox->addWidget(enableMove, 0, Qt::AlignTop);
     vbox->addStretch(5);
     vbox->addWidget(shapeSelector, 0, Qt::AlignTop);
     vbox->addStretch(5);
@@ -215,7 +219,9 @@ void MainPanel::displayError()
 void MainPanel::draw()
 {
     updateConfiguration();
-    errorMessage = connector->draw(project, &configuration, enableWaitCircuid->checkState() == Qt::CheckState::Checked);
+    bool isWaitingEnabled = enableWaitCircuid->checkState() == Qt::CheckState::Checked;
+    bool isMovingEnabled = enableMove->checkState() == Qt::CheckState::Checked;
+    errorMessage = connector->draw(project, &configuration, isWaitingEnabled, isMovingEnabled);
     if(errorMessage != nullptr)
     {
         // any thread
@@ -232,7 +238,10 @@ void MainPanel::draw()
 void MainPanel::saveFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save"), configuration.dir.c_str());
-    project.save(fileName.toStdString().c_str());
+    if(fileName.size() > 0)
+    {
+        project.save(fileName.toStdString().c_str());
+    }
 }
 
 void MainPanel::clear()
@@ -274,7 +283,7 @@ void MainPanel::openFile()
         loadProject(selectedFile);
         configuration.dir = selectedFile.substr(0, selectedFile.rfind('/'));
         configuration.file = selectedFile;
-
+        moveDesigner->reset();
+        shapeDesigner->reset();
     }
 }
-

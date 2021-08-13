@@ -186,8 +186,13 @@ Point rotateScaleAndShift(const Point& p, float sin, float cos, const Point& off
     return Point(x, y, p.type, p.enableLaser, p.wait);
 }
 
-void Project::SetNextPathAndRotation(unsigned int moveSpeed)
+void Project::SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove)
 {
+    if(!enableMove)
+    {
+        path = nullptr;
+        return;
+    }
     bool setSinCos = false;
     float previousX = 0.0f;
     float previousY = 0.0f;
@@ -211,12 +216,12 @@ void Project::SetNextPathAndRotation(unsigned int moveSpeed)
     }
 }
 
-const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed)
+const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed, bool enableMove)
 {
     const PointWithMetadata* shapePoint = shape.next(stepsSize);
     if(shapePoint == nullptr)
     {
-        SetNextPathAndRotation(moveSpeed);
+        SetNextPathAndRotation(moveSpeed, enableMove);
         return nullptr;
     }
 

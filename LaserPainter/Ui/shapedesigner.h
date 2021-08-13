@@ -8,6 +8,7 @@
 #include "Collection/abstractoperation.h"
 #include "unredopanel.h"
 #include "multipleselectionmanager.h"
+#include <tuple>
 
 class ShapeDesigner : public QFrame
 {
@@ -15,6 +16,7 @@ class ShapeDesigner : public QFrame
 public:
     explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, QWidget *parent = nullptr);
     bool drawLines = true;
+    void reset();
     
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -35,6 +37,7 @@ public slots:
     void setWait();
 
 private:
+    std::pair<int,int> toCollectionPoint();
 
     MultipleSelectionManager selectionManager;
     UnReDoPanel *unredoPanle;
@@ -54,9 +57,11 @@ private:
     QAction *setWaitleAction;
     int clickPointX, clickPointY;
     void drawControlPoints(QPainter &painter);
+    void drawBackground(QPainter &painter);
     void drawLaserPath(QPainter &painter);
     void configureContextMenuButtons(point* selectedPoint);
     Qt::GlobalColor getControlPointColor(Point &p);
+    void drawPoint(Point &p, QPainter &painter);
     OperationLayer layer;
 };
 
