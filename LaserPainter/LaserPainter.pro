@@ -51,7 +51,8 @@ SOURCES += \
     Ui/mainpanel.cpp \
     Ui/shapedesigner.cpp \
     Ui/unredopanel.cpp \
-    Ui/multipleselectionmanager.cpp
+    Ui/multipleselectionmanager.cpp \
+    Collection/scaleoperation.cpp
 
 HEADERS += \
     Collection/project.h \
@@ -72,7 +73,8 @@ HEADERS += \
     Ui/mainpanel.h \
     Ui/shapedesigner.h \
     Ui/unredopanel.h \
-    Ui/multipleselectionmanager.h
+    Ui/multipleselectionmanager.h \
+    Collection/scaleoperation.h
 
 FORMS +=
 

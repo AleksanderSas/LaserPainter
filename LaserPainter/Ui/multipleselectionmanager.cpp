@@ -1,5 +1,6 @@
 #include "multipleselectionmanager.h"
 #include "../Collection/multiplemoveoperation.h"
+#include "../Collection/scaleoperation.h"
 #include "CoordinateTransformation.h"
 
 MultipleSelectionManager::MultipleSelectionManager()
@@ -68,6 +69,12 @@ bool MultipleSelectionManager::onMouseRelease(UnReDoPanel *unredoPanle, Operatio
         unredoPanle->addDo(new MultipleMoveOperation(selectedPoints, cord.first, cord.second), layer);
         return true;
     }
+
+    if(selectManyMode == SelectedManyMode::scaling)
+    {
+        unredoPanle->addDo(new ScaleOperation(selectedPoints, originalScaling), layer);
+    }
+
 
     if(selectManyMode == SelectedManyMode::selecting)
     {
