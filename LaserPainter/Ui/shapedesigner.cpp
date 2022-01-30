@@ -8,6 +8,7 @@
 #include "Collection/adddeleteoperation.h"
 #include "Collection/moveoperation.h"
 #include "CoordinateTransformation.h"
+#include "../mathutils.h"
 
 #define MAX_W 1024
 #define MAX_H 780
@@ -22,10 +23,10 @@ ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnRe
     menu = new QMenu(this);
     delteAction = new QAction("Delete", this);
     switchLaserAction = new QAction("Disable Laser", this);
-    insertBezierAction = new QAction("Insert Bezier", this);
-    insertLineAction = new QAction("Insert Line", this);
-    insertCircleAction = new QAction("Insert Circle", this);
-    insertHalfCircleAction = new QAction("Insert Half Circle", this);
+    insertBezierAction = new QAction("Insert Bezier (after)", this);
+    insertLineAction = new QAction("Insert Line after (after)", this);
+    insertCircleAction = new QAction("Insert Circle (after)", this);
+    insertHalfCircleAction = new QAction("Insert Half Circle (after)", this);
     setWaitleAction = new QAction("Set wait", this);
     menu->addAction(delteAction);
     menu->addAction(switchLaserAction);
@@ -268,6 +269,16 @@ void ShapeDesigner::drawPoint(Point &p, QPainter &painter)
     painter.drawEllipse(cord.first - shift, cord.second - shift, circleSize, circleSize);
 }
 
+void ShapeDesigner::drawDirectionArrow(std::pair<int,int> &cord1, std::pair<int,int> &cord2, QPainter &painter)
+{
+    auto ortogonalVec = MathUtils::getNormalizedOrtogonal(cord1, cord2);
+    auto normVec = MathUtils::getNormalizedVector(cord1, cord2);
+    int arrowX = cord2.first + ortogonalVec.first * 10 + normVec.first * 20;
+    int arrowY = cord2.second+ ortogonalVec.second * 10 + normVec.second * 20;
+    painter.drawLine(arrowX, arrowY, cord2.first, cord2.second);
+    painter.drawLine(arrowX, arrowY, cord2.first + normVec.first * 20, cord2.second + normVec.second * 20);
+}
+
 void ShapeDesigner::drawControlPoints(QPainter &painter)
 {
     drawBackground(painter);
@@ -284,6 +295,10 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
             {
                 auto cord2 = fromCollectionPoint(p2);
                 painter.drawLine(cord2.first, cord2.second, cord1.first, cord1.second);
+                if(MathUtils::squareDist(cord1, cord2) > 50 * 50)
+                {
+                    drawDirectionArrow(cord1, cord2, painter);
+                }
             }
         }
 

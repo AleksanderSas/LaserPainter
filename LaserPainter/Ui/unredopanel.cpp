@@ -58,15 +58,8 @@ void UnReDoPanel::clear(std::stack<AbstractOperation*> &set)
 void UnReDoPanel::addDo(AbstractOperation* operation, OperationLayer layer)
 {
     undo[layer].push(operation);
-    while (!redo[layer].empty())
-    {
-
-        auto op = redo[layer].top();
-        delete op;
-        redo[layer].pop();
-
-    }
-   updateButtons();
+    clear(redo[layer]);
+    updateButtons();
 }
 
 void UnReDoPanel::updateButtons()
