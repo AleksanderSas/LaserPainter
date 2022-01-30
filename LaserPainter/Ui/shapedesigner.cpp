@@ -308,12 +308,28 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
 }
 
 void ShapeDesigner::drawLaserPath(QPainter &painter)
-{
-    const PointWithMetadata *pt;
-    while((pt = shapeCollection.next(30)) != nullptr)
+{    
+    PointWithMetadata const *ptPrevious = shapeCollection.next(30);
+    if(ptPrevious == nullptr) return;
+    auto cordPrevious = fromCollectionPoint(ptPrevious->point);
+    PointWithMetadata const *ptCurrent = nullptr;
+
+    QPen p(QColor(255, 130, 130));
+    p.setWidth(1);
+    painter.setPen(p);
+
+    while((ptCurrent = shapeCollection.next(30)) != nullptr)
     {
-        auto cord = fromCollectionPoint(pt->point);
-        painter.drawPoint(cord.first, cord.second);
+        auto cordCurrent = fromCollectionPoint(ptCurrent->point);
+        if(drawShape)
+        {
+            painter.drawLine(cordPrevious.first, cordPrevious.second, cordCurrent.first, cordCurrent.second);
+        }
+        else
+        {
+            painter.drawPoint(cordCurrent.first, cordCurrent.second);
+        }
+        cordPrevious = cordCurrent;
     }
 }
 

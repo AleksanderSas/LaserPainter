@@ -74,6 +74,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     drawLinesCheckbox = new QCheckBox("Draw lines", this);
     drawLinesCheckbox->setChecked(true);
 
+    drawShapeCheckbox = new QCheckBox("Draw shape", this);
+    drawShapeCheckbox->setChecked(true);
+
     scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
     scaleBar->setRange(1, 100);
     scaleBar->setValue(configuration.scale);
@@ -94,6 +97,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addWidget(saveButton, 0, Qt::AlignTop);
     vbox->addWidget(openButton, 0, Qt::AlignTop);
     vbox->addWidget(drawLinesCheckbox, 0, Qt::AlignTop);
+    vbox->addWidget(drawShapeCheckbox, 0, Qt::AlignTop);
     vbox->addWidget(enableWaitCircuid, 0, Qt::AlignTop);
     vbox->addWidget(enableLaser, 0, Qt::AlignTop);
     vbox->addWidget(enableMove, 0, Qt::AlignTop);
@@ -126,6 +130,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
+    connect(drawShapeCheckbox, SIGNAL(clicked()), this, SLOT(shapeChecbox()));
     connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
     connect(moveScaleBar, SIGNAL(valueChanged(int)), this, SLOT(moveScaleUpdated(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), unrePanel, SLOT(setMode(int)));
@@ -201,6 +206,15 @@ void MainPanel::lineChecbox()
     shapeDesigner->update();
 
     moveDesigner->drawLines = drawLinesCheckbox->isChecked();
+    moveDesigner->update();
+}
+
+void MainPanel::shapeChecbox()
+{
+    shapeDesigner->drawShape = drawShapeCheckbox->isChecked();
+    shapeDesigner->update();
+
+    moveDesigner->drawShape = drawShapeCheckbox->isChecked();
     moveDesigner->update();
 }
 

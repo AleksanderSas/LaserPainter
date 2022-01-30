@@ -9,7 +9,7 @@ MultipleSelectionManager::MultipleSelectionManager()
 
 bool MultipleSelectionManager::onMousePress(ShapeCollection &shapeCollection, int x, int y, Qt::KeyboardModifiers modifier)
 {
-    if(modifier == Qt::NoModifier && isRectangleCorner(x, y))
+    if(modifier == Qt::NoModifier && isRectangleCorner(x, y) && selectManyMode != SelectedManyMode::no)
     {
         selectManyMode = SelectedManyMode::scaling;
         originalScaling.clear();

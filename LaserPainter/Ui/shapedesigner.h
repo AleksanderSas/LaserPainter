@@ -16,6 +16,7 @@ class ShapeDesigner : public QFrame
 public:
     explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, QWidget *parent = nullptr);
     bool drawLines = true;
+    bool drawShape = true;
     void reset();
     
 protected:

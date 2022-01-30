@@ -38,6 +38,7 @@ private:
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
     QCheckBox* drawLinesCheckbox;
+    QCheckBox* drawShapeCheckbox;
     QCheckBox* enableWaitCircuid;
     QScrollBar *scaleBar;
     QScrollBar *moveScaleBar;
@@ -59,6 +60,7 @@ public slots:
     void clear();
     void hardwareDraw();
     void lineChecbox();
+    void shapeChecbox();
     void scaleUpdated(int value);
     void moveScaleUpdated(int value);
     void enableLaserSlot(int state);
