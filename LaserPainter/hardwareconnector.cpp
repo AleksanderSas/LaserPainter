@@ -305,10 +305,6 @@ HardwareStatictics HardwareConnector::getOperationPerSecons()
 const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid, bool enableMoving)
 {
 #ifdef R_PI
-    long long int tmpDelay = 0L;
-    long long int laserSwitchDelay = 0L;
-    long long int positionComputeDelay = 0L;
-    long long int ioDelay = 0L;
     ioOperation = 0;
     loops = 0;
     waits = 0;
@@ -322,10 +318,8 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     for(unsigned int i = 0; i < config->repeats && run; i++)
     {
         const PointWithMetadata* p;
-        tmpDelay = clock();
         while((p = project.next(config->resolution, config->moveSpeed, enableMoving)) != nullptr)
         {
-            positionComputeDelay += clock() - tmpDelay;
             bool ldacValue = LDAC_FLUSH;
             if(enableWaitCircuid && p->isNextComponent)
             {
@@ -338,13 +332,10 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
             }
             if(enableLaser != p->point.enableLaser)
             {
-                tmpDelay = clock();
                 enableLaser = handleLaserSwitch(enableWaitCircuid, p);
-                laserSwitchDelay += clock() - tmpDelay;
             }
             
             ioOperation++;
-            tmpDelay = clock();
 
             int scale = config->scale;
             sent(scaleValue(p->point.x, scale), scaleValue(p->point.y, scale));
@@ -358,24 +349,10 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
 
                 digitalWrite(LDAC_PIN, false);
             }
-            auto tmpDelay2 = clock();
-            ioDelay += tmpDelay2 - tmpDelay;
-            tmpDelay = tmpDelay2;
         }
         loops++;
     }
     run = false;
-    /*printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
-    printf("Position compute delay: %lld ms\n", positionComputeDelay * 1000 / CLOCKS_PER_SEC);
-    printf("IO delay:               %lld ms\n", ioDelay * 1000 / CLOCKS_PER_SEC);
-    printf("Pin delay:              %lld ms\n", pinRead * 1000 / CLOCKS_PER_SEC);
-
-    totalTime = clock() - totalTime;
-    long long int ioOperationsPerSec = counter * CLOCKS_PER_SEC / totalTime;
-    printf("total time              %lld ms\n", totalTime * 1000 / CLOCKS_PER_SEC);
-    printf("total IO operations     %llu\n", counter);
-    printf("IO operations per sec:  %llu\n", ioOperationsPerSec);
-    printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);*/
 #endif
     return  nullptr;
 }
