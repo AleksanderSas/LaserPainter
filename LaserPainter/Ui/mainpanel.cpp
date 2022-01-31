@@ -118,6 +118,13 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addWidget(moveScaleBar, 0, Qt::AlignTop);
     vbox->addStretch(90);
 
+    iosStatisticsLabel = new QLabel(QString(""), this);
+    vbox->addWidget(iosStatisticsLabel);
+    loopsStatisticsLabel = new QLabel(this);
+    vbox->addWidget(loopsStatisticsLabel);
+    waitsStatisticsLabel = new QLabel(this);
+    vbox->addWidget(waitsStatisticsLabel);
+
     hbox->addItem(vbox);
     auto* tabWidget = new QTabWidget(this);
     tabWidget->addTab(shapeDesigner, "Shape designer");
@@ -184,6 +191,7 @@ void MainPanel::hardwareDraw()
 {
     if(connector->run)
     {
+        statisticsTimer->stop();
         connector->run = false;
         displayThread ->join();
         delete displayThread;
@@ -196,8 +204,30 @@ void MainPanel::hardwareDraw()
         displayThread ->join();
         delete displayThread;
     }
+    if(statisticsTimer != nullptr && statisticsTimer->isActive())
+    {
+        statisticsTimer->stop();
+        delete statisticsTimer;
+    }
+
+    statisticsTimer = new QTimer(this);
+    statisticsTimer->moveToThread(this->thread());
+    connect(statisticsTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
+    statisticsTimer->setInterval(1000);
+    statisticsTimer->start();
+
     displayThread = new std::thread(&MainPanel::draw, this);
     startButton -> setText("Stop");
+}
+
+void MainPanel::onTimer()
+{
+    auto stats = connector->getOperationPerSecons();
+
+    //TODO: this UI operation sometimes break application
+    iosStatisticsLabel->setText(QString::number(stats.iosPerSecond /1000) + QString(".") + QString::number((stats.iosPerSecond - (stats.iosPerSecond/1000) * 1000) / 100) + QString(" k ops/s"));
+    loopsStatisticsLabel->setText(QString::number(stats.loopsPerSecond) + " fps");
+    waitsStatisticsLabel->setText(QString::number(stats.waitsPerSecond) + " waits");
 }
 
 void MainPanel::lineChecbox()
@@ -247,6 +277,7 @@ void MainPanel::draw()
     }
     enableLaserSlot(enableLaser->checkState());
     startButton -> setText("Start");
+    statisticsTimer->stop();
 }
 
 void MainPanel::saveFile()

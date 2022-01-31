@@ -44,7 +44,11 @@ private:
     QScrollBar *moveScaleBar;
     QLabel *scaleLabel;
     QLabel *moveScaleLabel;
+    QLabel *iosStatisticsLabel;
+    QLabel *loopsStatisticsLabel;
+    QLabel *waitsStatisticsLabel;
     UnReDoPanel *unrePanel;
+    QTimer *statisticsTimer = nullptr;
 
     QSpinBox* CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout);
     void updateConfiguration();
@@ -64,6 +68,7 @@ public slots:
     void scaleUpdated(int value);
     void moveScaleUpdated(int value);
     void enableLaserSlot(int state);
+    void onTimer();
 };
 
 #endif // MAINPANEL_H

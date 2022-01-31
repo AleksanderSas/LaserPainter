@@ -212,20 +212,21 @@ static int scaleValue(int value, int scale)
 
 //returns true if number of wait iterations is exceeded
 //otherwise false
-static bool waitUntillReachPosition()
+bool HardwareConnector::waitUntillReachPosition()
 {
 #ifdef R_PI
     unsigned int counter = 0;
     int pinValu = digitalRead(TEST_PIN);
     while(pinValu == TEST_FAILURE)
     {
+        waits++;
         counter++;
         if(counter++ == 2000)
             return true;
         usleep(15);
         pinValu = digitalRead(TEST_PIN);
     }
-    printf("number of wait iteration exceeded: %d\n", counter);
+    //printf("number of wait iteration exceeded: %d\n", counter);
 #endif
     return false;
 }
@@ -235,6 +236,7 @@ bool HardwareConnector::handleLaserSwitch(bool enableWaitCircuid, const PointWit
 #if 1
     if(p->point.enableLaser)
     {
+        usleep(20);
         digitalWrite(LASER_PIN, p->point.enableLaser);
         if(enableWaitCircuid)
         {
@@ -243,7 +245,7 @@ bool HardwareConnector::handleLaserSwitch(bool enableWaitCircuid, const PointWit
                 return waitExceededErrorMessage;
             }
         }
-        usleep(50);
+        usleep(30);
     }
     else
     {
@@ -278,6 +280,28 @@ void HardwareConnector::ResetAndConfigure(bool enableLaser)
 #endif
 }
 
+HardwareStatictics::HardwareStatictics(int iosPerSec, int loopsPerSec, int waitsPerSec) :
+    iosPerSecond(iosPerSec), loopsPerSecond(loopsPerSec), waitsPerSecond(waitsPerSec)
+{ }
+
+HardwareStatictics HardwareConnector::getOperationPerSecons()
+{
+    auto ioOpsTmp = ioOperation;
+    ioOperation = 0;
+    auto loopsTmp = loops;
+    loops = 0;
+    auto waitsTmp = waits;
+    waits = 0;
+    long long int totalTime = clock() - startTime;
+    startTime = clock();
+    return HardwareStatictics
+    (
+        ioOpsTmp * CLOCKS_PER_SEC / totalTime,
+        loopsTmp * CLOCKS_PER_SEC / totalTime,
+        waitsTmp * CLOCKS_PER_SEC / totalTime
+    );
+}
+
 const char* HardwareConnector::draw(Project &project, Configuration *config, bool enableWaitCircuid, bool enableMoving)
 {
 #ifdef R_PI
@@ -285,14 +309,15 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     long long int laserSwitchDelay = 0L;
     long long int positionComputeDelay = 0L;
     long long int ioDelay = 0L;
-    unsigned long long int counter = 0;
-    unsigned long long int pinRead = 0;
+    ioOperation = 0;
+    loops = 0;
+    waits = 0;
+    startTime = clock();
 
     bool enableLaser = false;
     ResetAndConfigure(enableLaser);
 
     run = true;
-    long long int totalTime = clock();
     project.restart();
     for(unsigned int i = 0; i < config->repeats && run; i++)
     {
@@ -305,7 +330,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
             if(enableWaitCircuid && p->isNextComponent)
             {
                 int pinValu = digitalRead(TEST_PIN);
-                if(pinValu == TEST_FAILURE && counter > 0)
+                if(pinValu == TEST_FAILURE && ioOperation > 0)
                 {
                     ldacValue = LDAC_BUFFER;
                     digitalWrite(LDAC_PIN, ldacValue);
@@ -318,7 +343,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
                 laserSwitchDelay += clock() - tmpDelay;
             }
             
-            counter++;
+            ioOperation++;
             tmpDelay = clock();
 
             int scale = config->scale;
@@ -337,9 +362,10 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
             ioDelay += tmpDelay2 - tmpDelay;
             tmpDelay = tmpDelay2;
         }
+        loops++;
     }
     run = false;
-    printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
+    /*printf("Laser switch delay:     %lld ms\n", laserSwitchDelay * 1000 / CLOCKS_PER_SEC);
     printf("Position compute delay: %lld ms\n", positionComputeDelay * 1000 / CLOCKS_PER_SEC);
     printf("IO delay:               %lld ms\n", ioDelay * 1000 / CLOCKS_PER_SEC);
     printf("Pin delay:              %lld ms\n", pinRead * 1000 / CLOCKS_PER_SEC);
@@ -349,7 +375,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     printf("total time              %lld ms\n", totalTime * 1000 / CLOCKS_PER_SEC);
     printf("total IO operations     %llu\n", counter);
     printf("IO operations per sec:  %llu\n", ioOperationsPerSec);
-    printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);
+    printf("throughput              %lld%%\n", ioOperationsPerSec * 32 * 100 / spi_speed);*/
 #endif
     return  nullptr;
 }
