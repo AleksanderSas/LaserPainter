@@ -64,7 +64,6 @@ private:
     Qt::GlobalColor getControlPointColor(Point &p);
     void drawPoint(Point &p, QPainter &painter);
     OperationLayer layer;
-    void drawDirectionArrow(std::pair<int,int> &cord1, std::pair<int,int> &cord2, QPainter &painter);
 };
 
 #endif // BEZIERDESIGNER_H

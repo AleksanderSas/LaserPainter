@@ -15,6 +15,11 @@ AbstractVisitor::~AbstractVisitor()
 {
 }
 
+unsigned int AbstractVisitor::getPointPerComponent()
+{
+    return pointsPerComponent;
+}
+
 Point linearCombination(Point& p1, Point& p2, float t)
 {
     Point p;

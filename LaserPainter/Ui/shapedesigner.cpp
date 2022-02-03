@@ -269,7 +269,7 @@ void ShapeDesigner::drawPoint(Point &p, QPainter &painter)
     painter.drawEllipse(cord.first - shift, cord.second - shift, circleSize, circleSize);
 }
 
-void ShapeDesigner::drawDirectionArrow(std::pair<int,int> &cord1, std::pair<int,int> &cord2, QPainter &painter)
+void drawDirectionArrow(std::pair<int,int> &cord1, std::pair<int,int> &cord2, QPainter &painter)
 {
     auto ortogonalVec = MathUtils::getNormalizedOrtogonal(cord1, cord2);
     auto normVec = MathUtils::getNormalizedVector(cord1, cord2);
@@ -277,6 +277,27 @@ void ShapeDesigner::drawDirectionArrow(std::pair<int,int> &cord1, std::pair<int,
     int arrowY = cord2.second+ ortogonalVec.second * 10 + normVec.second * 20;
     painter.drawLine(arrowX, arrowY, cord2.first, cord2.second);
     painter.drawLine(arrowX, arrowY, cord2.first + normVec.first * 20, cord2.second + normVec.second * 20);
+}
+
+void drawLineWithArrow(QPainter &painter, std::pair<int,int> cord1, std::pair<int,int> cord2)
+{
+    painter.drawLine(cord2.first, cord2.second, cord1.first, cord1.second);
+    if(MathUtils::squareDist(cord1, cord2) > 50 * 50)
+    {
+        drawDirectionArrow(cord1, cord2, painter);
+    }
+}
+
+void drawArrowsForComponent(QPainter &painter, int idx,  ShapeCollection &collection)
+{
+    std::pair<unsigned int, unsigned int> poinRange = collection.getPointsFromComponent(idx);
+    auto cord1 = fromCollectionPoint(collection.points[poinRange.first]);
+    for(unsigned int i = poinRange.first + 1; i <= poinRange.second; i++)
+    {
+        auto cord2 = fromCollectionPoint(collection.points[i]);
+        drawLineWithArrow(painter, cord1, cord2);
+        cord1 = cord2;
+    }
 }
 
 void ShapeDesigner::drawControlPoints(QPainter &painter)
@@ -294,10 +315,13 @@ void ShapeDesigner::drawControlPoints(QPainter &painter)
             if(drawLines)
             {
                 auto cord2 = fromCollectionPoint(p2);
-                painter.drawLine(cord2.first, cord2.second, cord1.first, cord1.second);
-                if(MathUtils::squareDist(cord1, cord2) > 50 * 50)
+                drawLineWithArrow(painter, cord1, cord2);
+            }
+            else
+            {
+                if(selectedPoint == &p1)
                 {
-                    drawDirectionArrow(cord1, cord2, painter);
+                    drawArrowsForComponent(painter, i, shapeCollection);
                 }
             }
         }

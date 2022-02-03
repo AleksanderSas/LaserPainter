@@ -10,6 +10,7 @@ public:
     AbstractVisitor(unsigned int pointNumber, unsigned int offset, unsigned int pointsPerComponent);
     virtual ~AbstractVisitor();
     const PointWithMetadata* next(std::vector<Point>& points, unsigned int stepsSizet);
+    unsigned int getPointPerComponent();
 
 protected:
     virtual Point compute(std::vector<Point>& points) = 0;
