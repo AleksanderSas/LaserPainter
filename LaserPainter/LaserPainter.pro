@@ -53,7 +53,9 @@ SOURCES += \
     Ui/unredopanel.cpp \
     Ui/multipleselectionmanager.cpp \
     Collection/scaleoperation.cpp \
-    mathutils.cpp
+    mathutils.cpp \
+    Ui/statuspanel.cpp \
+    Collection/structs.cpp
 
 HEADERS += \
     Collection/project.h \
@@ -76,7 +78,8 @@ HEADERS += \
     Ui/unredopanel.h \
     Ui/multipleselectionmanager.h \
     Collection/scaleoperation.h \
-    mathutils.h
+    mathutils.h \
+    Ui/statuspanel.h
 
 FORMS +=
 

@@ -1,6 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <string>
+
 enum ShapeType
 {
     BEZIER,
@@ -32,5 +34,7 @@ typedef struct pointWithMetadata
 #define LINE_ "Line"
 #define CIRCLE_ "Circle"
 #define HALF_CIRCLE_ "Half Circle"
+
+std::string getShapeName(ShapeType type);
 
 #endif // STRUCTS_H

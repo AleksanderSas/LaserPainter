@@ -9,12 +9,14 @@
 #include "unredopanel.h"
 #include "multipleselectionmanager.h"
 #include <tuple>
+#include <QLabel>
+#include "statuspanel.h"
 
 class ShapeDesigner : public QFrame
 {
     Q_OBJECT
 public:
-    explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, QWidget *parent = nullptr);
+    explicit ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, StatusPanel *statusPanel, QWidget *parent = nullptr);
     bool drawLines = true;
     bool drawShape = true;
     void reset();
@@ -46,6 +48,7 @@ private:
     ShapeCollection &shapeCollection;
     QComboBox *shapeSelector;
     Point* selectedPoint = nullptr;
+    StatusPanel *statusPanel;
 
     bool isPointAdded;
     QMenu * menu;

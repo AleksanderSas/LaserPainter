@@ -51,12 +51,16 @@ void MainPanel::loadProject(std::string fileName)
 
 MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 {
-    auto *hbox = new QHBoxLayout(this);
+    auto *mainBox = new QVBoxLayout(this);
+    auto *hbox = new QHBoxLayout();
+    mainBox->addItem(hbox);
+    StatusPanel* footer = new StatusPanel(this);
+    mainBox->addWidget(footer, 1, Qt::AlignBottom);
     auto *vbox = new QVBoxLayout();
     auto* shapeSelector = new QComboBox(this);
-    unrePanel = new UnReDoPanel(this, &project.shape, &project.move, this);
-    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, OperationLayer::shape, this);
-    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, OperationLayer::move, this);
+    unrePanel = new UnReDoPanel(this, &project.shape, &project.move, footer, this);
+    shapeDesigner = new ShapeDesigner(project.shape, shapeSelector, unrePanel, OperationLayer::shape, footer, this);
+    moveDesigner = new ShapeDesigner(project.move, shapeSelector, unrePanel, OperationLayer::move, footer, this);
     startButton = new QPushButton("Start", this);
     auto* clearButton = new QPushButton("Clear", this);
     auto* saveButton = new QPushButton("Save", this);
@@ -129,6 +133,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     auto* tabWidget = new QTabWidget(this);
     tabWidget->addTab(shapeDesigner, "Shape designer");
     tabWidget->addTab(moveDesigner, "Move designer");
+    hbox->setSpacing(3);
     hbox->addWidget(tabWidget, 5);
 
     connect(enableLaser, SIGNAL(stateChanged(int)), this, SLOT(enableLaserSlot(int)));

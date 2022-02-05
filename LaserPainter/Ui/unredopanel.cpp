@@ -3,8 +3,9 @@
 #include <QShortcut>
 #include <QStyle>
 
-UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent):
+UnReDoPanel::UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, StatusPanel* statusPanel, QWidget *parent):
     QWidget(parent),
+    statusPanel(statusPanel),
     panelToRepaint(panelToRepaint)
 {
     shapeCollection[0] = sc1;
@@ -78,6 +79,8 @@ void UnReDoPanel::executeReDo()
         undo[layer].push(operation);
     }
     updateButtons();
+    int invalidPOintIdx = shapeCollection[layer]->validate();
+    statusPanel->setValidation(invalidPOintIdx);
     panelToRepaint->repaint();
 }
 
@@ -91,6 +94,8 @@ void UnReDoPanel::executeUnDo()
         redo[layer].push(operation);
     }
     updateButtons();
+    int invalidPOintIdx = shapeCollection[layer]->validate();
+    statusPanel->setValidation(invalidPOintIdx);
     panelToRepaint->repaint();
 }
 

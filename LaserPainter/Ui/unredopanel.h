@@ -7,6 +7,7 @@
 #include <QFrame>
 #include <QPushButton>
 #include <stack>
+#include "statuspanel.h"
 
 enum OperationLayer { shape, move };
 
@@ -15,7 +16,7 @@ class UnReDoPanel : public QWidget
     Q_OBJECT
 
 public:
-    UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, QWidget *parent = nullptr);
+    UnReDoPanel(QWidget *panelToRepaint, ShapeCollection *sc1, ShapeCollection *sc2, StatusPanel* statusPanel, QWidget *parent = nullptr);
     void addDo(AbstractOperation* op, OperationLayer layer);
     void clear();
 
@@ -27,6 +28,7 @@ public slots:
     void setMode(int mode);
 
 private:
+    StatusPanel* statusPanel;
     QPushButton *unDoButton;
     QPushButton *reDoButton;
     QWidget* panelToRepaint;

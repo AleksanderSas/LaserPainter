@@ -135,6 +135,40 @@ std::pair<unsigned int, unsigned int> ShapeCollection::getPointsFromComponent(un
     return std::pair<unsigned int, unsigned int>(start, end);
 }
 
+int ShapeCollection::validate()
+{
+    auto iter = points.begin();
+    if(iter == points.end()) return -1;
+    ShapeType shapeType = iter->type;
+    unsigned int pointsPerComponent = 1;
+    AbstractVisitor* visitor = GetNextVisitor(shapeType, 0, 0);
+    pointsPerComponent = visitor->getPointPerComponent();
+    delete visitor;
+    int pointWithTheSameType = 0;
+    iter++;
+
+    while(iter != points.end())
+    {
+        if(shapeType != iter->type)
+        {
+            if((pointWithTheSameType % (pointsPerComponent - 1)) != 0)
+            {
+                return iter - points.begin() - 1;
+            }
+            pointWithTheSameType = 0;
+            visitor = GetNextVisitor(shapeType, 0, 0);
+            pointsPerComponent = visitor->getPointPerComponent();
+            delete visitor;
+        }
+        else
+        {
+            pointWithTheSameType++;
+        }
+        iter++;
+    }
+    return ((pointWithTheSameType % (pointsPerComponent - 1)) == 0)? -1 : points.size() - 1;
+}
+
 void ShapeCollection::restart()
 {
     if(currentVisitor != nullptr)

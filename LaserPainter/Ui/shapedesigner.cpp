@@ -13,11 +13,12 @@
 #define MAX_W 1024
 #define MAX_H 780
 
-ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, QWidget *parent) :
+ShapeDesigner::ShapeDesigner(ShapeCollection &sc, QComboBox *shapeSelector, UnReDoPanel *unredoPanle, OperationLayer layer, StatusPanel *statusPanel, QWidget *parent) :
     QFrame(parent),
     unredoPanle(unredoPanle),
     shapeCollection(sc),
     shapeSelector(shapeSelector),
+    statusPanel(statusPanel),
     layer(layer)
 {
     menu = new QMenu(this);
@@ -60,6 +61,9 @@ void ShapeDesigner::insert(ShapeType type)
     shapeCollection.insertPointAfter(p);
     unredoPanle->addDo(new AddDeleteOperation(p), layer);
     this->repaint();
+
+    int invalidPointIdx = shapeCollection.validate();
+    statusPanel->setValidation(invalidPointIdx);
 }
 
 void ShapeDesigner::insertBezier()
@@ -174,6 +178,14 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
     auto operationResult = shapeCollection.getOrAddPoint(cord.first, cord.second, type);
     selectedPoint = operationResult.second;
     isPointAdded = operationResult.first;
+
+    if(isPointAdded)
+    {
+        int invalidPointIdx = shapeCollection.validate();
+        statusPanel->setValidation(invalidPointIdx);
+    }
+    statusPanel->setPointInfo(selectedPoint);
+
     this->repaint();
 }
 

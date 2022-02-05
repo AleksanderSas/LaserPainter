@@ -21,8 +21,12 @@ public:
     void clear();
     std::pair<int, Point> deletePoint(int x, int y);
     void insertPointAfter(Point &p);
+
     //<start point index, end point index>
     std::pair<unsigned int, unsigned int> getPointsFromComponent(unsigned int idx);
+
+    //return idx of last point from invalid component. If collection is valie, -1
+    int validate();
 
     std::vector<Point> points;
     std::vector<Point>::iterator iter;
