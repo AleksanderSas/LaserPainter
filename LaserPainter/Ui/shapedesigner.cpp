@@ -91,6 +91,7 @@ void ShapeDesigner::deletePoint()
     auto cord = toCollectionPoint();
     auto deleted = shapeCollection.deletePoint(cord.first, cord.second);
     unredoPanle->addDo(new AddDeleteOperation(deleted.second, deleted.first), layer);
+    statusPanel->setValidation(shapeCollection.validate());
     this->repaint();
 }
 

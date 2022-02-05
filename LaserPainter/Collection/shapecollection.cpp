@@ -151,11 +151,12 @@ int ShapeCollection::validate()
     {
         if(shapeType != iter->type)
         {
-            if((pointWithTheSameType % (pointsPerComponent - 1)) != 0)
+            if(pointWithTheSameType < pointsPerComponent - 2 || (pointWithTheSameType % (pointsPerComponent - 1)) != 0)
             {
                 return iter - points.begin() - 1;
             }
-            pointWithTheSameType = 0;
+            pointWithTheSameType = 1;
+            shapeType = iter->type;
             visitor = GetNextVisitor(shapeType, 0, 0);
             pointsPerComponent = visitor->getPointPerComponent();
             delete visitor;
@@ -166,7 +167,7 @@ int ShapeCollection::validate()
         }
         iter++;
     }
-    return ((pointWithTheSameType % (pointsPerComponent - 1)) == 0)? -1 : points.size() - 1;
+    return (pointWithTheSameType >= pointsPerComponent - 2 && (pointWithTheSameType % (pointsPerComponent - 1)) == 0)? -1 : points.size() - 1;
 }
 
 void ShapeCollection::restart()
