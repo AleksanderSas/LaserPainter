@@ -23,9 +23,9 @@ float inline denominator(Point &p1, Point &p2, Point &p3)
 
 void HalfCircleVisitor::computeCentre(std::vector<Point>& points)
 {
-    Point &p1 = points[offset];
-    Point &p2 = points[offset + 1];
-    Point &p3 = points[offset + 2];
+    Point &p1 = points[currentPoint];
+    Point &p2 = points[currentPoint + 1];
+    Point &p3 = points[currentPoint + 2];
 
     float den = denominator(p1, p2, p3);
     if(abs(den) < 0.05f) den = den < 0.0f? -0.05f : 0.05f;
