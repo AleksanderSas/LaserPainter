@@ -192,7 +192,7 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
 
 void ShapeDesigner::mouseReleaseEvent(QMouseEvent *e)
 {    
-    if(selectionManager.onMouseRelease(unredoPanle, layer));
+    if(selectionManager.onMouseRelease(unredoPanle, layer))
     {
         this->repaint();
     }
