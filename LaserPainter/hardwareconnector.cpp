@@ -233,6 +233,7 @@ bool HardwareConnector::waitUntillReachPosition()
 
 bool HardwareConnector::handleLaserSwitch(bool enableWaitCircuid, const PointWithMetadata* p)
 {
+#ifdef R_PI
 #if 1
     if(p->point.enableLaser)
     {
@@ -264,7 +265,8 @@ bool HardwareConnector::handleLaserSwitch(bool enableWaitCircuid, const PointWit
     digitalWrite(LASER_PIN, p->point.enableLaser;);
     usleep(250);
 #endif
-    return  p->point.enableLaser;;
+#endif
+    return  p->point.enableLaser;
 }
 
 void HardwareConnector::ResetAndConfigure(bool enableLaser)
