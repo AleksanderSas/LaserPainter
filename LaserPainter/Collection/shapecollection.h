@@ -12,7 +12,7 @@ class ShapeCollection
 public:
     ShapeCollection();
     ~ShapeCollection();
-    const PointWithMetadata* next(unsigned int stepsSize);
+    const PointWithMetadata* next(unsigned int stepsSize, int curvatureLevel);
     void restart();
 
     void Add(float x, float y, ShapeType type, bool enableLaser, bool wait, int position = -1);
@@ -37,6 +37,7 @@ private :
     AbstractVisitor *currentVisitor = nullptr;
     unsigned int currentShape = 0;
     std::vector<Point>::iterator insertPosition;
+    Point previousPoint, previousPreviousPoint;
 };
 
 #endif // SHAPECOLLECTION_H

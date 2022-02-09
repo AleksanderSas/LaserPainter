@@ -1,5 +1,6 @@
 #include "abstractvisitor.h"
 #include "Collection/shapecollection.h"
+#include "math.h"
 
 AbstractVisitor::AbstractVisitor(unsigned int pointNumber, unsigned int offset, unsigned int pointsPerComponent) :
     pointNumber(pointNumber),
@@ -28,8 +29,28 @@ Point linearCombination(Point& p1, Point& p2, float t)
     return p;
 }
 
+static float computeCurvature(Point current, Point previous, Point previousPrevious)
+{
+    float dx = current.x - previous.x;
+    float dy = current.y - previous.y;
+    float ddx =  dx - previous.x + previousPrevious.x;
+    float ddy =  dy - previous.y + previousPrevious.y;
+
+    float nominator = abs(dx*ddy - dy*ddx);
+    float denominator = hypot(dx, dy);
+    denominator = denominator * denominator * denominator;
+    float curvature = denominator > 0? nominator / denominator : 0.0;
+
+    return curvature;
+}
+
+static float getDeltaT(float curv, float deltaT, int curvatureLevel)
+{
+    return deltaT / 2 > curv * 10? deltaT - curv * 10 : deltaT/ 2;
+}
+
 //nullpth is returned when whole sequence is visited
-const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsigned int stepsSize)
+const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsigned int stepsSize, Point prev, Point prevPrev, int curvatureLevel)
 {
     if(currentPoint + pointsPerComponent - 1 >= offset + pointNumber)
     {
@@ -58,6 +79,10 @@ const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsig
             tInComponent += deltaT;
         }
     }
+    float curv = computeCurvature(p.point, prev, prevPrev);
+    float newT =  getDeltaT(curv, deltaT, curvatureLevel);
+    newT = newT / deltaT;
+    printf("curv: %f delta %f dif: %f\n", curv ,deltaT, newT);
     p.point.enableLaser = points[currentPoint].enableLaser;
     p.isNextComponent &= points[currentPoint].wait;
     return &p;

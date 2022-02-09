@@ -14,6 +14,8 @@ ShapeCollection::ShapeCollection()
 ShapeCollection::~ShapeCollection()
 {
     clear();
+    previousPoint = Point(0, 0);
+    previousPreviousPoint = Point(0, 0);
 }
 
 void ShapeCollection::Add(float x, float y, ShapeType type, bool enableLaser, bool wait, int position)
@@ -199,7 +201,7 @@ bool ShapeCollection::SetNextVisitor(bool firstVisitor)
     return true;
 }
 
-const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
+const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize, int curvatureLevel)
 {
     if(currentVisitor == nullptr)
     {
@@ -208,14 +210,16 @@ const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize)
             return  nullptr;
     }
 
-    const PointWithMetadata* p = currentVisitor->next(points, stepsSize);
+    const PointWithMetadata* p = currentVisitor->next(points, stepsSize, previousPoint, previousPreviousPoint, curvatureLevel);
     while(p == nullptr)
     {
         delete  currentVisitor;
         currentVisitor = nullptr;
         if(!SetNextVisitor(false))
             return  nullptr;
-        p = currentVisitor->next(points, stepsSize);
+        p = currentVisitor->next(points, stepsSize, previousPoint, previousPreviousPoint, curvatureLevel);
     }
+    previousPreviousPoint = previousPoint;
+    previousPoint = p->point;
     return p;
 }

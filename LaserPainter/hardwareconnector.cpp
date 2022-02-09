@@ -320,7 +320,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
     for(unsigned int i = 0; i < config->repeats && run; i++)
     {
         const PointWithMetadata* p;
-        while((p = project.next(config->resolution, config->moveSpeed, enableMoving)) != nullptr)
+        while((p = project.next(config->resolution, config->moveSpeed, enableMoving, config->curvatureFactor)) != nullptr)
         {
             bool ldacValue = LDAC_FLUSH;
             if(enableWaitCircuid && p->isNextComponent)

@@ -9,6 +9,7 @@
 #define CNF_DIR "DIR:"
 #define CNF_FILE "FILE:"
 #define CNF_SCALE "SCALE:"
+#define CNF_CURF_FACT "CURVATURE_FACTOR:"
 
 #define CONFIG_FILE "./config"
 
@@ -23,6 +24,7 @@ public:
     std::string dir = "/home", file = "";
     unsigned int repeats = 100;
     unsigned int resolution = 25;
+    unsigned int curvatureFactor = 0;
     unsigned int moveSpeed = 3;
     int scale = 100;
 

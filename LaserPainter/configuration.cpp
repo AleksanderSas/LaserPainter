@@ -50,6 +50,12 @@ Configuration::Configuration()
            continue;
         }
 
+        if(key == CNF_CURF_FACT)
+        {
+           curvatureFactor = atoi(value.c_str());
+           continue;
+        }
+
         if(key == CNF_RESOLUTION)
         {
            resolution = static_cast<unsigned int>(atoi(value.c_str()));
@@ -77,6 +83,7 @@ Configuration::~Configuration()
     output << CNF_RESOLUTION << " " << resolution << std::endl;
     output << CNF_MOVE_SPEED << " " << moveSpeed << std::endl;
     output << CNF_SCALE << " " << scale << std::endl;
+    output << CNF_CURF_FACT << " " << curvatureFactor << std::endl;
 
     output.close();
 }

@@ -21,10 +21,10 @@ bool ifFileExists(std::string fileName)
     return infile.good();
 }
 
-QSpinBox* MainPanel::CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout)
+QSpinBox* MainPanel::CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout, int min, int max)
 {
     auto *spinner = new QSpinBox(this);
-    spinner->setRange(1, 100);
+    spinner->setRange(min, max);
     spinner->setValue(initValue);
 
     layout->addWidget(new QLabel(title ,this), 0, Qt::AlignTop);
@@ -111,6 +111,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     moveSpeedInput = CreateAndAddSpinner("Move Speed", configuration.moveSpeed, vbox);
     pointsInput = CreateAndAddSpinner("Points", configuration.resolution, vbox);
+    curvatureInput = CreateAndAddSpinner("Curvature", configuration.curvatureFactor, vbox);
 
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);
@@ -170,6 +171,7 @@ void MainPanel::enableLaserSlot(int state)
 void MainPanel::updateConfiguration()
 {
     configuration.resolution = static_cast<unsigned int>(pointsInput->value());
+    configuration.curvatureFactor = static_cast<unsigned int>(curvatureInput->value());
     configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
     configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
     configuration.scale = scaleBar->value();

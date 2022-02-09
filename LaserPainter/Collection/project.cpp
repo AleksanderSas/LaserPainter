@@ -154,14 +154,14 @@ void Project::restart()
     rotateCos = 1.0f;
 }
 
-void Project::SetNextPath(unsigned int moveSpeed)
+void Project::SetNextPath(unsigned int moveSpeed,int curvatureLevel)
 {
     if(move.points.size() > 0)
     {
-        path = move.next(moveSpeed);
+        path = move.next(moveSpeed, curvatureLevel);
         while(path == nullptr)
         {
-            path = move.next(moveSpeed);
+            path = move.next(moveSpeed, curvatureLevel);
         }
     }
 }
@@ -186,7 +186,7 @@ Point rotateScaleAndShift(const Point& p, float sin, float cos, const Point& off
     return Point(x, y, p.type, p.enableLaser, p.wait);
 }
 
-void Project::SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove)
+void Project::SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove, int curvatureLevel)
 {
     if(!enableMove)
     {
@@ -202,7 +202,7 @@ void Project::SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove)
         previousY = path->point.y;
         setSinCos = true;
     }
-    SetNextPath(moveSpeed);
+    SetNextPath(moveSpeed, curvatureLevel);
     if(setSinCos)
     {
         float dx = path->point.x - previousX;
@@ -216,12 +216,12 @@ void Project::SetNextPathAndRotation(unsigned int moveSpeed, bool enableMove)
     }
 }
 
-const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed, bool enableMove)
+const PointWithMetadata* Project::next(unsigned int stepsSize, unsigned int moveSpeed, bool enableMove, int curvatureLevel)
 {
-    const PointWithMetadata* shapePoint = shape.next(stepsSize);
+    const PointWithMetadata* shapePoint = shape.next(stepsSize, curvatureLevel);
     if(shapePoint == nullptr)
     {
-        SetNextPathAndRotation(moveSpeed, enableMove);
+        SetNextPathAndRotation(moveSpeed, enableMove, curvatureLevel);
         return nullptr;
     }
 

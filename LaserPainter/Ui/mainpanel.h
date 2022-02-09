@@ -34,6 +34,7 @@ private:
     QCheckBox* enableLaser;
     QCheckBox* enableMove;
     QSpinBox *pointsInput;
+    QSpinBox *curvatureInput;
     QSpinBox *moveSpeedInput;
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
@@ -50,7 +51,7 @@ private:
     UnReDoPanel *unrePanel;
     QTimer *statisticsTimer = nullptr;
 
-    QSpinBox* CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout);
+    QSpinBox* CreateAndAddSpinner(const char* title, int initValue, QVBoxLayout* layout, int min = 1,int max = 100);
     void updateConfiguration();
     void setTitle(QString fileName);
     void loadProject(std::string fileName);

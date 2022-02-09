@@ -9,7 +9,7 @@ class AbstractVisitor
 public:
     AbstractVisitor(unsigned int pointNumber, unsigned int offset, unsigned int pointsPerComponent);
     virtual ~AbstractVisitor();
-    const PointWithMetadata* next(std::vector<Point>& points, unsigned int stepsSizet);
+    const PointWithMetadata* next(std::vector<Point>& points, unsigned int stepsSizet, Point prev, Point prevPrev, int curvatureLevel);
     unsigned int getPointPerComponent();
 
 protected:
