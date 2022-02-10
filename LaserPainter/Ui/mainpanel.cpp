@@ -81,15 +81,9 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     drawShapeCheckbox = new QCheckBox("Draw shape", this);
     drawShapeCheckbox->setChecked(true);
 
-    scaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
-    scaleBar->setRange(1, 100);
-    scaleBar->setValue(configuration.scale);
-    scaleLabel = new QLabel(QString("Scale: ") + QString::number(configuration.scale) + "%", this);
+    scaleBar = new Slider("Scale: ", "%", 1, 100, &configuration.scale, this);
+    moveScaleBar = new Slider("M scale: ", "%", 1, 100, &project.moveScale, this);
 
-    moveScaleBar = new QScrollBar(Qt::Orientation::Horizontal, this);
-    moveScaleBar->setRange(1, 100);
-    moveScaleBar->setValue(25);
-    moveScaleLabel = new QLabel(QString("M scale: 25%"), this);
     enableWaitCircuid = new QCheckBox("Wait circuid", this);
     enableWaitCircuid->setChecked(true);
 
@@ -116,10 +110,8 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);
     vbox->addStretch(5);
-    vbox->addWidget(scaleLabel, 0, Qt::AlignTop);
     vbox->addWidget(scaleBar, 0, Qt::AlignTop);
     vbox->addStretch(3);
-    vbox->addWidget(moveScaleLabel, 0, Qt::AlignTop);
     vbox->addWidget(moveScaleBar, 0, Qt::AlignTop);
     vbox->addStretch(90);
 
@@ -144,8 +136,6 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
     connect(startButton, SIGNAL(clicked()), this, SLOT(hardwareDraw()));
     connect(drawLinesCheckbox, SIGNAL(clicked()), this, SLOT(lineChecbox()));
     connect(drawShapeCheckbox, SIGNAL(clicked()), this, SLOT(shapeChecbox()));
-    connect(scaleBar, SIGNAL(valueChanged(int)), this, SLOT(scaleUpdated(int)));
-    connect(moveScaleBar, SIGNAL(valueChanged(int)), this, SLOT(moveScaleUpdated(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), unrePanel, SLOT(setMode(int)));
 
     connector = new HardwareConnector();
@@ -174,24 +164,12 @@ void MainPanel::updateConfiguration()
     configuration.curvatureFactor = static_cast<unsigned int>(curvatureInput->value());
     configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
     configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
-    configuration.scale = scaleBar->value();
 }
 
 MainPanel::~MainPanel()
 {
     updateConfiguration();
     enableLaserSlot(false);
-}
-
-void MainPanel::scaleUpdated(int value)
-{
-    scaleLabel->setText(QString("Scale: ") + QString::number(value) + "%");
-}
-
-void MainPanel::moveScaleUpdated(int value)
-{
-    moveScaleLabel->setText(QString("M scale: ") + QString::number(value) + "%");
-    project.moveScale = value;
 }
 
 void MainPanel::hardwareDraw()

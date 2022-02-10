@@ -18,7 +18,7 @@ public:
 
     ShapeCollection shape;
     ShapeCollection move;
-    int moveScale;
+    unsigned int moveScale;
 
 private:
     void loadV2(std::ifstream &myfile);

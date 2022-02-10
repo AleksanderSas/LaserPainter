@@ -26,7 +26,7 @@ public:
     unsigned int resolution = 25;
     unsigned int curvatureFactor = 0;
     unsigned int moveSpeed = 3;
-    int scale = 100;
+    unsigned int scale = 100;
 
 private:
     std::string errors;

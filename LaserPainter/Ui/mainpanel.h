@@ -14,6 +14,7 @@
 #include <QScrollBar>
 #include <QLabel>
 #include <QVBoxLayout>
+#include "slider.h"
 
 class MainPanel : public QWidget
 {
@@ -41,10 +42,8 @@ private:
     QCheckBox* drawLinesCheckbox;
     QCheckBox* drawShapeCheckbox;
     QCheckBox* enableWaitCircuid;
-    QScrollBar *scaleBar;
-    QScrollBar *moveScaleBar;
-    QLabel *scaleLabel;
-    QLabel *moveScaleLabel;
+    Slider *scaleBar;
+    Slider *moveScaleBar;
     QLabel *iosStatisticsLabel;
     QLabel *loopsStatisticsLabel;
     QLabel *waitsStatisticsLabel;
@@ -66,8 +65,6 @@ public slots:
     void hardwareDraw();
     void lineChecbox();
     void shapeChecbox();
-    void scaleUpdated(int value);
-    void moveScaleUpdated(int value);
     void enableLaserSlot(int state);
     void onTimer();
 };

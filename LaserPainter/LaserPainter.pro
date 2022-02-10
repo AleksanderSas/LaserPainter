@@ -13,7 +13,7 @@ TARGET = LaserPainter
 TEMPLATE = app
 
 #comment the line below to compile on desktop
-CONFIG += r_pi
+#CONFIG += r_pi
 
 r_pi {
 DEFINES += R_PI
@@ -35,6 +35,7 @@ CONFIG += c++11
 SOURCES += \
     Collection/project.cpp \
     Ui/CoordinateTransformation.cpp \
+    Ui/slider.cpp \
         main.cpp \
     hardwareconnector.cpp \
     configuration.cpp \
@@ -60,6 +61,7 @@ SOURCES += \
 HEADERS += \
     Collection/project.h \
     Ui/CoordinateTransformation.h \
+    Ui/slider.h \
     hardwareconnector.h \
     configuration.h \
     Collection/shapecollection.h \
