@@ -10,7 +10,7 @@ Slider::Slider(QString prefix, QString sufix,int min, int max, unsigned int* val
     bar = new QScrollBar(Qt::Orientation::Horizontal, this);
     bar->setRange(min, max);
 
-    connect(bar, SIGNAL(valueChanged(int)), this, SLOT(myupdate(int)));
+    connect(bar, SIGNAL(valueChanged(int)), this, SLOT(updateLabel(int)));
 
     vbox->addWidget(moveScaleLabel, 0, Qt::AlignTop);
     vbox->addWidget(bar, 0, Qt::AlignTop);
@@ -18,7 +18,7 @@ Slider::Slider(QString prefix, QString sufix,int min, int max, unsigned int* val
     setValue(*value);
 }
 
-void Slider::myupdate(int value)
+void Slider::updateLabel(int value)
 {
     moveScaleLabel->setText(prefix + QString::number(value) + sufix);
     *(this->value) = value;
@@ -26,6 +26,6 @@ void Slider::myupdate(int value)
 
 void Slider::setValue(int value)
 {
-    myupdate(value);
+    updateLabel(value);
     bar->setValue(value);
 }
