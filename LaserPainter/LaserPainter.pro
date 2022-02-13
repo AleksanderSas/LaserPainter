@@ -13,7 +13,7 @@ TARGET = LaserPainter
 TEMPLATE = app
 
 #comment the line below to compile on desktop
-#CONFIG += r_pi
+CONFIG += r_pi
 
 r_pi {
 DEFINES += R_PI
