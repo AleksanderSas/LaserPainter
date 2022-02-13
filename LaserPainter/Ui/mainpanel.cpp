@@ -105,7 +105,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     moveSpeedInput = CreateAndAddSpinner("Move Speed", configuration.moveSpeed, vbox);
     pointsInput = CreateAndAddSpinner("Points", configuration.resolution, vbox);
-    curvatureInput = CreateAndAddSpinner("Curvature", configuration.curvatureFactor, vbox);
+    curvatureInput = CreateAndAddSpinner("Curvature", configuration.curvatureFactor, vbox, 0, 10);
 
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);

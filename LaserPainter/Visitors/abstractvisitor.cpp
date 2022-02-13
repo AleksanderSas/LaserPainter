@@ -79,16 +79,16 @@ const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsig
     }
     else {
         p.point = compute(points);
-        tInComponent += deltaT;
+
+        float curv = computeCurvature(p.point, prev, prevPrev);
+        float newT =  getDeltaT(curv, deltaT, curvatureLevel);
+
+        tInComponent += newT;
         if(!p.point.enableLaser)
         {
-            tInComponent += deltaT;
+            tInComponent += newT;
         }
     }
-    float curv = computeCurvature(p.point, prev, prevPrev);
-    float newT =  getDeltaT(curv, deltaT, curvatureLevel);
-    newT = newT / deltaT;
-    printf("curv: %f delta %f dif: %f\n", curv ,deltaT, newT);
     p.point.enableLaser = points[currentPoint].enableLaser;
     p.isNextComponent &= points[currentPoint].wait;
     return &p;
