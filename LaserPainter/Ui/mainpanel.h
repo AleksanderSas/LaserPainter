@@ -35,7 +35,6 @@ private:
     QCheckBox* enableLaser;
     QCheckBox* enableMove;
     QSpinBox *pointsInput;
-    QSpinBox *curvatureInput;
     QSpinBox *moveSpeedInput;
     QSpinBox *repeatsInput;
     QComboBox* shapeSelector;
@@ -44,6 +43,7 @@ private:
     QCheckBox* enableWaitCircuid;
     Slider *scaleBar;
     Slider *moveScaleBar;
+    Slider *curvatureLevelBar;
     QLabel *iosStatisticsLabel;
     QLabel *loopsStatisticsLabel;
     QLabel *waitsStatisticsLabel;

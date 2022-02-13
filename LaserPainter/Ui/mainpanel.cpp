@@ -83,6 +83,7 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     scaleBar = new Slider("Scale: ", "%", 1, 100, &configuration.scale, this);
     moveScaleBar = new Slider("M scale: ", "%", 1, 100, &project.moveScale, this);
+    curvatureLevelBar = new Slider("Curvature: ", "", 0, 10, &configuration.curvatureFactor, this);
 
     enableWaitCircuid = new QCheckBox("Wait circuid", this);
     enableWaitCircuid->setChecked(true);
@@ -105,10 +106,11 @@ MainPanel::MainPanel(QWidget *parent) : QWidget(parent)
 
     moveSpeedInput = CreateAndAddSpinner("Move Speed", configuration.moveSpeed, vbox);
     pointsInput = CreateAndAddSpinner("Points", configuration.resolution, vbox);
-    curvatureInput = CreateAndAddSpinner("Curvature", configuration.curvatureFactor, vbox, 0, 10);
 
     vbox->addWidget(repeatsLabel, 0, Qt::AlignTop);
     vbox->addWidget(repeatsInput, 0, Qt::AlignTop);
+    vbox->addStretch(5);
+    vbox->addWidget(curvatureLevelBar, 0, Qt::AlignTop);
     vbox->addStretch(5);
     vbox->addWidget(scaleBar, 0, Qt::AlignTop);
     vbox->addStretch(3);
@@ -161,7 +163,6 @@ void MainPanel::enableLaserSlot(int state)
 void MainPanel::updateConfiguration()
 {
     configuration.resolution = static_cast<unsigned int>(pointsInput->value());
-    configuration.curvatureFactor = static_cast<unsigned int>(curvatureInput->value());
     configuration.repeats = static_cast<unsigned int>(repeatsInput->value());
     configuration.moveSpeed = static_cast<unsigned int>(moveSpeedInput->value());
 }
