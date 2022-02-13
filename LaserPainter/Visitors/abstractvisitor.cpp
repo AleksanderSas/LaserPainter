@@ -44,9 +44,15 @@ static float computeCurvature(Point current, Point previous, Point previousPrevi
     return curvature;
 }
 
+//recomended curvatureLevel range 0-10
 static float getDeltaT(float curv, float deltaT, int curvatureLevel)
 {
-    return deltaT / 2 > curv * 10? deltaT - curv * 10 : deltaT/ 2;
+    const int max = 10;
+    float modifyerTreshold = deltaT * curvatureLevel / max / 2;
+    float curvatureModifier = curv * curvatureLevel * 2;
+    return modifyerTreshold > curvatureModifier
+           ?deltaT - curvatureModifier
+           :deltaT - modifyerTreshold;
 }
 
 //nullpth is returned when whole sequence is visited
