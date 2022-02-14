@@ -349,7 +349,7 @@ const char* HardwareConnector::draw(Project &project, Configuration *config, boo
                     return waitExceededErrorMessage;
                 }
 
-                digitalWrite(LDAC_PIN, false);
+                digitalWrite(LDAC_PIN, LDAC_FLUSH);
             }
         }
         loops++;
