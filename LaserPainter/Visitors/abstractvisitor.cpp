@@ -65,6 +65,10 @@ const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsig
     if(deltaT < 0)
     {
         deltaT = getComponentDelta(points, stepsSize);
+        if(isinf(deltaT) || isnan(deltaT))
+        {
+            return nullptr;
+        }
     }
 
     p.isNextComponent = tInComponent == 0.0f;
@@ -76,6 +80,10 @@ const PointWithMetadata* AbstractVisitor::next(std::vector<Point>& points, unsig
         tInComponent = 0.0;
         currentPoint += pointsPerComponent - 1;
         deltaT = getComponentDelta(points, stepsSize);
+        if(isinf(deltaT) || isnan(deltaT))
+        {
+            return nullptr;
+        }
     }
     else {
         p.point = compute(points);
