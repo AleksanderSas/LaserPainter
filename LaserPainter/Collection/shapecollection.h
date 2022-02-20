@@ -15,6 +15,14 @@ struct SelectedPoint
     Point* point;
 };
 
+struct ComponentPoints
+{
+    ComponentPoints(int prev,int current, int end);
+    int previousComponentStartIdx;
+    int currentComponentStartIdx;
+    int currentComponentEndIdx;
+};
+
 class ShapeCollection
 {
 public:
@@ -30,8 +38,7 @@ public:
     std::pair<int, Point> deletePoint(int x, int y);
     void insertPointAfter(Point &p);
 
-    //<start point index, end point index>
-    std::pair<unsigned int, unsigned int> getPointsFromComponent(unsigned int idx);
+    ComponentPoints getPointsFromComponent(unsigned int idx);
 
     //return idx of last point from invalid component. If collection is valie, -1
     int validate();

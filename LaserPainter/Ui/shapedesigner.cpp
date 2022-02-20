@@ -301,16 +301,24 @@ void drawLineWithArrow(QPainter &painter, std::pair<int,int> cord1, std::pair<in
     }
 }
 
-void drawArrowsForComponent(QPainter &painter, int idx,  ShapeCollection &collection)
+void drawArrowsForComponent(ShapeCollection &collection, QPainter &painter, int start, int end, QColor color)
 {
-    std::pair<unsigned int, unsigned int> poinRange = collection.getPointsFromComponent(idx);
-    auto cord1 = fromCollectionPoint(collection.points[poinRange.first]);
-    for(unsigned int i = poinRange.first + 1; i <= poinRange.second; i++)
+    auto cord1 = fromCollectionPoint(collection.points[start]);
+    for(unsigned int i = start + 1; i <= end; i++)
     {
+        QPen disabledColor(color);
+        painter.setPen(disabledColor);
         auto cord2 = fromCollectionPoint(collection.points[i]);
         drawLineWithArrow(painter, cord1, cord2);
         cord1 = cord2;
     }
+}
+
+void drawArrowsForComponent(QPainter &painter, int idx,  ShapeCollection &collection)
+{
+    ComponentPoints poinRange = collection.getPointsFromComponent(idx);
+    drawArrowsForComponent(collection, painter, poinRange.previousComponentStartIdx, poinRange.currentComponentStartIdx, QColor(10, 10, 10));
+    drawArrowsForComponent(collection, painter, poinRange.currentComponentStartIdx, poinRange.currentComponentEndIdx, QColor(130, 100, 200));
 }
 
 void ShapeDesigner::drawControlPoints(QPainter &painter)
@@ -350,16 +358,17 @@ void ShapeDesigner::drawLaserPath(QPainter &painter)
     if(ptPrevious == nullptr) return;
     auto cordPrevious = fromCollectionPoint(ptPrevious->point);
     PointWithMetadata const *ptCurrent = nullptr;
+    bool enabledLaser = true;
 
-    QPen p(QColor(255, 130, 130));
-    p.setWidth(1);
-    painter.setPen(p);
-
+    QPen enabledColor(QColor(255, 130, 130));
+    QPen disabledColor(QColor(255, 220, 220));
+    painter.setPen(enabledColor);
     while((ptCurrent = shapeCollection.next(30, 0)) != nullptr)
     {
         auto cordCurrent = fromCollectionPoint(ptCurrent->point);
         if(drawShape)
         {
+            painter.setPen(enabledLaser? enabledColor : disabledColor);
             painter.drawLine(cordPrevious.first, cordPrevious.second, cordCurrent.first, cordCurrent.second);
         }
         else
@@ -367,6 +376,7 @@ void ShapeDesigner::drawLaserPath(QPainter &painter)
             painter.drawPoint(cordCurrent.first, cordCurrent.second);
         }
         cordPrevious = cordCurrent;
+        enabledLaser = ptCurrent->point.enableLaser;
     }
 }
 

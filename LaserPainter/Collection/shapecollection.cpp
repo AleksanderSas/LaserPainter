@@ -111,7 +111,7 @@ AbstractVisitor* GetNextVisitor(ShapeType type, unsigned int pointNumber, unsign
     return nullptr;
 }
 
-std::pair<unsigned int, unsigned int> ShapeCollection::getPointsFromComponent(unsigned int idx)
+ComponentPoints ShapeCollection::getPointsFromComponent(unsigned int idx)
 {
     unsigned int start = 0;
     while(idx - start > 0 && points[idx - start].type == points[idx].type)
@@ -121,8 +121,8 @@ std::pair<unsigned int, unsigned int> ShapeCollection::getPointsFromComponent(un
     AbstractVisitor* visitor = GetNextVisitor(points[idx].type, 0, 0);
     unsigned int pointPerComponent = visitor->getPointPerComponent();
     delete visitor;
-    unsigned int componentBefore = start > 0? ((start - 1) / (pointPerComponent - 1)) : 0;
-    start = idx - start + componentBefore * (pointPerComponent - 1);
+    unsigned int componentsBefore = start > 0? ((start - 1) / (pointPerComponent - 1)) : 0;
+    start = idx - start + componentsBefore * (pointPerComponent - 1);
 
     unsigned int end = 0;
     while(idx + end + 1 < points.size() && points[idx + end + 1].type == points[idx + 1].type)
@@ -134,7 +134,12 @@ std::pair<unsigned int, unsigned int> ShapeCollection::getPointsFromComponent(un
     delete visitor;
     unsigned int componentAfter = end > 0? ((end- 1) / (pointPerComponent - 1)) : 0;
     end = idx + end - componentAfter * (pointPerComponent - 1);
-    return std::pair<unsigned int, unsigned int>(start, end);
+    return ComponentPoints
+    (
+        start,
+        (end - start > pointPerComponent)? end - pointPerComponent + 1 : start,
+        end
+    );
 }
 
 int ShapeCollection::validate()
@@ -226,4 +231,8 @@ const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize, int curva
 
 SelectedPoint::SelectedPoint(bool isAdded, int idx, Point* point):
     isAdded(isAdded), idx(idx), point(point)
+{}
+
+ComponentPoints::ComponentPoints(int prev,int current, int end):
+    previousComponentStartIdx(prev), currentComponentStartIdx(current), currentComponentEndIdx(end)
 {}
