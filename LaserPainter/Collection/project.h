@@ -21,7 +21,6 @@ public:
     unsigned int moveScale;
 
 private:
-    void loadV2(std::ifstream &myfile);
     void loadV3(std::ifstream &myfile);
     void loadV4(std::ifstream &myfile);
     void loadV5(std::ifstream &myfile);

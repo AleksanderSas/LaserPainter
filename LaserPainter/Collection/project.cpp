@@ -22,18 +22,6 @@ bool Project::isEmpty()
     return shape.points.size() > 0 || move.points.size() > 0;
 }
 
-void Project::loadV2(std::ifstream &myfile)
-{
-    while(myfile.good())
-    {
-        unsigned int x, y, lineType;
-        myfile >> lineType;
-        myfile >> x;
-        myfile >> y;
-        shape.Add(x, y, (ShapeType)lineType, true, false);
-    }
-}
-
 void Project::loadV3(std::ifstream &myfile)
 {
     while(myfile.good())
@@ -107,8 +95,6 @@ void Project::load(std::string &file)
             throw "only V2, V3, V4 and V5 standards are supported";
         }
 
-        if(version == "V2")
-            loadV2(myfile);
         if(version == "V3")
             loadV3(myfile);
         if(version == "V3")
@@ -134,13 +120,13 @@ void Project::save(const char* file)
     myfile << shape.points.size() << std::endl;
     for(Point &p : shape.points)
     {
-        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
+        myfile << p.type << " " << (int)p.x << " " << (int)p.y << " " << p.enableLaser << " " << p.wait << std::endl;
     }
 
     myfile << std::endl << move.points.size() << std::endl;
     for(Point &p : move.points)
     {
-        myfile << p.type << " " << p.x << " " << p.y << " " << p.enableLaser << " " << p.wait << std::endl;
+        myfile << p.type << " " << (int)p.x << " " << (int)p.y << " " << p.enableLaser << " " << p.wait << std::endl;
     }
     myfile.close();
 }
