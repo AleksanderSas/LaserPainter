@@ -66,15 +66,15 @@ Point* ShapeCollection::getPoint(int x, int y)
     return iter != points.end()? &(*iter) : nullptr;
 }
 
-std::pair<bool, Point*> ShapeCollection::getOrAddPoint(int x, int y, ShapeType type)
+SelectedPoint ShapeCollection::getOrAddPoint(int x, int y, ShapeType type)
 {
     auto iter = getPointIterator(x, y);
     if(iter != points.end())
     {
-        return std::pair<bool, Point*>(false, &(*iter));
+        return SelectedPoint(false, iter - points.begin(), &(*iter));
     }
     Add(x, y, type, true, false);
-    return std::pair<bool, Point*>(true, &(*(insertPosition - 1)));
+    return SelectedPoint(true, insertPosition - points.begin() - 1, &(*(insertPosition - 1)));
 }
 
 void ShapeCollection::insertPointAfter(Point &p)
@@ -223,3 +223,7 @@ const PointWithMetadata* ShapeCollection::next(unsigned int stepsSize, int curva
     previousPoint = p->point;
     return p;
 }
+
+SelectedPoint::SelectedPoint(bool isAdded, int idx, Point* point):
+    isAdded(isAdded), idx(idx), point(point)
+{}

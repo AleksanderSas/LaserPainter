@@ -22,7 +22,7 @@ void StatusPanel::setValidation(int invalidPointIdx)
     }
 }
 
-void StatusPanel::setPointInfo(Point* selectedPoint)
+void StatusPanel::setPointInfo(Point* selectedPoint, int idx)
 {
-    pointLabel->setText(QString("Point Type: ") + getShapeName(selectedPoint->type).c_str());
+    pointLabel->setText(QString("Point Type: ") + getShapeName(selectedPoint->type).c_str() + " - " + QString::number((idx)));
 }

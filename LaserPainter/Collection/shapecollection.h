@@ -7,6 +7,14 @@
 #include <fstream>
 #include <utility>
 
+struct SelectedPoint
+{
+    SelectedPoint(bool isAdded, int idx, Point* point);
+    bool isAdded;
+    int idx;
+    Point* point;
+};
+
 class ShapeCollection
 {
 public:
@@ -16,7 +24,7 @@ public:
     void restart();
 
     void Add(float x, float y, ShapeType type, bool enableLaser, bool wait, int position = -1);
-    std::pair<bool, Point*> getOrAddPoint(int x, int y, ShapeType type);
+    SelectedPoint getOrAddPoint(int x, int y, ShapeType type);
     Point* getPoint(int x, int y);
     void clear();
     std::pair<int, Point> deletePoint(int x, int y);

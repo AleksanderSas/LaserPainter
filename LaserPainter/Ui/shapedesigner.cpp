@@ -177,15 +177,15 @@ void ShapeDesigner::mousePressEvent(QMouseEvent* e)
     QWidget::mousePressEvent(e);
     auto cord = toCollectionPoint();
     auto operationResult = shapeCollection.getOrAddPoint(cord.first, cord.second, type);
-    selectedPoint = operationResult.second;
-    isPointAdded = operationResult.first;
+    selectedPoint = operationResult.point;
+    isPointAdded = operationResult.isAdded;
 
     if(isPointAdded)
     {
         int invalidPointIdx = shapeCollection.validate();
         statusPanel->setValidation(invalidPointIdx);
     }
-    statusPanel->setPointInfo(selectedPoint);
+    statusPanel->setPointInfo(selectedPoint, operationResult.idx);
 
     this->repaint();
 }

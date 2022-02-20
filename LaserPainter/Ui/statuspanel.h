@@ -12,7 +12,7 @@ class StatusPanel : public QWidget
 public:
     explicit StatusPanel(QWidget *parent = nullptr);
     void setValidation(int idx);
-    void setPointInfo(Point* selectedPoint);
+    void setPointInfo(Point* selectedPoint, int idx);
 
 signals:
 
